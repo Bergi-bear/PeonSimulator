@@ -37,12 +37,20 @@ function InitGameCore()
 		AngleForce=0, --типа какой-то уго для отталкивания
 		IsDisabled=false,
 		pid=0,
-		--legs=AddSpecialEffect("legs",0,0),
 		legs=CreateUnit(Player(0), FourCC('o000'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0),
 		isattack=false,
-		AttackTime=0
-		--Camera=CreateUnit(Player(0), FourCC('e001'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0)
+		AttackTime=0,
+		IsWood=false
 	}
+
+	-----Настоящая инициализация
+	for i=0,3 do
+		if HERO[i] then
+			local hero=HERO[i].UnitHero
+			RegisterCollision(hero)
+			--print("111111")
+		end
+	end
 
 
 	-----------------------------------------------------------------OSKEY_W
@@ -193,9 +201,13 @@ function InitGameCore()
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
+			local hero=data.UnitHero
 			data.ReleaseRMB=false
-			--SetUnitAnimation(data.UnitHero,"Stand")
-			--data.isattack=false
+			if data.IsWood then
+				SetUnitAnimationByIndex(hero,11)
+			else
+				ResetPeonAnimation(hero)
+			end
 		end
 	end)
 
@@ -211,8 +223,8 @@ function InitGameCore()
 	local ai=0
 	TimerStart(CreateTimer(), 2, true, function()
 		local data=HERO[0]
-		--local hero=data.legs--UnitHero
-		SetUnitAnimationByIndex(hero,ai)
+		local hero=data.UnitHero
+		--SetUnitAnimationByIndex(hero,ai)
 		--print(ai)
 		ai=ai+1
 	end)
@@ -269,7 +281,8 @@ function InitGameCore()
 				data.AttackTime=0
 				if data.ReleaseRMB then
 					data.isattack=true
-					print("time attack")
+					--print("time attack")
+					AfterAttack(hero,0.3)
 					--SingleCannon(hero)
 				end
 			end
@@ -317,17 +330,14 @@ function InitGameCore()
 			end
 
 			if turn<0 and turn>-180 then
-				--print("проблемная область")
 				turn=turn+360
 			end
-			--print("угол движения="..angle.." угол поворота="..turn)
+
 
 			local dif=100
 			if angle+dif>turn and angle-dif<turn then
-				--print("по направлению "..angle)
 				SetUnitTurnSpeed(data.legs,1)
 			else
-				--print("движение спиной"..turn)
 				SetUnitTurnSpeed(data.legs,-1)
 			end
 
@@ -339,7 +349,7 @@ function InitGameCore()
 				end
 				if data.isattack==false then
 					if walkattack then
-						--walkattack=false
+
 						if data.ReleaseRMB==false then
 						--	print("reset in walk")
 							SetUnitAnimation(hero,"Stand")
@@ -349,9 +359,6 @@ function InitGameCore()
 
 
 				if walk and walkattack then
-					--BlzPlaySpecialEffect(data.legs,ANIM_TYPE_WALK)
-
-					--BlzSetSpecialEffectYaw(data.legs,math.rad(angle))
 					BlzSetUnitFacingEx(data.legs,angle)
 					SetUnitAnimationByIndex(data.legs,16)
 					walk=false
@@ -362,30 +369,32 @@ function InitGameCore()
 				SetUnitPositionSmooth(hero,newX,newY)
 			else--не двигается
 				if standanim then
-					--BlzPlaySpecialEffect(data.legs,ANIM_TYPE_STAND)
-					--SetUnitAnimation(data.legs,"stand")
 					SetUnitAnimationByIndex(data.legs,11)
-					--print("stand")
 				end
 				startwalk=false
-				--BlzSetSpecialEffectYaw(data.legs,math.rad(turn))
 				BlzSetUnitFacingEx(data.legs,turn)
-				--SetUnitAnimation(hero,"Stand") --14
-				--print("1")
 			end
 
 			if data.isattack then
 				walkattack=false
-				SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
+				--SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
+				if data.IsWood then
+					SetUnitAnimationByIndex(hero,7)
+				else
+					SetUnitAnimationByIndex(hero,3)
+				end
 				--print("play attack")
 				data.isattack=false
 			else
 				if standanim then
 					standanim=false
 					if IiMoving==false and data.ReleaseRMB==false then
-						--print("reset any")
-						--SetUnitAnimation(hero,"Stand")
-						SetUnitAnimationByIndex(hero,11)
+						--print("Анимация Stand")
+						if data.IsWood then
+							SetUnitAnimationByIndex(hero,11)
+						else
+							ResetPeonAnimation(hero)
+						end
 					end
 				end
 			end
@@ -394,8 +403,12 @@ function InitGameCore()
 				if IiMoving then
 					if walkattack then
 						walkattack=false
-						SetUnitAnimationByIndex(hero,16) --анимация движения без атаки
-						--print("шевели поршнями реже")
+						--print("анимация движения без атаки")
+						if data.IsWood then
+							SetUnitAnimationByIndex(hero,16)
+						else
+							SetUnitAnimationByIndex(hero,1)
+						end
 					end
 				else
 					print("total reset")
@@ -405,5 +418,3 @@ function InitGameCore()
 		end
 	end)
 end
-
-
