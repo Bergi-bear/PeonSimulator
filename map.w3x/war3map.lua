@@ -309,7 +309,8 @@ function InitGameCore()
 		AngleForce=0, --типа какой-то уго для отталкивания
 		IsDisabled=false,
 		pid=0,
-		legs=AddSpecialEffect("Ratling_Legs.mdl",0,0),
+		--legs=AddSpecialEffect("legs",0,0),
+		legs=CreateUnit(Player(0), FourCC('o000'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0),
 		isattack=false,
 		AttackTime=0
 		--Camera=CreateUnit(Player(0), FourCC('e001'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0)
@@ -326,6 +327,7 @@ function InitGameCore()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
 		data.ReleaseW=true
+		SetUnitAnimationByIndex(data.legs,16)
 	end)
 	local TrigDepressW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -347,6 +349,7 @@ function InitGameCore()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
 		data.ReleaseS=true
+		SetUnitAnimationByIndex(data.legs,16)
 	end)
 	local TrigDepressS = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -367,9 +370,8 @@ function InitGameCore()
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		--BlzStartUnitAbilityCooldown(data.UnitHero,FourCC('A002'),5)
 		data.ReleaseD=true
-		--BlzSetUnitFacingEx(data.UnitHero,GetUnitFacing(data.UnitHero)-5)
+		SetUnitAnimationByIndex(data.legs,16)
 	end)
 	local TrigDePressD = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -391,7 +393,7 @@ function InitGameCore()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
 		data.ReleaseA=true
-		--BlzSetUnitFacingEx(data.UnitHero,GetUnitFacing(data.UnitHero)+5)
+		SetUnitAnimationByIndex(data.legs,16)
 	end)
 	local TrigDePressA = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -464,7 +466,7 @@ function InitGameCore()
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			data.ReleaseRMB=false
-			SetUnitAnimation(data.UnitHero,"Stand")
+			--SetUnitAnimation(data.UnitHero,"Stand")
 			--data.isattack=false
 		end
 	end)
@@ -478,14 +480,14 @@ function InitGameCore()
 	end)
 
 ------------------------------ТЕСТ АНИМАЦИЙ
-	--[[local ai=0
+	local ai=0
 	TimerStart(CreateTimer(), 2, true, function()
 		local data=HERO[0]
-		local hero=data.UnitHero
+		--local hero=data.legs--UnitHero
 		SetUnitAnimationByIndex(hero,ai)
-		print(ai)
+		--print(ai)
 		ai=ai+1
-	end)]]
+	end)
 
 
 
@@ -506,12 +508,12 @@ function InitGameCore()
 			local standanim=false
 			local walkattack=false
 			local turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
-			local aSpeed=0.1
+			local aSpeed=0.7
 
 
 			--Синхронизация ног
-			BlzSetSpecialEffectPosition(data.legs,x,y,GetTerrainZ(x,y))
-			--BlzSetUnitFacingEx
+			SetUnitX(data.legs,x)
+			SetUnitY(data.legs,y)
 			SetUnitFacing(hero,turn)
 
 
@@ -523,7 +525,6 @@ function InitGameCore()
 				standanim=true
 
 			end
-
 
 			sec2=sec2+TIMER_PERIOD
 			if sec2>=1 then
@@ -540,7 +541,8 @@ function InitGameCore()
 				data.AttackTime=0
 				if data.ReleaseRMB then
 					data.isattack=true
-					SingleCannon(hero)
+					print("time attack")
+					--SingleCannon(hero)
 				end
 			end
 
@@ -586,6 +588,21 @@ function InitGameCore()
 				IiMoving=true
 			end
 
+			if turn<0 and turn>-180 then
+				--print("проблемная область")
+				turn=turn+360
+			end
+			--print("угол движения="..angle.." угол поворота="..turn)
+
+			local dif=100
+			if angle+dif>turn and angle-dif<turn then
+				--print("по направлению "..angle)
+				SetUnitTurnSpeed(data.legs,1)
+			else
+				--print("движение спиной"..turn)
+				SetUnitTurnSpeed(data.legs,-1)
+			end
+
 
 			if IiMoving then
 				if startwalk==false then
@@ -597,41 +614,50 @@ function InitGameCore()
 						--walkattack=false
 						if data.ReleaseRMB==false then
 						--	print("reset in walk")
-						--	SetUnitAnimation(hero,"Stand")
+							SetUnitAnimation(hero,"Stand")
 						end
 					end
 				end
 
 
-				if walk then
-					BlzPlaySpecialEffect(data.legs,ANIM_TYPE_WALK)
-					BlzSetSpecialEffectYaw(data.legs,math.rad(angle))
+				if walk and walkattack then
+					--BlzPlaySpecialEffect(data.legs,ANIM_TYPE_WALK)
+
+					--BlzSetSpecialEffectYaw(data.legs,math.rad(angle))
+					BlzSetUnitFacingEx(data.legs,angle)
+					SetUnitAnimationByIndex(data.legs,16)
 					walk=false
-					--print("перебирай ногами")
+					--print("перебирай ногами"..GetUnitName(data.legs))
 				end
 				------------------------------Движение
 				local newX,newY=MoveX(x,speed,angle),MoveY(y,speed,angle)
 				SetUnitPositionSmooth(hero,newX,newY)
 			else--не двигается
 				if standanim then
-					BlzPlaySpecialEffect(data.legs,ANIM_TYPE_STAND)
+					--BlzPlaySpecialEffect(data.legs,ANIM_TYPE_STAND)
+					--SetUnitAnimation(data.legs,"stand")
+					SetUnitAnimationByIndex(data.legs,11)
+					--print("stand")
 				end
 				startwalk=false
-				BlzSetSpecialEffectYaw(data.legs,math.rad(turn))
+				--BlzSetSpecialEffectYaw(data.legs,math.rad(turn))
+				BlzSetUnitFacingEx(data.legs,turn)
 				--SetUnitAnimation(hero,"Stand") --14
+				--print("1")
 			end
 
 			if data.isattack then
 				walkattack=false
-				SetUnitAnimationByIndex(hero,14)
+				SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
 				--print("play attack")
 				data.isattack=false
 			else
 				if standanim then
 					standanim=false
-					if IiMoving==false then
+					if IiMoving==false and data.ReleaseRMB==false then
 						--print("reset any")
-						SetUnitAnimation(hero,"Stand")
+						--SetUnitAnimation(hero,"Stand")
+						SetUnitAnimationByIndex(hero,11)
 					end
 				end
 			end
@@ -640,12 +666,12 @@ function InitGameCore()
 				if IiMoving then
 					if walkattack then
 						walkattack=false
-						SetUnitAnimationByIndex(hero,1)
+						SetUnitAnimationByIndex(hero,16) --анимация движения без атаки
 						--print("шевели поршнями реже")
 					end
 				else
 					print("total reset")
-					--SetUnitAnimation(hero,"Stand")
+					SetUnitAnimation(hero,"Stand")
 				end
 			end
 		end

@@ -28,3 +28,9 @@ STRING 6
 Force 1
 }
 
+STRING 7
+// Units: o000 (Ноги батрака), Name (Name)
+{
+Ноги батрака
+}
+
