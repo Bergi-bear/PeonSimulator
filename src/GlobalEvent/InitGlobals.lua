@@ -11,9 +11,9 @@ do
 	function InitGlobals()
 		InitGlobalsOrigin() -- вызываем оригинальную InitGlobals из переменной
 		InitGameCore()
-		--hideEverything()
 		InitMouseMoveTrigger()
 		InitDamage()
+		InitUnitDeath()
 	end
 
 end
@@ -47,11 +47,12 @@ function InitGameCore()
 	for i=0,3 do
 		if HERO[i] then
 			local hero=HERO[i].UnitHero
+			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 			RegisterCollision(hero)
 			--print("111111")
 		end
 	end
-
+	HideEverything()
 
 	-----------------------------------------------------------------OSKEY_W
 	local gg_trg_EventUpW = CreateTrigger()
@@ -223,8 +224,9 @@ function InitGameCore()
 	local ai=0
 	TimerStart(CreateTimer(), 2, true, function()
 		local data=HERO[0]
-		local hero=data.UnitHero
+		local hero=data.legs
 		--SetUnitAnimationByIndex(hero,ai)
+		--SetUnitAnimationByIndex(hero,8)
 		--print(ai)
 		ai=ai+1
 	end)
@@ -256,7 +258,9 @@ function InitGameCore()
 			SetUnitY(data.legs,y)
 			SetUnitFacing(hero,turn)
 
-
+			--Камера
+			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
+			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
 
 			sec=sec+TIMER_PERIOD
 			if sec>=1 then
@@ -367,6 +371,7 @@ function InitGameCore()
 				------------------------------Движение
 				local newX,newY=MoveX(x,speed,angle),MoveY(y,speed,angle)
 				SetUnitPositionSmooth(hero,newX,newY)
+
 			else--не двигается
 				if standanim then
 					SetUnitAnimationByIndex(data.legs,11)

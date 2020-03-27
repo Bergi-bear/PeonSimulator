@@ -1,0 +1,3 @@
+[FrameDef]
+SELECTTARGET=TRIGSTR_008
+
