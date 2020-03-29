@@ -1,3 +1,6 @@
+gg_rct_Winter = nil
+gg_rct_Region_001 = nil
+gg_rct_Region_002 = nil
 function InitGlobals()
 end
 
@@ -7,7 +10,54 @@ function CreateBuildingsForPlayer0()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -2976.0, 672.0, 270.000, FourCC("o001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -32.0, -32.0, 270.000, FourCC("o001"))
+end
+
+function CreateBuildingsForPlayer10()
+    local p = Player(10)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -928.0, -2336.0, 270.000, FourCC("hlum"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -768.0, -2816.0, 270.000, FourCC("hctw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hgtw"), -384.0, -2112.0, 270.000, FourCC("hgtw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hatw"), -960.0, -1728.0, 270.000, FourCC("hatw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2112.0, 2240.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -1472.0, 2624.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 3008.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2624.0, 2880.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2880.0, 2368.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 1984.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -2080.0, 2848.0, 270.000, FourCC("hlum"))
+end
+
+function CreateUnitsForPlayer10()
+    local p = Player(10)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1040.8, -2058.0, 232.720, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1164.7, -2141.5, 28.719, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1211.8, -2388.4, 124.061, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1177.2, -2585.0, 64.755, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1062.0, -2677.9, 279.061, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -797.1, -2653.1, 40.772, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -904.9, -2719.1, 233.346, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -657.3, -2641.6, 82.345, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -623.7, -2485.9, 45.133, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -691.2, -2196.4, 121.765, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.876, FourCC("hpea"))
+end
+
+function CreateNeutralHostileBuildings()
+    local p = Player(PLAYER_NEUTRAL_AGGRESSIVE)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("etrp"), -2656.0, 928.0, 270.000, FourCC("etrp"))
 end
 
 function CreateNeutralHostile()
@@ -16,20 +66,105 @@ function CreateNeutralHostile()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("n000"), -1772.1, 530.8, 215.912, FourCC("n000"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 1660.1, 1138.4, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2979.3, 1430.3, 234.543, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 3215.6, 205.0, 257.880, FourCC("n000"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2017.4, -767.9, 83.430, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1435.5, -629.1, 198.112, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1291.7, -904.4, 131.291, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1581.0, -971.3, 166.975, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1683.3, -1118.5, 12.162, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1408.6, -833.2, 78.544, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1711.3, -893.7, 182.664, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -1825.0, -1008.0, 236.960, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2071.9, -1195.8, 178.610, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2238.5, -966.7, 159.845, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2505.5, -573.8, 210.680, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2774.5, -970.1, 66.667, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3007.0, -647.9, 128.335, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2800.8, -475.6, 89.783, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2592.9, -1032.8, 125.797, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3104.3, -1165.2, 73.193, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3105.7, -1106.0, 287.675, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2871.3, -1434.0, 41.925, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3066.1, -1860.2, 21.512, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3151.8, -1958.0, 98.968, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2684.3, -2097.7, 113.756, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2650.1, -1649.5, 77.203, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2303.1, -1712.2, 140.893, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2330.5, -1303.5, 75.841, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2233.6, -2049.1, 74.555, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2526.8, -2516.5, 140.080, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3000.0, -2485.0, 30.323, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3018.9, -2812.1, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3196.9, -2939.0, 185.070, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3215.7, -2447.7, 273.205, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2636.3, -2844.1, 44.254, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2355.0, -2991.4, 127.006, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2217.3, -2920.4, 95.771, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2323.3, -2759.2, 225.710, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2697.6, -2649.3, 170.063, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2813.1, -2166.6, 161.317, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2361.6, -2466.6, 135.191, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2752.4, -1913.8, 39.673, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2976.8, -1688.2, 77.643, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3173.2, -1450.7, 357.078, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2823.2, -1218.7, 32.125, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2954.2, -924.5, 67.030, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3106.5, -816.8, 307.824, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3185.0, -641.2, 278.468, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3103.3, -389.9, 107.461, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2922.3, -467.1, 232.060, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2283.7, -1509.1, 185.477, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2123.9, -1706.9, 317.207, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 536.0, -1801.5, 293.245, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 1008.1, -1873.6, 141.497, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 792.9, -2270.0, 105.791, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 821.6, -2776.3, 113.262, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 1292.8, -2864.4, 137.520, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 1357.6, -2491.2, 120.315, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 1868.9, -2199.7, 303.902, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 1798.4, -2818.6, 320.009, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 2333.9, -2546.2, 282.764, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 2692.3, -2268.5, 49.682, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), 2846.9, -2877.9, 196.738, FourCC("e001"))
+end
+
+function CreateNeutralPassive()
+    local p = Player(PLAYER_NEUTRAL_PASSIVE)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("e002"), -408.5, -311.6, 95.230, FourCC("e002"))
 end
 
 function CreatePlayerBuildings()
     CreateBuildingsForPlayer0()
+    CreateBuildingsForPlayer10()
 end
 
 function CreatePlayerUnits()
+    CreateUnitsForPlayer10()
 end
 
 function CreateAllUnits()
+    CreateNeutralHostileBuildings()
     CreatePlayerBuildings()
     CreateNeutralHostile()
+    CreateNeutralPassive()
     CreatePlayerUnits()
+end
+
+function CreateRegions()
+    local we
+    gg_rct_Winter = Rect(1344.0, -1696.0, 3360.0, -512.0)
+    we = AddWeatherEffect(gg_rct_Winter, FourCC("SNhs"))
+    EnableWeatherEffect(we, true)
+    gg_rct_Region_001 = Rect(-3232.0, 1856.0, -320.0, 3488.0)
+    gg_rct_Region_002 = Rect(-3008.0, 3200.0, -2976.0, 3232.0)
 end
 
 --CUSTOM_CODE
@@ -674,6 +809,7 @@ do
 		InitMouseMoveTrigger()
 		InitDamage()
 		InitUnitDeath()
+		InitAllZones()
 	end
 
 end
@@ -885,7 +1021,7 @@ function InitGameCore()
 	TimerStart(CreateTimer(), 2, true, function()
 		local data=HERO[0]
 		local hero=data.legs
-		SetUnitAnimationByIndex(hero,ai)
+		--SetUnitAnimationByIndex(hero,ai)
 		--SetUnitAnimationByIndex(hero,8)
 		--print(ai)
 		ai=ai+1
@@ -946,7 +1082,7 @@ function InitGameCore()
 				if data.ReleaseRMB then
 					data.isattack=true
 					--print("time attack")
-					AfterAttack(hero,0.3)
+					AfterAttack(hero,0.4)
 					--SingleCannon(hero)
 				end
 			end
@@ -1192,7 +1328,8 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 
 					if data.IsWood then
-						print("Юнит перегружен, брёвнами")
+						print("Некуда класть звук")
+						CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
 					else
 						data.IsWood=true
 						print("Добавляем 1 дерева для "..GetUnitName(hero))
@@ -1483,14 +1620,18 @@ function InitUnitDeath()
 		--print("EventDead")
 		local killer=GetKillingUnit()--убийца
 		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герои
-
+			local x,y=GetUnitXY(DeadUnit)
+			CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
 			TimerStart(CreateTimer(), 0.5, false, function()
 				local PD=GetOwningPlayer(DeadUnit)
 				local pid=GetPlayerId(PD)
 				local data=HERO[pid]
 				--data.Alive=true
+
 				ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
 				SelectUnitForPlayerSingle(DeadUnit,PD)
+				data.IsWood=false
+
 			end)
 		end
 
@@ -2879,12 +3020,34 @@ function RegisterCollision(hero)
 	TriggerRegisterUnitInRangeSimple(ThisTrigger, 80, hero)
 	TriggerAddAction(ThisTrigger, function()
 		local CollisionUnit=GetTriggerUnit()
+		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 		--hero - юнит к которому подошли
 		--print("any reg "..GetUnitName(CollisionUnit))
-		if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
-			--print("22222")
-			AddLumber(1,hero)
+		--Общее условие
+		if UnitAlive(CollisionUnit) then
+			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
+				if data.IsWood then
+					AddLumber(1,hero)
+				end
+			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then
+
+				if not data.IsWood then
+					print("звук подбора")
+					KillUnit(CollisionUnit)
+					data.IsWood=true
+				end
+			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then
+				SetUnitExploded(CollisionUnit,true)
+				local x,y=GetUnitXY(CollisionUnit)
+				UnitDamageArea(CollisionUnit,200,x,y,150)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				KillUnit(CollisionUnit)
+			end
+
 		end
+
 	end)
 	return IsWork
 end
@@ -2902,16 +3065,114 @@ end
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
 --- DateTime: 28.03.2020 2:06
-CurrentWave=0
-function NextWave()
-	CurrentWave=CurrentWave+1
-	if CurrentWave==1 then
 
-	elseif CurrentWave==2  then
-
-	end
+function InitAllZones()
+	EntInTrees()-- превращаем энтов в деревья
+	StartAllSaw()
 end
 
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 29.03.2020 15:46
+---
+function EntInTrees()
+	local e=nil
+	local id=FourCC('e001')
+	TimerStart(CreateTimer(), 20, true, function()
+		GroupEnumUnitsInRect(perebor,bj_mapInitialPlayableArea,nil)
+		while true do
+			e = FirstOfGroup(perebor)
+
+			if e == nil then break end
+			if UnitAlive(e) and GetUnitTypeId(e)==id then
+				local x,y=GetUnitXY(e)
+				KillUnit(e)
+				DestroyEffect(AddSpecialEffect("",x,y))
+				CreateDestructable(FourCC('LTlt'),x,y,0,GetRandomInt(1,1),GetRandomInt(1,3))
+				local range=150
+				TimerStart(CreateTimer(), 10, false, function()
+					SetRect(GlobalRect, x - range, y - range, x + range, y +range)
+					EnumDestructablesInRect(GlobalRect,nil,function ()
+						local d=GetEnumDestructable()
+						if GetDestructableTypeId(d)==FourCC('LTlt') then
+							if GetDestructableLife(d)>0 then
+								KillDestructable(d)
+								local new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
+								SetUnitAnimation(new,"birth")
+							end
+						end
+					end)
+				end)
+			end
+			GroupRemoveUnit(perebor,e)
+		end
+
+	end)
+
+
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 21.02.2020 23:45
+---
+
+SawDiskModel="Chakram_02.mdl"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
+SawChainModel="abilities\\weapons\\wyvernspear\\wyvernspearmissile.mdl"
+function CreateRoundSawZ(hero,ChainCount,angle,z)
+	local xs,ys=GetUnitXY(hero)
+	local saw=AddSpecialEffect(SawDiskModel,xs,ys)
+	local chain={}
+	local step=60
+	local SpeedRandomFactor=GetRandomReal(-1,1)
+	local speed=3+SpeedRandomFactor
+	if z==nil then z=GetUnitZ(hero)+30 end
+	if angle==nil then angle=0 end
+	for i=1,ChainCount do
+		chain[i]=AddSpecialEffect(SawChainModel,xs,ys)
+		--print("создан кусок цепи "..i)
+	end
+	-- установки
+	BlzSetSpecialEffectScale(saw,0.9)
+
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		local x,y=0,0
+		for i=1,ChainCount do
+			x,y=MoveXY(xs,ys,step*i,angle)
+			BlzSetSpecialEffectPosition(chain[i],x,y,z)
+			BlzSetSpecialEffectYaw(chain[i],math.rad(angle))
+		end
+		local nx,ny=MoveXY(xs,ys,step*ChainCount,angle)
+		BlzSetSpecialEffectPosition(saw,nx,ny,z)
+		UnitDamageArea(hero,20,nx,ny,150,z-90,"Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl")
+		angle=angle+speed
+		if UnitAlive(hero)==false then
+			DestroyTimer(GetExpiredTimer()) -- временно вечный таймер
+			DestroyEffect(saw)
+			for i=1,ChainCount do
+				DestroyEffect(chain[i])
+			end
+		end
+	end)
+end
+
+function StartAllSaw()
+	local e--временный юнит
+	local k=0
+	local id=FourCC('h001')
+	GroupEnumUnitsInRect(perebor,bj_mapInitialPlayableArea,nil)
+	while true do
+		e = FirstOfGroup(perebor)
+		if e == nil then break end
+		if UnitAlive(e) and GetUnitTypeId(e)==id then
+			k=k+1
+			CreateRoundSawZ(e,6,GetRandomInt(0,360))
+		end
+		GroupRemoveUnit(perebor,e)
+	end
+	--print("Запущено пил: "..k)
+end
 --CUSTOM_CODE
 function InitCustomPlayerSlots()
     SetPlayerStartLocation(Player(0), 0)
@@ -2926,12 +3187,13 @@ function InitCustomTeams()
 end
 
 function main()
-    SetCameraBounds(-3328.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -1024.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 3328.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 1536.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -3328.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 1536.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 3328.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -1024.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
+    SetCameraBounds(-3328.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -3072.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 3328.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 3584.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -3328.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 3584.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 3328.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -3072.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
     SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
     NewSoundEnvironment("Default")
     SetAmbientDaySound("LordaeronSummerDay")
     SetAmbientNightSound("LordaeronSummerNight")
     SetMapMusic("Music", true, 0)
+    CreateRegions()
     CreateAllUnits()
     InitBlizzard()
     InitGlobals()
@@ -2943,7 +3205,7 @@ function config()
     SetPlayers(1)
     SetTeams(1)
     SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
-    DefineStartLocation(0, -2752.0, 64.0)
+    DefineStartLocation(0, 0.0, 0.0)
     InitCustomPlayerSlots()
     SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
     InitGenericPlayerSlots()

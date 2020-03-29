@@ -10,14 +10,18 @@ function InitUnitDeath()
 		--print("EventDead")
 		local killer=GetKillingUnit()--убийца
 		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герои
-
+			local x,y=GetUnitXY(DeadUnit)
+			CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
 			TimerStart(CreateTimer(), 0.5, false, function()
 				local PD=GetOwningPlayer(DeadUnit)
 				local pid=GetPlayerId(PD)
 				local data=HERO[pid]
 				--data.Alive=true
+
 				ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
 				SelectUnitForPlayerSingle(DeadUnit,PD)
+				data.IsWood=false
+
 			end)
 		end
 

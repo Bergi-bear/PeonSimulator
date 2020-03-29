@@ -107,10 +107,11 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 
 					if data.IsWood then
-						print("Юнит перегружен, брёвнами")
+						print("Некуда класть звук")
+						CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
 					else
 						data.IsWood=true
-						print("Добавляем 1 дерева для "..GetUnitName(hero))
+						--print("Добавляем 1 дерева для "..GetUnitName(hero))
 					end
 
 				end

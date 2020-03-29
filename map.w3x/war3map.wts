@@ -39,3 +39,51 @@ STRING 8
  
 }
 
+STRING 9
+// Units: H000 (Пеон), Name (Name)
+{
+Пеон
+}
+
+STRING 10
+// Units: e002 (Дровишки), Name (Name)
+{
+Дровишки
+}
+
+STRING 11
+// Units: e002 (Дровишки), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 12
+// Units: e002 (Дровишки), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+
+STRING 13
+// Units: e000 (Дамми Основной), Name (Name)
+{
+Дамми Основной
+}
+
+STRING 14
+// Units: e000 (Дамми Основной), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 15
+// Units: e000 (Дамми Основной), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+
+STRING 16
+// Units: h001 (Башня с пилой), Name (Name)
+{
+Башня с пилой
+}
+

@@ -12,12 +12,34 @@ function RegisterCollision(hero)
 	TriggerRegisterUnitInRangeSimple(ThisTrigger, 80, hero)
 	TriggerAddAction(ThisTrigger, function()
 		local CollisionUnit=GetTriggerUnit()
+		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 		--hero - юнит к которому подошли
 		--print("any reg "..GetUnitName(CollisionUnit))
-		if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
-			--print("22222")
-			AddLumber(1,hero)
+		--Общее условие
+		if UnitAlive(CollisionUnit) then
+			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
+				if data.IsWood then
+					AddLumber(1,hero)
+				end
+			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then
+
+				if not data.IsWood then
+					print("звук подбора")
+					KillUnit(CollisionUnit)
+					data.IsWood=true
+				end
+			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then
+				SetUnitExploded(CollisionUnit,true)
+				local x,y=GetUnitXY(CollisionUnit)
+				UnitDamageArea(CollisionUnit,100,x,y,150)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				KillUnit(CollisionUnit)
+			end
+
 		end
+
 	end)
 	return IsWork
 end

@@ -14,6 +14,7 @@ do
 		InitMouseMoveTrigger()
 		InitDamage()
 		InitUnitDeath()
+		InitAllZones()
 	end
 
 end
@@ -286,7 +287,7 @@ function InitGameCore()
 				if data.ReleaseRMB then
 					data.isattack=true
 					--print("time attack")
-					AfterAttack(hero,0.3)
+					AfterAttack(hero,0.4)
 					--SingleCannon(hero)
 				end
 			end
