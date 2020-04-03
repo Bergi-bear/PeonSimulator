@@ -19,13 +19,17 @@ function RegisterCollision(hero)
 		if UnitAlive(CollisionUnit) then
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
 				if data.IsWood then
+					PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+					GTotalWood=GTotalWood+1
+
 					AddLumber(1,hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then
 
 				if not data.IsWood then
-					print("звук подбора")
+					--print("звук подбора")
+					PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 					KillUnit(CollisionUnit)
 					data.IsWood=true
 				end
@@ -36,6 +40,9 @@ function RegisterCollision(hero)
 				UnitDamageArea(CollisionUnit,100,x,y,150)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 				KillUnit(CollisionUnit)
+				TimerStart(CreateTimer(), 30, false, function()
+					CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
+				end)
 			end
 
 		end

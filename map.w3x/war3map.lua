@@ -1,7 +1,32 @@
 gg_rct_Winter = nil
 gg_rct_Region_001 = nil
 gg_rct_Region_002 = nil
+gg_snd_Load = nil
+gg_trg_GuiInit = nil
+gg_unit_o001_0001 = nil
+gg_rct_Region_003 = nil
+gg_rct_Workers = nil
+gg_dest_LTlt_0364 = nil
+gg_rct_Region_005 = nil
+gg_trg_DeadHumanLumber = nil
+gg_unit_hlum_0057 = nil
+gg_dest_LTlt_0097 = nil
 function InitGlobals()
+end
+
+function InitSounds()
+    gg_snd_Load = CreateSound("Abilities/Spells/Other/LoadUnload/Loading.flac", false, true, true, 1, 1, "DefaultEAXON")
+    SetSoundParamsFromLabel(gg_snd_Load, "LoadUnload")
+    SetSoundDuration(gg_snd_Load, 740)
+    SetSoundVolume(gg_snd_Load, 127)
+end
+
+function CreateAllDestructables()
+    local d
+    local t
+    local life
+    gg_dest_LTlt_0364 = BlzCreateDestructableWithSkin(FourCC("LTlt"), -1280.0, -2176.0, 270.000, 1.177, 1, FourCC("LTlt"))
+    gg_dest_LTlt_0097 = BlzCreateDestructableWithSkin(FourCC("LTlt"), -448.0, 832.0, 270.000, 0.895, 2, FourCC("LTlt"))
 end
 
 function CreateBuildingsForPlayer0()
@@ -10,7 +35,7 @@ function CreateBuildingsForPlayer0()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -32.0, -32.0, 270.000, FourCC("o001"))
+    gg_unit_o001_0001 = BlzCreateUnitWithSkin(p, FourCC("o001"), -32.0, -32.0, 270.000, FourCC("o001"))
 end
 
 function CreateBuildingsForPlayer10()
@@ -19,16 +44,11 @@ function CreateBuildingsForPlayer10()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -928.0, -2336.0, 270.000, FourCC("hlum"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e003"), -2656.0, 928.0, 270.000, FourCC("e003"))
+    gg_unit_hlum_0057 = BlzCreateUnitWithSkin(p, FourCC("hlum"), -928.0, -2336.0, 270.000, FourCC("hlum"))
     u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -768.0, -2816.0, 270.000, FourCC("hctw"))
-    u = BlzCreateUnitWithSkin(p, FourCC("hgtw"), -384.0, -2112.0, 270.000, FourCC("hgtw"))
-    u = BlzCreateUnitWithSkin(p, FourCC("hatw"), -960.0, -1728.0, 270.000, FourCC("hatw"))
-    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2112.0, 2240.0, 270.000, FourCC("h001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -1472.0, 2624.0, 270.000, FourCC("h001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 3008.0, 270.000, FourCC("h001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2624.0, 2880.0, 270.000, FourCC("h001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2880.0, 2368.0, 270.000, FourCC("h001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 1984.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -384.0, -2112.0, 270.000, FourCC("hctw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -1024.0, -1728.0, 270.000, FourCC("hctw"))
     u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -2080.0, 2848.0, 270.000, FourCC("hlum"))
 end
 
@@ -51,13 +71,18 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.876, FourCC("hpea"))
 end
 
-function CreateNeutralHostileBuildings()
-    local p = Player(PLAYER_NEUTRAL_AGGRESSIVE)
+function CreateBuildingsForPlayer11()
+    local p = Player(11)
     local u
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("etrp"), -2656.0, 928.0, 270.000, FourCC("etrp"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2112.0, 2240.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -1472.0, 2624.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 3008.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2624.0, 2880.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2880.0, 2368.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 1984.0, 270.000, FourCC("h001"))
 end
 
 function CreateNeutralHostile()
@@ -130,6 +155,12 @@ function CreateNeutralHostile()
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), 2333.9, -2546.2, 282.764, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), 2692.3, -2268.5, 49.682, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), 2846.9, -2877.9, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 1458.8, 810.6, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2224.8, 190.5, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2642.9, 1077.5, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
 end
 
 function CreateNeutralPassive()
@@ -144,6 +175,7 @@ end
 function CreatePlayerBuildings()
     CreateBuildingsForPlayer0()
     CreateBuildingsForPlayer10()
+    CreateBuildingsForPlayer11()
 end
 
 function CreatePlayerUnits()
@@ -151,7 +183,6 @@ function CreatePlayerUnits()
 end
 
 function CreateAllUnits()
-    CreateNeutralHostileBuildings()
     CreatePlayerBuildings()
     CreateNeutralHostile()
     CreateNeutralPassive()
@@ -165,6 +196,9 @@ function CreateRegions()
     EnableWeatherEffect(we, true)
     gg_rct_Region_001 = Rect(-3232.0, 1856.0, -320.0, 3488.0)
     gg_rct_Region_002 = Rect(-3008.0, 3200.0, -2976.0, 3232.0)
+    gg_rct_Region_003 = Rect(-3360.0, -96.0, -1216.0, 1664.0)
+    gg_rct_Workers = Rect(-1344.0, -2784.0, -480.0, -1952.0)
+    gg_rct_Region_005 = Rect(-1792.0, -3104.0, -64.0, -1856.0)
 end
 
 --CUSTOM_CODE
@@ -488,6 +522,37 @@ function HideEverything()
 	MiniMap[2]=map
 	MiniMap[3]=map
 
+end
+
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 03.04.2020 2:31
+GTotalWood=0
+function CreateWoodFrame ()
+	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(wood, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
+	BlzFrameSetSize(wood, 0.04, 0.04)
+	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.8-0.02 , 0.6-0.02)
+	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
+
+	BlzFrameSetTexture(charges, "ChargesTexture.blp", 0, true)
+	BlzFrameSetSize(charges, 0.04, 0.012)
+	BlzFrameSetAbsPoint(charges, FRAMEPOINT_CENTER,0.8-0.02 , 0.6-0.04)
+	--BlzFrameSetPoint(charges, FRAMEPOINT_BOTTOM, wood, FRAMEPOINT_BOTTOM, 0,0)
+
+	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
+
+	TimerStart(CreateTimer(), 0.1, true, function()
+		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
+		if GTotalWood>=100 then
+			CustomVictoryDialogBJ(Player(0))
+			CustomVictoryDialogBJ(Player(1))
+			CustomVictoryDialogBJ(Player(2))
+			CustomVictoryDialogBJ(Player(3))
+		end
+	end)
 end
 
 ---
@@ -818,29 +883,33 @@ function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
 	EnableDragSelect(false,false)
-	HERO[0]={
-		ReleaseW=false,
-		ReleaseS=false,
-		ReleaseA=false,
-		ReleaseD=false,
-		Acceleration=0,
-		ReleaseLMB=false,
-		ReleaseRMB=false,
-		SpeedBase=9,
-		UnitHero=CreateUnit(Player(0), FourCC('H000'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0),
-		CurrentSpeed=0,
-		WeaponIndex=1,
-		AngleForce=0, --типа какой-то уго для отталкивания
-		IsDisabled=false,
-		pid=0,
-		legs=CreateUnit(Player(0), FourCC('o000'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0),
-		isattack=false,
-		AttackTime=0,
-		IsWood=false
-	}
-
+	CreateWoodFrame()
 	-----Настоящая инициализация
 	for i=0,3 do
+		HERO[i]={
+			ReleaseW=false,
+			ReleaseS=false,
+			ReleaseA=false,
+			ReleaseD=false,
+			Acceleration=0,
+			ReleaseLMB=false,
+			ReleaseRMB=false,
+			SpeedBase=9,
+			UnitHero=CreateUnit(Player(i), FourCC('H000'), GetPlayerStartLocationX(Player(i)), GetPlayerStartLocationY(Player(i)), 0),
+			CurrentSpeed=0,
+			WeaponIndex=1,
+			AngleForce=0, --типа какой-то уго для отталкивания
+			IsDisabled=false,
+			pid=i,
+			legs=CreateUnit(Player(i), FourCC('o000'), GetPlayerStartLocationX(Player(i)), GetPlayerStartLocationY(Player(i)), 0),
+			isattack=false,
+			AttackTime=0,
+			IsWood=false,
+			ForcesCount=0,
+			sec=0,--костылики
+			sec2=0, -- для анимаций
+		}
+
 		if HERO[i] then
 			local hero=HERO[i].UnitHero
 			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
@@ -870,6 +939,7 @@ function InitGameCore()
 	TriggerAddAction(TrigDepressW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
+
 		data.ReleaseW=false
 	end)
 	-----------------------------------------------------------------OSKEY_S
@@ -982,10 +1052,6 @@ function InitGameCore()
 			local hero=data.UnitHero
 			data.AttackTime=0.7
 			randomeffect=GetRandomInt(1,15)
-			--print("Случайное оружие №-"..randomeffect)
-			--data.isattack=true
-			--SetUnitAnimationByIndex(hero,14)
-			--SingleCannon(hero)
 		end
 	end)
 	local TrigDePressRMB=CreateTrigger()
@@ -1029,11 +1095,12 @@ function InitGameCore()
 
 
 
-	local sec=0
-	local sec2=0
+	--local sec=0
+	--local sec2=0
 	--local secattack=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		for _, data in pairs(HERO) do
+		for i, data in pairs(HERO) do
+			--print(i.." pairs")
 			local hero= data.UnitHero
 			local id=data.pid
 			local p=GetOwningPlayer(hero)
@@ -1045,30 +1112,32 @@ function InitGameCore()
 			local startwalk=false
 			local standanim=false
 			local walkattack=false
-			local turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+
+			local turn=0
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER then
+				turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+			end
+
 			local aSpeed=0.7
+			local Vector3 = wGeometry.Vector3
 
 
-			--Синхронизация ног
-			SetUnitX(data.legs,x)
-			SetUnitY(data.legs,y)
-			SetUnitFacing(hero,turn)
 
 			--Камера
 			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
 			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
 
-			sec=sec+TIMER_PERIOD
-			if sec>=1 then
-				sec=0
+			data.sec=data.sec+TIMER_PERIOD
+			if data.sec>=1 then
+				data.sec=0
 				walk=true
 				standanim=true
 
 			end
 
-			sec2=sec2+TIMER_PERIOD
-			if sec2>=1 then
-				sec2=0
+			data.sec2=data.sec2+TIMER_PERIOD
+			if data.sec2>=1 then
+				data.sec2=0
 				walkattack=true
 			end
 
@@ -1141,10 +1210,38 @@ function InitGameCore()
 				SetUnitTurnSpeed(data.legs,-1)
 			end
 
+			--Любой тик движения
+			local k=data.ForcesCount
+			local WASDMoving = Vector3:copyFromUnit(hero)
+			local newPos=WASDMoving
 
+
+			if true then
+				local f=0
+				for i=1,k do
+					if data.ForceRemain[i]>0 then
+						--print("Внешняя сила="..data.ForceRemain[i])
+						f=f+1
+						newPos=newPos+newPos:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
+						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
+						data.ForceRemain[i]=data.ForceRemain[i]-data.ForceSpeed[i]
+					else
+						if data.IsForce[i] then
+							data.IsForce[i]=false
+						end
+					end
+				end
+				if f==0 then
+					data.ForcesCount=0
+					data.IsDisabled=false
+					SetUnitPathing(hero,true)
+					--print("нет больше сил")
+				end
+			end
+			--анимации
 			if IiMoving then
 				if startwalk==false then
-					sec=1
+					data.sec=1
 					startwalk=true
 				end
 				if data.isattack==false then
@@ -1165,8 +1262,11 @@ function InitGameCore()
 					--print("перебирай ногами"..GetUnitName(data.legs))
 				end
 				------------------------------Движение
-				local newX,newY=MoveX(x,speed,angle),MoveY(y,speed,angle)
-				SetUnitPositionSmooth(hero,newX,newY)
+
+
+					newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
+
+
 
 			else--не двигается
 				if standanim then
@@ -1216,6 +1316,17 @@ function InitGameCore()
 					SetUnitAnimation(hero,"Stand")
 				end
 			end
+			--каждый тик
+			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then
+				newPos=newPos+Vector3:new(-5, 0, 0)
+				--print("поток")
+			end
+
+			SetUnitPositionSmooth(hero,newPos.x,newPos.y)
+			--Синхронизация ног
+			SetUnitX(data.legs,newPos.x)
+			SetUnitY(data.legs,newPos.y)
+			SetUnitFacing(hero,turn)
 		end
 	end)
 end
@@ -1329,10 +1440,12 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 
 					if data.IsWood then
 						print("Некуда класть звук")
-						CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
+						local  new=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
+						UnitAddAbility(new,FourCC('A000'))
+						IssueImmediateOrder(new,"WindWalk")
 					else
 						data.IsWood=true
-						print("Добавляем 1 дерева для "..GetUnitName(hero))
+						--print("Добавляем 1 дерева для "..GetUnitName(hero))
 					end
 
 				end
@@ -1340,7 +1453,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 			end
 		else
 			local data=HERO(UnitGetPid(hero))
-			print("атака по мертвому "..GetUnitName(hero))
+			--print("атака по мертвому "..GetUnitName(hero))
 			data.IsWood=true
 		end
 	end)
@@ -2039,7 +2152,40 @@ function FindUnitOfType(id,flag,x,y)
 	end
 	return unit
 end
+---------ВЕКТОРА
+function UnitAddVectorForce(hero,Angle,Speed,Distance)
+	local data=nil
+	local k=0
+	local h=0
+	if IsUnitType(hero,UNIT_TYPE_HERO) then
+		h=UnitGetPid(hero)
 
+	else
+		h=GetHandleId(hero)
+		print("НЕГЕРОЙ толкаемый")
+	end
+	if not HERO[h] then
+		--print("первый толчек для "..GetUnitName(hero))
+		HERO[h]={
+			ForcesCount=0,
+			ForceRemain={},
+			ForceAngle={},
+			ForceSpeed={},
+			IsForce={}
+		}
+		--data=HERO[GetHandleId(hero)]
+		--MovingSystem(hero)
+	end
+	data=HERO[h]
+	data.ForcesCount=data.ForcesCount+1
+	k=data.ForcesCount
+	data.ForceRemain[k]=Distance
+	data.ForceSpeed[k]=Speed
+	data.ForceAngle[k]=Angle
+	data.IsForce[k]=true
+	data.AngleForce=Angle
+	--print("параметры заданы"..GetUnitName(hero)..k)
+end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -2990,25 +3136,6 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
---- DateTime: 28.03.2020 0:41
----
-function ResetPeonAnimation (hero)
-	local ra=GetRandomInt(0,4)
-	if ra==0 then
-		SetUnitAnimationByIndex(hero,0)
-	elseif ra==1 then
-		SetUnitAnimationByIndex(hero,9)
-	elseif ra==2 then
-		SetUnitAnimationByIndex(hero,12)
-	elseif ra==3 then
-		SetUnitAnimationByIndex(hero,13)
-	elseif ra==4 then
-		SetUnitAnimationByIndex(hero,14)
-	end
-end
----
---- Generated by EmmyLua(https://github.com/EmmyLua)
---- Created by Bergi.
 --- DateTime: 28.03.2020 1:00
 ---
 function RegisterCollision(hero)
@@ -3027,13 +3154,17 @@ function RegisterCollision(hero)
 		if UnitAlive(CollisionUnit) then
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
 				if data.IsWood then
+					PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+					GTotalWood=GTotalWood+1
+
 					AddLumber(1,hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then
 
 				if not data.IsWood then
-					print("звук подбора")
+					--print("звук подбора")
+					PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 					KillUnit(CollisionUnit)
 					data.IsWood=true
 				end
@@ -3041,9 +3172,12 @@ function RegisterCollision(hero)
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then
 				SetUnitExploded(CollisionUnit,true)
 				local x,y=GetUnitXY(CollisionUnit)
-				UnitDamageArea(CollisionUnit,200,x,y,150)
+				UnitDamageArea(CollisionUnit,100,x,y,150)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 				KillUnit(CollisionUnit)
+				TimerStart(CreateTimer(), 30, false, function()
+					CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
+				end)
 			end
 
 		end
@@ -3059,6 +3193,25 @@ function AddLumber (ttk,caster)
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)
 		AdjustPlayerStateBJ(ttk, ownplayer, PLAYER_STATE_RESOURCE_LUMBER )
 		data.IsWood=false
+	end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 28.03.2020 0:41
+---
+function ResetPeonAnimation (hero)
+	local ra=GetRandomInt(0,4)
+	if ra==0 then
+		SetUnitAnimationByIndex(hero,0)
+	elseif ra==1 then
+		SetUnitAnimationByIndex(hero,9)
+	elseif ra==2 then
+		SetUnitAnimationByIndex(hero,12)
+	elseif ra==3 then
+		SetUnitAnimationByIndex(hero,13)
+	elseif ra==4 then
+		SetUnitAnimationByIndex(hero,14)
 	end
 end
 ---
@@ -3174,16 +3327,137 @@ function StartAllSaw()
 	--print("Запущено пил: "..k)
 end
 --CUSTOM_CODE
+function Trig_GuiInit_Func003A()
+    IssueTargetDestructableOrder(GetEnumUnit(), "harvest", gg_dest_LTlt_0364)
+end
+
+function Trig_GuiInit_Func004A()
+    SetDestructableMaxLifeBJ(GetEnumDestructable(), 100.00)
+end
+
+function Trig_GuiInit_Actions()
+    SetUnitAnimation(gg_unit_o001_0001, "stand work")
+    CreateFogModifierRectBJ(true, Player(10), FOG_OF_WAR_VISIBLE, gg_rct_Region_003)
+    ForGroupBJ(GetUnitsInRectAll(gg_rct_Workers), Trig_GuiInit_Func003A)
+    EnumDestructablesInRectAll(gg_rct_Region_005, Trig_GuiInit_Func004A)
+end
+
+function InitTrig_GuiInit()
+    gg_trg_GuiInit = CreateTrigger()
+    TriggerAddAction(gg_trg_GuiInit, Trig_GuiInit_Actions)
+end
+
+function Trig_DeadHumanLumber_Actions()
+    KillDestructable(gg_dest_LTlt_0097)
+end
+
+function InitTrig_DeadHumanLumber()
+    gg_trg_DeadHumanLumber = CreateTrigger()
+    TriggerRegisterUnitEvent(gg_trg_DeadHumanLumber, gg_unit_hlum_0057, EVENT_UNIT_DEATH)
+    TriggerAddAction(gg_trg_DeadHumanLumber, Trig_DeadHumanLumber_Actions)
+end
+
+function InitCustomTriggers()
+    InitTrig_GuiInit()
+    InitTrig_DeadHumanLumber()
+end
+
+function RunInitializationTriggers()
+    ConditionalTriggerExecute(gg_trg_GuiInit)
+end
+
 function InitCustomPlayerSlots()
     SetPlayerStartLocation(Player(0), 0)
+    ForcePlayerStartLocation(Player(0), 0)
     SetPlayerColor(Player(0), ConvertPlayerColor(0))
-    SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
-    SetPlayerRaceSelectable(Player(0), true)
+    SetPlayerRacePreference(Player(0), RACE_PREF_ORC)
+    SetPlayerRaceSelectable(Player(0), false)
     SetPlayerController(Player(0), MAP_CONTROL_USER)
+    SetPlayerStartLocation(Player(1), 1)
+    ForcePlayerStartLocation(Player(1), 1)
+    SetPlayerColor(Player(1), ConvertPlayerColor(1))
+    SetPlayerRacePreference(Player(1), RACE_PREF_ORC)
+    SetPlayerRaceSelectable(Player(1), false)
+    SetPlayerController(Player(1), MAP_CONTROL_COMPUTER)
+    SetPlayerStartLocation(Player(2), 2)
+    ForcePlayerStartLocation(Player(2), 2)
+    SetPlayerColor(Player(2), ConvertPlayerColor(2))
+    SetPlayerRacePreference(Player(2), RACE_PREF_ORC)
+    SetPlayerRaceSelectable(Player(2), false)
+    SetPlayerController(Player(2), MAP_CONTROL_COMPUTER)
+    SetPlayerStartLocation(Player(3), 3)
+    ForcePlayerStartLocation(Player(3), 3)
+    SetPlayerColor(Player(3), ConvertPlayerColor(3))
+    SetPlayerRacePreference(Player(3), RACE_PREF_ORC)
+    SetPlayerRaceSelectable(Player(3), false)
+    SetPlayerController(Player(3), MAP_CONTROL_COMPUTER)
+    SetPlayerStartLocation(Player(4), 4)
+    ForcePlayerStartLocation(Player(4), 4)
+    SetPlayerColor(Player(4), ConvertPlayerColor(4))
+    SetPlayerRacePreference(Player(4), RACE_PREF_NIGHTELF)
+    SetPlayerRaceSelectable(Player(4), false)
+    SetPlayerController(Player(4), MAP_CONTROL_COMPUTER)
 end
 
 function InitCustomTeams()
     SetPlayerTeam(Player(0), 0)
+    SetPlayerTeam(Player(1), 0)
+    SetPlayerTeam(Player(2), 0)
+    SetPlayerTeam(Player(3), 0)
+    SetPlayerAllianceStateAllyBJ(Player(0), Player(1), true)
+    SetPlayerAllianceStateAllyBJ(Player(0), Player(2), true)
+    SetPlayerAllianceStateAllyBJ(Player(0), Player(3), true)
+    SetPlayerAllianceStateAllyBJ(Player(1), Player(0), true)
+    SetPlayerAllianceStateAllyBJ(Player(1), Player(2), true)
+    SetPlayerAllianceStateAllyBJ(Player(1), Player(3), true)
+    SetPlayerAllianceStateAllyBJ(Player(2), Player(0), true)
+    SetPlayerAllianceStateAllyBJ(Player(2), Player(1), true)
+    SetPlayerAllianceStateAllyBJ(Player(2), Player(3), true)
+    SetPlayerAllianceStateAllyBJ(Player(3), Player(0), true)
+    SetPlayerAllianceStateAllyBJ(Player(3), Player(1), true)
+    SetPlayerAllianceStateAllyBJ(Player(3), Player(2), true)
+    SetPlayerAllianceStateVisionBJ(Player(0), Player(1), true)
+    SetPlayerAllianceStateVisionBJ(Player(0), Player(2), true)
+    SetPlayerAllianceStateVisionBJ(Player(0), Player(3), true)
+    SetPlayerAllianceStateVisionBJ(Player(1), Player(0), true)
+    SetPlayerAllianceStateVisionBJ(Player(1), Player(2), true)
+    SetPlayerAllianceStateVisionBJ(Player(1), Player(3), true)
+    SetPlayerAllianceStateVisionBJ(Player(2), Player(0), true)
+    SetPlayerAllianceStateVisionBJ(Player(2), Player(1), true)
+    SetPlayerAllianceStateVisionBJ(Player(2), Player(3), true)
+    SetPlayerAllianceStateVisionBJ(Player(3), Player(0), true)
+    SetPlayerAllianceStateVisionBJ(Player(3), Player(1), true)
+    SetPlayerAllianceStateVisionBJ(Player(3), Player(2), true)
+    SetPlayerTeam(Player(4), 1)
+end
+
+function InitAllyPriorities()
+    SetStartLocPrioCount(2, 3)
+    SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(2, 1, 1, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(2, 2, 3, MAP_LOC_PRIO_HIGH)
+    SetEnemyStartLocPrioCount(2, 3)
+    SetEnemyStartLocPrio(2, 0, 0, MAP_LOC_PRIO_LOW)
+    SetEnemyStartLocPrio(2, 1, 1, MAP_LOC_PRIO_LOW)
+    SetEnemyStartLocPrio(2, 2, 4, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrioCount(3, 3)
+    SetStartLocPrio(3, 0, 0, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(3, 1, 2, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(3, 2, 4, MAP_LOC_PRIO_HIGH)
+    SetEnemyStartLocPrioCount(3, 3)
+    SetEnemyStartLocPrio(3, 0, 1, MAP_LOC_PRIO_LOW)
+    SetEnemyStartLocPrio(3, 1, 2, MAP_LOC_PRIO_HIGH)
+    SetEnemyStartLocPrio(3, 2, 4, MAP_LOC_PRIO_LOW)
+    SetStartLocPrioCount(4, 5)
+    SetStartLocPrio(4, 0, 0, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(4, 1, 1, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(4, 2, 2, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(4, 3, 3, MAP_LOC_PRIO_LOW)
+    SetEnemyStartLocPrioCount(4, 4)
+    SetEnemyStartLocPrio(4, 0, 0, MAP_LOC_PRIO_LOW)
+    SetEnemyStartLocPrio(4, 1, 1, MAP_LOC_PRIO_HIGH)
+    SetEnemyStartLocPrio(4, 2, 2, MAP_LOC_PRIO_HIGH)
+    SetEnemyStartLocPrio(4, 3, 3, MAP_LOC_PRIO_HIGH)
 end
 
 function main()
@@ -3193,21 +3467,29 @@ function main()
     SetAmbientDaySound("LordaeronSummerDay")
     SetAmbientNightSound("LordaeronSummerNight")
     SetMapMusic("Music", true, 0)
+    InitSounds()
     CreateRegions()
+    CreateAllDestructables()
     CreateAllUnits()
     InitBlizzard()
     InitGlobals()
+    InitCustomTriggers()
+    RunInitializationTriggers()
 end
 
 function config()
     SetMapName("TRIGSTR_001")
     SetMapDescription("TRIGSTR_003")
-    SetPlayers(1)
-    SetTeams(1)
+    SetPlayers(5)
+    SetTeams(5)
     SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
     DefineStartLocation(0, 0.0, 0.0)
+    DefineStartLocation(1, 0.0, 0.0)
+    DefineStartLocation(2, 0.0, 0.0)
+    DefineStartLocation(3, 0.0, 0.0)
+    DefineStartLocation(4, 2240.0, -2816.0)
     InitCustomPlayerSlots()
-    SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
-    InitGenericPlayerSlots()
+    InitCustomTeams()
+    InitAllyPriorities()
 end
 

@@ -137,7 +137,6 @@ end
 
 
 ---------ВЕКТОРА
----
 function UnitAddVectorForce(hero,Angle,Speed,Distance)
 	local data=nil
 	local k=0

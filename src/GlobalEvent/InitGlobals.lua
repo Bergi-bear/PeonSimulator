@@ -23,29 +23,33 @@ function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
 	EnableDragSelect(false,false)
-	HERO[0]={
-		ReleaseW=false,
-		ReleaseS=false,
-		ReleaseA=false,
-		ReleaseD=false,
-		Acceleration=0,
-		ReleaseLMB=false,
-		ReleaseRMB=false,
-		SpeedBase=9,
-		UnitHero=CreateUnit(Player(0), FourCC('H000'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0),
-		CurrentSpeed=0,
-		WeaponIndex=1,
-		AngleForce=0, --типа какой-то уго для отталкивания
-		IsDisabled=false,
-		pid=0,
-		legs=CreateUnit(Player(0), FourCC('o000'), GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0)), 0),
-		isattack=false,
-		AttackTime=0,
-		IsWood=false
-	}
-
+	CreateWoodFrame()
 	-----Настоящая инициализация
 	for i=0,3 do
+		HERO[i]={
+			ReleaseW=false,
+			ReleaseS=false,
+			ReleaseA=false,
+			ReleaseD=false,
+			Acceleration=0,
+			ReleaseLMB=false,
+			ReleaseRMB=false,
+			SpeedBase=9,
+			UnitHero=CreateUnit(Player(i), FourCC('H000'), GetPlayerStartLocationX(Player(i)), GetPlayerStartLocationY(Player(i)), 0),
+			CurrentSpeed=0,
+			WeaponIndex=1,
+			AngleForce=0, --типа какой-то уго для отталкивания
+			IsDisabled=false,
+			pid=i,
+			legs=CreateUnit(Player(i), FourCC('o000'), GetPlayerStartLocationX(Player(i)), GetPlayerStartLocationY(Player(i)), 0),
+			isattack=false,
+			AttackTime=0,
+			IsWood=false,
+			ForcesCount=0,
+			sec=0,--костылики
+			sec2=0, -- для анимаций
+		}
+
 		if HERO[i] then
 			local hero=HERO[i].UnitHero
 			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
@@ -75,6 +79,7 @@ function InitGameCore()
 	TriggerAddAction(TrigDepressW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
+
 		data.ReleaseW=false
 	end)
 	-----------------------------------------------------------------OSKEY_S
@@ -187,10 +192,6 @@ function InitGameCore()
 			local hero=data.UnitHero
 			data.AttackTime=0.7
 			randomeffect=GetRandomInt(1,15)
-			--print("Случайное оружие №-"..randomeffect)
-			--data.isattack=true
-			--SetUnitAnimationByIndex(hero,14)
-			--SingleCannon(hero)
 		end
 	end)
 	local TrigDePressRMB=CreateTrigger()
@@ -234,11 +235,12 @@ function InitGameCore()
 
 
 
-	local sec=0
-	local sec2=0
+	--local sec=0
+	--local sec2=0
 	--local secattack=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		for _, data in pairs(HERO) do
+		for i, data in pairs(HERO) do
+			--print(i.." pairs")
 			local hero= data.UnitHero
 			local id=data.pid
 			local p=GetOwningPlayer(hero)
@@ -250,30 +252,32 @@ function InitGameCore()
 			local startwalk=false
 			local standanim=false
 			local walkattack=false
-			local turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+
+			local turn=0
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER then
+				turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+			end
+
 			local aSpeed=0.7
+			local Vector3 = wGeometry.Vector3
 
 
-			--Синхронизация ног
-			SetUnitX(data.legs,x)
-			SetUnitY(data.legs,y)
-			SetUnitFacing(hero,turn)
 
 			--Камера
 			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
 			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
 
-			sec=sec+TIMER_PERIOD
-			if sec>=1 then
-				sec=0
+			data.sec=data.sec+TIMER_PERIOD
+			if data.sec>=1 then
+				data.sec=0
 				walk=true
 				standanim=true
 
 			end
 
-			sec2=sec2+TIMER_PERIOD
-			if sec2>=1 then
-				sec2=0
+			data.sec2=data.sec2+TIMER_PERIOD
+			if data.sec2>=1 then
+				data.sec2=0
 				walkattack=true
 			end
 
@@ -346,10 +350,38 @@ function InitGameCore()
 				SetUnitTurnSpeed(data.legs,-1)
 			end
 
+			--Любой тик движения
+			local k=data.ForcesCount
+			local WASDMoving = Vector3:copyFromUnit(hero)
+			local newPos=WASDMoving
 
+
+			if true then
+				local f=0
+				for i=1,k do
+					if data.ForceRemain[i]>0 then
+						--print("Внешняя сила="..data.ForceRemain[i])
+						f=f+1
+						newPos=newPos+newPos:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
+						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
+						data.ForceRemain[i]=data.ForceRemain[i]-data.ForceSpeed[i]
+					else
+						if data.IsForce[i] then
+							data.IsForce[i]=false
+						end
+					end
+				end
+				if f==0 then
+					data.ForcesCount=0
+					data.IsDisabled=false
+					SetUnitPathing(hero,true)
+					--print("нет больше сил")
+				end
+			end
+			--анимации
 			if IiMoving then
 				if startwalk==false then
-					sec=1
+					data.sec=1
 					startwalk=true
 				end
 				if data.isattack==false then
@@ -370,8 +402,11 @@ function InitGameCore()
 					--print("перебирай ногами"..GetUnitName(data.legs))
 				end
 				------------------------------Движение
-				local newX,newY=MoveX(x,speed,angle),MoveY(y,speed,angle)
-				SetUnitPositionSmooth(hero,newX,newY)
+
+
+					newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
+
+
 
 			else--не двигается
 				if standanim then
@@ -421,6 +456,17 @@ function InitGameCore()
 					SetUnitAnimation(hero,"Stand")
 				end
 			end
+			--каждый тик
+			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then
+				newPos=newPos+Vector3:new(-5, 0, 0)
+				--print("поток")
+			end
+
+			SetUnitPositionSmooth(hero,newPos.x,newPos.y)
+			--Синхронизация ног
+			SetUnitX(data.legs,newPos.x)
+			SetUnitY(data.legs,newPos.y)
+			SetUnitFacing(hero,turn)
 		end
 	end)
 end

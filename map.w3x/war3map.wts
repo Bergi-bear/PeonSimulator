@@ -87,3 +87,34 @@ STRING 16
 Башня с пилой
 }
 
+STRING 17
+// Abilities: A000 (Отключение коллизии), Name (Name)
+{
+Отключение коллизии
+}
+
+STRING 18
+{
+Player 2
+}
+
+STRING 19
+{
+Player 3
+}
+
+STRING 20
+{
+Player 4
+}
+
+STRING 21
+{
+Player 5
+}
+
+STRING 22
+{
+Force 2
+}
+

@@ -108,7 +108,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 
 					if data.IsWood then
 						print("Некуда класть звук")
-						CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
+						local  new=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
+						UnitAddAbility(new,FourCC('A000'))
+						IssueImmediateOrder(new,"WindWalk")
 					else
 						data.IsWood=true
 						--print("Добавляем 1 дерева для "..GetUnitName(hero))
@@ -119,7 +121,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 			end
 		else
 			local data=HERO(UnitGetPid(hero))
-			print("атака по мертвому "..GetUnitName(hero))
+			--print("атака по мертвому "..GetUnitName(hero))
 			data.IsWood=true
 		end
 	end)
