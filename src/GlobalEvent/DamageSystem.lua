@@ -74,7 +74,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		end
 		GroupRemoveUnit(perebor,e)
 	end
-	if PointContentDestructable(x,y,range,true,1+damage/2,u) then	isdamage=true	end
+	if PointContentDestructable(x,y,range,true,1+damage/4,u) then	isdamage=true	end
 	return isdamage
 end
 

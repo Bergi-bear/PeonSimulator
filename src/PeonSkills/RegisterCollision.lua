@@ -28,9 +28,7 @@ function RegisterCollision(hero)
 					if data.SingleWoodCount>=25 then
 						data.Perk1=true
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
-							--print("off")
-
-							BlzFrameSetVisible(PerkIsLock[1+GetPlayerId(GetOwningPlayer(hero))],false)
+							BlzFrameSetVisible(PerkIsLock[1],false)
 						end
 					end
 					HealUnit(hero,1000)

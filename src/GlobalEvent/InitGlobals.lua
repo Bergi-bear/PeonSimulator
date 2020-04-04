@@ -26,6 +26,7 @@ function InitGameCore()
 	CreateWoodFrame()
 	HideEverything()
 	PerkButtonLine()-- табличка перков
+	CreateMouseHelper(10)
 	-----Настоящая инициализация
 	for i=0,3 do
 		HERO[i]={
@@ -37,7 +38,7 @@ function InitGameCore()
 			ReleaseLMB=false,
 			ReleaseRMB=false,
 			SpeedBase=9,
-			UnitHero=CreateUnit(Player(i), FourCC('H000'), GetPlayerStartLocationX(Player(i)), GetPlayerStartLocationY(Player(i)), 0),
+			UnitHero=CreateUnit(Player(i), FourCC('H000'), GetPlayerStartLocationX(Player(i)), GetPlayerStartLocationY(Player(i)), GetRandomReal(0,360)),
 			CurrentSpeed=0,
 			WeaponIndex=1,
 			AngleForce=0, --типа какой-то уго для отталкивания
@@ -70,6 +71,8 @@ function InitGameCore()
 			Perk6=false,
 			Perk7=false,
 			Perk8=false,
+			----
+			MHoldSec=0,
 		}
 
 		if HERO[i] then
@@ -271,7 +274,11 @@ function InitGameCore()
 			local id=data.pid
 			local p=GetOwningPlayer(hero)
 			local angle=0
-			local speed=GetUnitMoveSpeed(hero)/21--data.SpeedBase
+			local mBonus=21
+			if data.Perk4 then
+				mBonus=16
+			end
+			local speed=GetUnitMoveSpeed(hero)/mBonus--data.SpeedBase
 			local x,y=GetUnitXY(hero)
 			local IiMoving=false
 			local walk=false
@@ -317,9 +324,20 @@ function InitGameCore()
 				data.sec2=0
 				walkattack=true
 			end
-
-
-
+			-- таланты просчеты
+			data.RevoltSec=data.RevoltSec+TIMER_PERIOD-- считаем бездействие
+			if not data.Perk2 then
+				if data.RevoltSec>=30 then
+					data.Perk2=true
+					if GetLocalPlayer()==GetOwningPlayer(hero) then
+						BlzFrameSetVisible(PerkIsLock[2],false)
+					end
+					print("Рабочий поднял бунт")
+				end
+			end
+			if data.ReleaseRMB then
+				data.MHoldSec=data.MHoldSec+TIMER_PERIOD
+			end
 
 
 			data.AttackTime=data.AttackTime+TIMER_PERIOD
@@ -422,6 +440,19 @@ function InitGameCore()
 			end
 			--анимации
 			if IiMoving then
+
+				data.TotalWay=data.TotalWay+speed-- считаем бездействие
+				if not data.Perk4 then
+					if data.TotalWay>=400000 then
+						data.Perk4=true
+						if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[4],false)
+						end
+						print("Лесной болван")
+					end
+				end
+
+
 				if startwalk==false then
 					data.sec=1
 					startwalk=true

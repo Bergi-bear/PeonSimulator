@@ -129,3 +129,26 @@ STRING 24
 |cffffff00AAAA|r
 }
 
+STRING 25
+// Units: H000 (Пеон), Propernames (Proper Names)
+{
+Утёнок,ИглСонг,Вадик,Хейт,Миша,Феникс,Док,Сирен,Берги,Прог
+}
+
+STRING 26
+// Units: n003 (Источник питания), Name (Name)
+{
+Источник питания
+}
+
+STRING 27
+// Abilities: A002 (Аура регенерации здоровья (300)), Name (Name)
+{
+Аура регенерации здоровья (300)
+}
+
+STRING 28
+{
+Player 6
+}
+

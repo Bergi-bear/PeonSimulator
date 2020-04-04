@@ -121,7 +121,7 @@ Name= {
 	"Бунтовщик",
 	"Поблажка",
 	"Лесной Болван",
-	"Асассин Егор",
+	"Блудливый",
 	"Ученик Тора",
 	"Ожирение 0 степени",
 }
@@ -129,8 +129,8 @@ description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
 	"Умрите 15 раз, чтобы получить +100 ХП ",
-	"Пробегите расстояние в 10 000 метров, чтобы стать на 50%% быстрее ",
-	"Убейте любого врага, чтобы бить в 2 раза сильнее ",
+	"Пробегите расстояние в 400 000 метров, чтобы стать на 50%% быстрее ",
+	"Убейте любого врага, чтобы увеличить свой урон в 2 раза ",
 	"Отремонтируйте здания на 1000 ед, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +10 к регенерации ",
 }
@@ -173,6 +173,14 @@ function PerkButtonLine()
 				for k=1,7 do
 					if k==1 then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
+					elseif k==2  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.RevoltSec).."/300|r" ) --|cffffff00AAAA|r
+					elseif k==3  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Dies.."/15|r" ) --|cffffff00AAAA|r
+					elseif k==4  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/400000|r" ) --|cffffff00AAAA|r
+					elseif k==5  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/1|r" ) --|cffffff00AAAA|r
 					end
 				end
 			end
@@ -180,3 +188,23 @@ function PerkButtonLine()
 	end)
 end
 
+function CreateMouseHelper(sec)
+	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(wood, "RMB", 0, true)
+	BlzFrameSetSize(wood, 0.15, 0.15)
+	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
+	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья")
+	TimerStart(CreateTimer(), 1, true, function()
+		for i=0,3 do
+			local data=HERO[i]
+			if data.MHoldSec >=3  and data.MHoldSec <=5  then
+				if GetLocalPlayer()==Player(i) then
+					BlzFrameSetVisible(wood,false)
+					BlzFrameSetVisible(new_FrameChargesText,false)
+				end
+			end
+		end
+	end)
+end
