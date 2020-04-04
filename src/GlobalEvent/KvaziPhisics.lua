@@ -101,13 +101,15 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 			if iskill then
 				SetDestructableLife(d,GetDestructableLife(d)-damage)
 
+
+
 				if GetDestructableLife(d)>=1 then
 					SetDestructableAnimation(d,"Stand Hit")
 				else
 					local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 
 					if data.IsWood then
-						print("Некуда класть звук")
+						--print("Некуда класть звук")
 						local  new=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), GetDestructableX(d), GetDestructableY(d), 0)
 						UnitAddAbility(new,FourCC('A000'))
 						IssueImmediateOrder(new,"WindWalk")
@@ -117,7 +119,18 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					end
 
 				end
+				--блок голема
+				if GetDestructableTypeId(d)==FourCC('LTrc') then
+					KillDestructable(d)
+					local  new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
 
+					TimerStart(CreateTimer(),10,false, function()
+						KillUnit(new)
+						local xn,yn=GetUnitXY(new)
+						--CreateDestructable(FourCC('LTrc'),xn,yn,GetRandomReal(0,360),GetRandomReal(0.5,1.2),GetRandomInt(1,3))
+					end)
+				end
+				--блок голема
 			end
 		else
 			local data=HERO(UnitGetPid(hero))

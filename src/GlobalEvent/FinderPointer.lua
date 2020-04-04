@@ -16,7 +16,12 @@ function InitMouseMoveTrigger()
 		TriggerAddAction(MouseMoveTrigger, function()
 			--print("ismove")
 			local id=GetPlayerId(GetTriggerPlayer())
+			HERO[id].IsMouseMove=true
+			--HERO[id].LastMouseX=BlzGetTriggerPlayerMouseX()
 			GetPlayerMouseX[id]=BlzGetTriggerPlayerMouseX()
 			GetPlayerMouseY[id]=BlzGetTriggerPlayerMouseY()
+
+
 		end)
+
 end

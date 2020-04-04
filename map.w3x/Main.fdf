@@ -1,0 +1,205 @@
+Frame "BUTTON" "MyFakeButton" {
+	UseActiveContext,
+	Width 0.039,
+	Height 0.039,
+	
+	ControlBackdrop "MyFakeButtonTexture",
+	Frame "BACKDROP" "MyFakeButtonTexture" {
+		DecorateFileNames, //Look-Up Names in some String table (for example gameinterface)
+		BackdropTileBackground, //Tile mode enabled
+		BackdropBackground  "ToolTipBackground", //BackgroundFile
+		BackdropBlendAll,
+	}
+	
+	//text
+	Frame "TEXT" "MyFakeButtonHotkey" {
+		UseActiveContext,
+		DecorateFileNames,
+		SetPoint TOPLEFT, "MyFakeButton", TOPLEFT, 0.001, -0.001, //Positionate "BoxedTextSimpleTitle"'s TOPLEFT to "BoxedText"'s TOPLEFT with an offset
+		FontFlags "FIXEDSIZE",
+		FontJustificationH JUSTIFYLEFT,
+		FontJustificationV JUSTIFYTOP,
+		FrameFont "MasterFont", 0.012, "",
+		FontColor 1.0 0.6 0.2 1.0, //Red Green Blue Alpha 0.0 to 1.0
+		FontShadowColor 0.0 0.0 0.0 0.9,
+		FontShadowOffset 0.001 -0.001,
+		Text "H",
+	}
+	
+	Frame "TEXT" "MyFakeButtonManacost" {
+		UseActiveContext,
+		DecorateFileNames,
+		SetPoint TOPRIGHT, "MyFakeButton", TOPRIGHT, -0.001, -0.001, //Positionate "BoxedTextSimpleTitle"'s TOPLEFT to "BoxedText"'s TOPLEFT with an offset
+		FontFlags "FIXEDSIZE",
+		FontJustificationH JUSTIFYRIGHT,
+		FontJustificationV JUSTIFYTOP,
+		FrameFont "MasterFont", 0.012, "",
+		//FontColor 0.53 0.58 1.0 1.0, //Red Green Blue Alpha 0.0 to 1.0
+		FontShadowColor 0.0 0.0 0.0 0.9,
+		FontShadowOffset 0.001 -0.001,
+		Text "Manacost",
+	}
+	
+	Frame "TEXT" "MyFakeButtonCooldown" {
+		UseActiveContext,
+		DecorateFileNames,
+		SetPoint BOTTOMRIGHT, "MyFakeButton", BOTTOMRIGHT, 0.001, 0.001, //Positionate "BoxedTextSimpleTitle"'s TOPLEFT to "BoxedText"'s TOPLEFT with an offset
+		SetPoint BOTTOMLEFT, "MyFakeButton", BOTTOMLEFT, -0.001, 0.001,
+		FontFlags "FIXEDSIZE",
+		FontJustificationH JUSTIFYCENTER,
+		FontJustificationV JUSTIFYBOTTOM,
+		FrameFont "MasterFont", 0.019, "",
+		FontColor 1.0 1.0 1.0 1.0, //Red Green Blue Alpha 0.0 to 1.0
+		FontShadowColor 0.0 0.0 0.0 0.9,
+		FontShadowOffset 0.001 -0.001,
+		Text "CD",
+	}
+}
+
+Frame "BUTTON" "MyFakeButtonSimple" {
+	UseActiveContext,
+	Width 0.039,
+	Height 0.039,
+	
+	ControlBackdrop "MyFakeButtonTexture",
+	Frame "BACKDROP" "MyFakeButtonTexture" {
+		DecorateFileNames, //Look-Up Names in some String table (for example gameinterface)
+		BackdropTileBackground, //Tile mode enabled
+		BackdropBackground  "ToolTipBackground", //BackgroundFile
+		BackdropBlendAll,
+		
+	}
+}
+
+Frame "BACKDROP" "MyFakeTooltip"{
+	UseActiveContext,
+	DecorateFileNames, //Look-Up Names in some String table (for example gameinterface)
+	BackdropTileBackground, //Tile mode enabled
+	BackdropBackground "ToolTipBackground", //BackgroundFile
+	BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
+	BackdropCornerSize 0.003, //higher numbers make the corners bigger.
+	BackdropBackgroundInsets 0.0022 0.0022 0.0022 0.0022, //makes the background smaller, from the outside.
+	BackdropEdgeFile "ToolTipBorder", //the border File
+	BackdropBlendAll,
+	
+	Frame "TEXT" "MyFakeTooltipTitle" {
+		UseActiveContext,
+		DecorateFileNames,
+		SetPoint TOPLEFT, "MyFakeTooltip", TOPLEFT, 0.005, -0.005, //Positionate "BoxedTextSimpleTitle"'s TOPLEFT to "BoxedText"'s TOPLEFT with an offset
+		SetPoint TOPRIGHT, "MyFakeTooltip", TOPRIGHT, -0.005, -0.005,
+		FontFlags "FIXEDSIZE",
+		FrameFont "MasterFont", 0.013, "",
+		FontColor 1.0 1.0 1.0 1.0, //Red Green Blue Alpha 0.0 to 1.0
+		FontShadowColor 0.0 0.0 0.0 0.9,
+		FontShadowOffset 0.001 -0.001,
+	}
+	
+	Frame "TEXT" "MyFakeTooltipText" {
+		UseActiveContext,
+		DecorateFileNames,
+		SetPoint TOPLEFT, "MyFakeTooltip", TOPLEFT, 0.005, -0.02,
+		SetPoint BOTTOMRIGHT,  "MyFakeTooltip", BOTTOMRIGHT, -0.005, 0.005,
+		FontFlags "FIXEDSIZE",
+		FrameFont "MasterFont", 0.009, "",
+		FontColor 1.0 1.0 1.0 1.0,
+		FontShadowColor 0.0 0.0 0.0 0.9,
+		FontShadowOffset 0.001 -0.001,
+	}
+}
+
+Frame "SIMPLESTATUSBAR" "MyFakeBar" {
+	Width 0.2, //Default Width
+	Height 0.02, //Default Height
+	BarTexture "Replaceabletextures\Teamcolor\Teamcolor00.blp", //Default BarTexture
+	
+	Layer "BACKGROUND" { //A simpleFrames thing, where this is placed layer wise
+		SetAllPoints,
+		Texture "MyFakeBarBackground"{ //the BACKGROUND Texture named "MyBarExBackground" its also a frame and a child
+			SetAllPoints,
+			File "Replaceabletextures\Teamcolor\Teamcolor27.blp", //Default Texture for "MyBarExBackground"
+		}
+	}
+	
+	Frame "SIMPLEFRAME" "MyFakeBarFrame" { //Child of "MyBarEx"
+		DecorateFileNames, //Lookup FileNames in a StringList
+		SetAllPoints, //copy "MyBarEx"
+		Layer "ARTWORK" {
+			String "MyFakeBarTitle"{
+				SetAllPoints,
+				Text "MyFakeBarTitle",
+				FontColor 1.0 1.0 1.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Font "MasterFont", 0.01, //MasterFont is only valid with "DecorateFileNames,"
+			}
+			
+			String "MyFakeBarLeftText"{
+				SetPoint TOPLEFT, "MyFakeBar", TOPLEFT, 0.01, -0.002,
+				SetPoint BOTTOMLEFT, "MyFakeBar", BOTTOMLEFT, 0.01, 0.002,
+				SetPoint TOPRIGHT, "MyFakeBar", TOP, 0, -0.002,
+				SetPoint BOTTOMRIGHT, "MyFakeBar", BOTTOM, 0, 0.002,
+				FontJustificationH JUSTIFYLEFT,
+				FontJustificationV JUSTIFYCENTER,
+				Text " ",
+				FontColor 1.0 1.0 1.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Font "MasterFont", 0.01, //MasterFont is only valid with "DecorateFileNames,"
+			}
+			
+			String "MyFakeBarRightText"{
+				SetPoint TOPLEFT, "MyFakeBar", TOP, 0, -0.002,
+				SetPoint BOTTOMLEFT, "MyFakeBar", BOTTOM, 0, 0.002,
+				SetPoint TOPRIGHT, "MyFakeBar", TOPRIGHT, -0.01, -0.002,
+				SetPoint BOTTOMRIGHT, "MyFakeBar", BOTTOMRIGHT, -0.01, 0.002,
+				FontJustificationH JUSTIFYRIGHT,
+				FontJustificationV JUSTIFYCENTER,
+				Text " ",
+				FontColor 1.0 1.0 1.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Font "MasterFont", 0.01, //MasterFont is only valid with "DecorateFileNames,"
+			}
+			
+			Texture "MyFakeBarBorder" {
+				File "MyBarBorder.blp", //Default Texture for "MyBarExBorder"
+			}
+		}
+	}
+}
+
+Frame "BACKDROP" "MyFakeRegenFrame"{
+	BackdropTileBackground,
+	BackdropBackground "Replaceabletextures\Teamcolor\Teamcolor27.blp",
+	Width 0.04,
+	Height 0.02,
+	
+	Frame "SIMPLEFRAME" "MyFakeRegenContainer" {
+		DecorateFileNames,
+		SetAllPoints,
+		
+		Layer "ARTWORK" {
+			String "MyFakeRegenHPText"{ 
+				Height 0.01,
+				SetPoint TOPLEFT, "MyFakeRegenContainer", TOPLEFT, 0, 0,
+				FontFlags "FIXEDSIZE",
+				FrameFont "MasterFont", 0.009, "",
+				FontColor 0.0 1.0 0.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Text "-20.222",
+			}
+			
+			String "MyFakeRegenMPText" {
+				Height 0.01,
+				SetPoint BOTTOMLEFT, "MyFakeRegenContainer", BOTTOMLEFT, 0, 0,
+				FontFlags "FIXEDSIZE",
+				FrameFont "MasterFont", 0.009, "",
+				FontColor 0.0 0.0 1.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Text "999.99",
+			}
+		}
+	}
+}

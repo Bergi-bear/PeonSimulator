@@ -24,6 +24,8 @@ function InitGameCore()
 	--BlzEnableSelections(false,false)
 	EnableDragSelect(false,false)
 	CreateWoodFrame()
+	HideEverything()
+	PerkButtonLine()-- табличка перков
 	-----Настоящая инициализация
 	for i=0,3 do
 		HERO[i]={
@@ -48,16 +50,37 @@ function InitGameCore()
 			ForcesCount=0,
 			sec=0,--костылики
 			sec2=0, -- для анимаций
+			IsMouseMove=false,
+			LastMouseX=0,
+			LastTurn=0,
+			---накопление перков
+			SingleWoodCount=0,
+			RevoltSec=0,
+			Dies=0,
+			TotalWay=0,
+			Kills=0,
+			Repairs=0,
+			Heals=0,
+			---открытие перков
+			Perk1=false,
+			Perk2=false,
+			Perk3=false,
+			Perk4=false,
+			Perk5=false,
+			Perk6=false,
+			Perk7=false,
+			Perk8=false,
 		}
 
 		if HERO[i] then
 			local hero=HERO[i].UnitHero
 			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 			RegisterCollision(hero)
+			HealthBarAdd(hero)
 			--print("111111")
 		end
 	end
-	HideEverything()
+
 
 	-----------------------------------------------------------------OSKEY_W
 	local gg_trg_EventUpW = CreateTrigger()
@@ -216,10 +239,13 @@ function InitGameCore()
 
 	-----------------------------------------------------------------Lock
 	TimerStart(CreateTimer(), 0.01, true, function()
-		local data=HERO[0]
-		local hero=data.UnitHero
-		ForceUIKeyBJ(GetOwningPlayer(hero),"M")
-		IssueImmediateOrder(hero,"stop")
+		for i=0,3 do
+			local data=HERO[i]
+			local hero=data.UnitHero
+			ForceUIKeyBJ(GetOwningPlayer(hero),"M")
+			--ForceUICancelBJ(GetOwningPlayer(hero))
+			IssueImmediateOrder(hero,"stop")
+		end
 	end)
 
 ------------------------------ТЕСТ АНИМАЦИЙ
@@ -245,7 +271,7 @@ function InitGameCore()
 			local id=data.pid
 			local p=GetOwningPlayer(hero)
 			local angle=0
-			local speed=data.SpeedBase
+			local speed=GetUnitMoveSpeed(hero)/21--data.SpeedBase
 			local x,y=GetUnitXY(hero)
 			local IiMoving=false
 			local walk=false
@@ -254,8 +280,19 @@ function InitGameCore()
 			local walkattack=false
 
 			local turn=0
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER then
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then
 				turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+
+				if data.LastMouseX==GetPlayerMouseX[id] then
+					--print("курсор не движется "..data.LastMouseX)
+					--turn=GetUnitFacing(hero)
+					data.IsMouseMove=false
+
+				else
+					data.LastTurn=turn
+					--print("движется")
+				end
+				data.LastMouseX=GetPlayerMouseX[id]
 			end
 
 			local aSpeed=0.7
@@ -337,9 +374,14 @@ function InitGameCore()
 				angle=180
 				IiMoving=true
 			end
-
-			if turn<0 and turn>-180 then
-				turn=turn+360
+			if data.IsMouseMove then
+				--print("да")
+				if turn<0 and turn>-180 then
+					turn=turn+360
+				end
+			else
+				turn=data.LastTurn
+				--print("нет")
 			end
 
 

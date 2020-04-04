@@ -118,3 +118,14 @@ STRING 22
 Force 2
 }
 
+STRING 23
+// Abilities: A001 (Ускорение от руны), Name (Name)
+{
+Ускорение от руны
+}
+
+STRING 24
+{
+|cffffff00AAAA|r
+}
+

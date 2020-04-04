@@ -10,22 +10,10 @@
 --HealthPlayer1 = HealthBarAdd(udg_Pala)
 --BlzFrameSetAbsPoint(HealthPlayer1, FRAMEPOINT_TOPRIGHT, 0.8, 0.57)
 
-function HealthBarAdd(u)
-	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-	BlzFrameSetVisible(bar,true)
-	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor00.blp", 0, true)
-	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
-	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u))
-	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
-	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
-	local function on_timer()
-		BlzFrameSetValue(bar, GetUnitLifePercent(u))
-		BlzFrameSetText(lefttext, R2I(GetWidgetLife(u)))
-		BlzFrameSetText(righttext, R2I(BlzGetUnitMaxHP(u)))
-	end
-	TimerStart(CreateTimer(),0.5,true, on_timer)
-	return bar
-end
+
+
+
+
 
 
 

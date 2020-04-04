@@ -19,10 +19,26 @@ function RegisterCollision(hero)
 		if UnitAlive(CollisionUnit) then
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
 				if data.IsWood then
-					PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
-					GTotalWood=GTotalWood+1
+					local k=1
+					if data.Perk1 then
+						k=k+1
+					end
+					data.SingleWoodCount=data.SingleWoodCount+k
+					--print(data.SingleWoodCount)
+					if data.SingleWoodCount>=25 then
+						data.Perk1=true
+						if GetLocalPlayer()==GetOwningPlayer(hero) then
+							--print("off")
 
-					AddLumber(1,hero)
+							BlzFrameSetVisible(PerkIsLock[1+GetPlayerId(GetOwningPlayer(hero))],false)
+						end
+					end
+					HealUnit(hero,1000)
+					AddLumber(k,hero)
+					MoveWoodAsFarm(hero,k)
+					UnitAddItemById(hero,FourCC('I000'))-- ускорение
+
+					--CreateItem(FourCC('I000'),0,0)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then

@@ -76,6 +76,6 @@ function FlyTextTagShadowStrike(target, text, player)
 	return FlyTextTag(text, 0.024, GetWidgetX(target), GetWidgetY(target), 0, 160, 255, 0, 255, 0, 0.04, 2, 5, player)
 end
 
-function FlyTextTagMissXY(x,y, text, player)
-	return FlyTextTag(text, 0.024, x, y, 150, 255, 0, 0, 255, 0, 0.03, 1, 3, player)
+function FlyTextTagHealXY(x,y, text, player)
+	return FlyTextTag(text, 0.024, x, y, 150, 88, 250, 13, 255, 0, 0.03, 1, 3, player)
 end

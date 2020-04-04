@@ -1,0 +1,60 @@
+Frame "SIMPLESTATUSBAR" "MyFakeBar" {
+	Width 0.2, //дефолтная ширина
+	Height 0.02, //дефолтная высота
+	BarTexture "Replaceabletextures\Teamcolor\Teamcolor00.blp", //дефолтная текстура для фона
+	
+	Layer "BACKGROUND" { // слой 1
+		SetAllPoints,
+		Texture "MyFakeBarBackground"{ //текстурка
+			SetAllPoints,
+			File "Replaceabletextures\Teamcolor\Teamcolor27.blp", //дефолтная текстурка для фона
+		}
+	}
+	
+	Frame "SIMPLEFRAME" "MyFakeBarFrame" { // фрейм крепящийся к "MyFakeBar" 
+		DecorateFileNames, // доступ к названиям из таблицы строк
+		SetAllPoints, // использовать все точки из родителя
+		Layer "ARTWORK" {
+			String "MyFakeBarTitle"{ //имя фрейма чтобы цепляться к нему из скрипта
+				SetAllPoints,  //ставим все точки к родителю
+				Text "MyFakeBarTitle", //имя, чтобы подключаться к н
+				FontColor 1.0 1.0 1.0 1.0, //цвет фона в rr gg bb aa
+				FontShadowColor 0.0 0.0 0.0 0.9, //цвет тени от текста в rr gg bb aa
+				FontShadowOffset 0.001 -0.001, //оффсет тени
+				Font "MasterFont", 0.01, // MasterFont доступен только с опцией DecorateFileNames,
+			}
+			
+			String "MyFakeBarLeftText"{
+				SetPoint TOPLEFT, "MyFakeBar", TOPLEFT, 0.01, -0.002,
+				SetPoint BOTTOMLEFT, "MyFakeBar", BOTTOMLEFT, 0.01, 0.002,
+				SetPoint TOPRIGHT, "MyFakeBar", TOP, 0, -0.002,
+				SetPoint BOTTOMRIGHT, "MyFakeBar", BOTTOM, 0, 0.002,
+				FontJustificationH JUSTIFYLEFT,
+				FontJustificationV JUSTIFYCENTER,
+				Text " ",
+				FontColor 1.0 1.0 1.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Font "MasterFont", 0.01,
+			}
+			
+			String "MyFakeBarRightText"{
+				SetPoint TOPLEFT, "MyFakeBar", TOP, 0, -0.002,
+				SetPoint BOTTOMLEFT, "MyFakeBar", BOTTOM, 0, 0.002,
+				SetPoint TOPRIGHT, "MyFakeBar", TOPRIGHT, -0.01, -0.002,
+				SetPoint BOTTOMRIGHT, "MyFakeBar", BOTTOMRIGHT, -0.01, 0.002,
+				FontJustificationH JUSTIFYRIGHT,
+				FontJustificationV JUSTIFYCENTER,
+				Text " ",
+				FontColor 1.0 1.0 1.0 1.0,
+				FontShadowColor 0.0 0.0 0.0 0.9,
+				FontShadowOffset 0.001 -0.001,
+				Font "MasterFont", 0.01, 
+			}
+			
+			Texture "MyFakeBarBorder" {
+				File "MyBarBorder.blp", // дефолтная текстурка для обводки
+			}
+		}
+	}
+}
