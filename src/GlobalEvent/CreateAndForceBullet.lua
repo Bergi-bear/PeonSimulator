@@ -19,8 +19,6 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys)
 	local CollisisonDestr=false
 	local ZPerepad=0
 	BlzSetSpecialEffectYaw(bullet,math.rad(angle))
-
-	--print("Скорость корабля"..data.CurrentSpeed)
 	BlzSetSpecialEffectScale(bam,0.1)
 	BlzSetSpecialEffectScale(cloud,0.02)
 	DestroyEffect(bam)

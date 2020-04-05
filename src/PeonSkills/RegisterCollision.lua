@@ -48,14 +48,19 @@ function RegisterCollision(hero)
 					data.IsWood=true
 				end
 			end
-			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then
+			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
 				SetUnitExploded(CollisionUnit,true)
-				local x,y=GetUnitXY(CollisionUnit)
+				local data=AnyData[GetHandleId(CollisionUnit)]
+				local x,y=data.x,data.y
 				UnitDamageArea(CollisionUnit,100,x,y,150)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 				KillUnit(CollisionUnit)
 				TimerStart(CreateTimer(), 30, false, function()
-					CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
+					local new =CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
+					AnyData[GetHandleId(new)]={
+						x=x,
+						y=y,
+					}
 				end)
 			end
 

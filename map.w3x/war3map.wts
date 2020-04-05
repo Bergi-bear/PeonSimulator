@@ -124,11 +124,6 @@ STRING 23
 Ускорение от руны
 }
 
-STRING 24
-{
-|cffffff00AAAA|r
-}
-
 STRING 25
 // Units: H000 (Пеон), Propernames (Proper Names)
 {
@@ -150,5 +145,11 @@ STRING 27
 STRING 28
 {
 Player 6
+}
+
+STRING 29
+// Abilities: A003 (Удар Кузнеца), Name (Name)
+{
+Удар Кузнеца
 }
 

@@ -6,7 +6,7 @@ function FindUnitOfType(id,flag,x,y)
 	--flag nil - вся карта
 	--flag any - радиус
 	local unit=nil
-	local e--временный юнит
+	local e=nil
 	local k=0
 	--print("ищем")
 	if not flag then

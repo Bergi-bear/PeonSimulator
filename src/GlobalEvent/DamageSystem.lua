@@ -63,6 +63,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
 		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  and IsUnitZCollision(e,ZDamageSource) then
+
 			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
 			isdamage=true
 			if EffectModel~=nil then
@@ -70,6 +71,27 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
 				BlzSetSpecialEffectZ(DE,ZDamageSource)
 				DestroyEffect(DE)
+			end
+			if IsUnitType(u,UNIT_TYPE_HERO) then
+				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
+				if data.Perk6 then -- удар тора
+					CastArea(u,FourCC('A003'),x,y)
+				end
+			end
+		end
+		--ремонт
+		if true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and IsUnitType(e,UNIT_TYPE_STRUCTURE) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
+			--print("лечим")
+			local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
+			data.Repairs=data.Repairs+heal
+			if not data.Perk6 then
+				if data.Repairs>=1000 then
+					data.Perk6=true
+					if GetLocalPlayer()==GetOwningPlayer(u) then
+						BlzFrameSetVisible(PerkIsLock[6],false)
+					end
+				end
 			end
 		end
 		GroupRemoveUnit(perebor,e)

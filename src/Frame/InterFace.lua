@@ -131,8 +131,8 @@ description={
 	"Умрите 15 раз, чтобы получить +100 ХП ",
 	"Пробегите расстояние в 400 000 метров, чтобы стать на 50%% быстрее ",
 	"Убейте любого врага, чтобы увеличить свой урон в 2 раза ",
-	"Отремонтируйте здания на 1000 ед, чтобы замедлять врагов при ударе ",
-	"Получите лечение в объёме 1000 ед, чтобы получить +10 к регенерации ",
+	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
+	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 }
 
 function PerkButtonLine()
@@ -181,6 +181,10 @@ function PerkButtonLine()
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/400000|r" ) --|cffffff00AAAA|r
 					elseif k==5  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/1|r" ) --|cffffff00AAAA|r
+					elseif k==6  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
+					elseif k==7  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
 					end
 				end
 			end
@@ -196,6 +200,12 @@ function CreateMouseHelper(sec)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
 	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья")
+	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(wasd, "WASD", 0, true)
+	BlzFrameSetSize(wasd, 0.10, 0.10)
+	BlzFrameSetAbsPoint(wasd, FRAMEPOINT_CENTER,0.1 , 0.25)
+
+
 	TimerStart(CreateTimer(), 1, true, function()
 		for i=0,3 do
 			local data=HERO[i]
@@ -203,6 +213,7 @@ function CreateMouseHelper(sec)
 				if GetLocalPlayer()==Player(i) then
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)
+					BlzFrameSetVisible(wasd,false)
 				end
 			end
 		end
