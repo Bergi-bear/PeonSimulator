@@ -114,9 +114,14 @@ texture={
 	"ReplaceableTextures\\CommandButtons\\BTNBoots",
 	"ReplaceableTextures\\CommandButtons\\BTNBandit",
 	"ReplaceableTextures\\CommandButtons\\BTNHeroMountainKing",
-	"ReplaceableTextures\\CommandButtons\\BTNAbomination",
+	"ReplaceableTextures\\CommandButtons\\BTNAbomination", --пудж
+	"ReplaceableTextures\\CommandButtons\\BTNKotoBeast",
+	"ReplaceableTextures\\CommandButtons\\BTNGatherGold", -- кирка
+	"ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade",-- техника безопасности
+	"",
+	"",
 }
-Name= {
+Name= { --Определяет количество талантов
 	"Работник месяца",
 	"Бунтовщик",
 	"Поблажка",
@@ -124,6 +129,9 @@ Name= {
 	"Блудливый",
 	"Ученик Тора",
 	"Ожирение 0 степени",
+	"Толстокожий друг",
+	"Калёная кирка",
+	"Техника безопасности"
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -133,12 +141,15 @@ description={
 	"Убейте любого врага, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
+	"Приручите кодоя, чтобы получить 10 ед брони ",
+	"Накалите кирку до краса, чтобы увеличить следующую атаку в 5 раз",
+	"Донесите деревья с полным здоровьем, чтобы обучиться парированию",
 }
 
 function PerkButtonLine()
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next=0.039
-	for i=1,7 do -- число талантов
+	for i=1,#Name do -- число талантов
 		local face = BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)--Create a new frame of Type BACKDROP
 		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
 		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)--Create the BoxedText Frame
@@ -170,7 +181,7 @@ function PerkButtonLine()
 		for i=0,3 do
 			local data=HERO[i]
 			if GetLocalPlayer()==Player(i) then
-				for k=1,7 do
+				for k=1,#Name  do
 					if k==1 then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
 					elseif k==2  then
@@ -185,6 +196,8 @@ function PerkButtonLine()
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
 					elseif k==7  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
+					elseif k==8  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
 					end
 				end
 			end
@@ -199,7 +212,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья")
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья ")
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
@@ -214,6 +227,27 @@ function CreateMouseHelper(sec)
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
+				end
+			end
+		end
+	end)
+end
+
+function CreateStatusBar()
+	local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(status, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
+	BlzFrameSetSize(status, 0.019, 0.019)
+	BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.04 , 0.6-0.04)
+
+	--обновление текста
+	TimerStart(CreateTimer(), 1, true, function()
+		for i=0,3 do
+			local data=HERO[i]
+			if GetLocalPlayer()==Player(i) then
+				for k=1,7 do
+					if k==1 then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
+					end
 				end
 			end
 		end

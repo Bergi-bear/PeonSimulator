@@ -153,3 +153,21 @@ STRING 29
 Удар Кузнеца
 }
 
+STRING 30
+// Units: e004 (Вертикальная пила), Name (Name)
+{
+Вертикальная пила
+}
+
+STRING 31
+// Units: e004 (Вертикальная пила), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 32
+// Units: e004 (Вертикальная пила), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+

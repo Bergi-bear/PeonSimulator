@@ -32,9 +32,22 @@ function InitDamage()
 				BlzSetEventDamage(0)
 				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
 				IssuePointOrder(target,"move",endX,endY)
-				if IsUnitInRangeXY(target,endX,endY,80) then
+				if IsUnitInRangeXY(target,endX,endY,120) then
 					SetUnitOwner(target,casterOwner,true)
 					--print("Ачивка кодоя")
+					local data=HERO[GetPlayerId(casterOwner)]
+					data.KodoCount=data.KodoCount+1-- считаем бездействие
+					if not data.Perk8 then
+						if data.KodoCount>=1 then
+							data.Perk8=true
+							BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
+							if GetLocalPlayer()==casterOwner then
+								BlzFrameSetVisible(PerkIsLock[8],false)
+							end
+							print("Рабочий поднял бунт")
+							--Allian
+						end
+					end
 					--Старт ИИ кодоя
 					TimerStart(CreateTimer(), 10, true, function()
 						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
@@ -81,6 +94,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local OnlyCHK=false
 	local isdamage=false
 	local e=nil
+	local hero=nil
 	if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
 	--print("Поиск целей в на высоте "..ZDamageSource)
 	GroupEnumUnitsInRange(perebor,x,y,range,nil)
@@ -91,6 +105,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 
 			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
 			isdamage=true
+			hero=e
 			if EffectModel~=nil then
 				--print("эффеет")
 				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
@@ -123,7 +138,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		GroupRemoveUnit(perebor,e)
 	end
 	if PointContentDestructable(x,y,range,true,1+damage/4,u) then	isdamage=true	end
-	return isdamage
+	return isdamage, hero
 end
 
 function IsUnitZCollision(hero,ZDamageSource)

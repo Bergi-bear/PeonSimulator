@@ -6,6 +6,7 @@
 
 SawDiskModel="Chakram_02.mdl"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
 SawChainModel="abilities\\weapons\\wyvernspear\\wyvernspearmissile.mdl"
+CollisionEffect="Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl"
 function CreateRoundSawZ(hero,ChainCount,angle,z)
 	local xs,ys=GetUnitXY(hero)
 	local saw=AddSpecialEffect(SawDiskModel,xs,ys)
@@ -24,6 +25,8 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
+		local OnDamage=false
+		local ReflectorUnit=nil
 		for i=1,ChainCount do
 			x,y=MoveXY(xs,ys,step*i,angle)
 			BlzSetSpecialEffectPosition(chain[i],x,y,z)
@@ -31,7 +34,13 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		end
 		local nx,ny=MoveXY(xs,ys,step*ChainCount,angle)
 		BlzSetSpecialEffectPosition(saw,nx,ny,z)
-		UnitDamageArea(hero,20,nx,ny,150,z-90,"Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl")
+		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,nx,ny,150,z-90,CollisionEffect)
+		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
+			if data.Reflection then
+				speed=speed*(-1)
+			end
+		end
 		angle=angle+speed
 		if UnitAlive(hero)==false then
 			DestroyTimer(GetExpiredTimer()) -- временно вечный таймер
@@ -43,17 +52,88 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	end)
 end
 
+
+function CreateGroundSaw(hero,angle,z)
+	local xs,ys=GetUnitXY(hero)
+	local saw=AddSpecialEffect(SawDiskModel,xs,ys)
+	BlzSetSpecialEffectRoll(saw,math.rad(90))
+	BlzSetSpecialEffectYaw(saw,math.rad(angle))
+	if z==nil then z=GetUnitZ(hero)+60 end
+	BlzSetSpecialEffectScale(saw,0.9)
+	BlzSetSpecialEffectZ(saw,z)
+	local step=10
+	local i=0
+	local turn=false
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		local x,y=0,0
+
+		local OnDamage=false
+		local ReflectorUnit=nil
+
+
+		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
+			if data.Reflection then
+				speed=speed*(-1)
+			end
+		end
+
+
+		if not turn then
+			i=i+1
+		else
+			i=i-1
+		end
+		--print(i)
+		x,y=MoveXY(xs,ys,step*i,angle)
+		BlzSetSpecialEffectPosition(saw,x,y,z)
+		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
+		local nx,ny=MoveXY(x,y,60,angle)
+		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
+		nx,ny=MoveXY(x,y,-60,angle)
+		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
+
+		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
+			if data.Reflection then
+				if i<=50 then
+					turn=true
+				else
+					turn=false
+				end
+			end
+		end
+
+
+
+		if i==100 then
+			turn=true
+		end
+		if i==0 then
+			turn=false
+		end
+		end)
+end
+
+
 function StartAllSaw()
 	local e--временный юнит
 	local k=0
-	local id=FourCC('h001')
+	local id=FourCC('h001') -- колонная с пилой
+	local idg=FourCC('e004') --
 	GroupEnumUnitsInRect(perebor,bj_mapInitialPlayableArea,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
 		if UnitAlive(e) and GetUnitTypeId(e)==id then
-			k=k+1
+			--k=k+1
 			CreateRoundSawZ(e,6,GetRandomInt(0,360))
+		end
+		if UnitAlive(e) and GetUnitTypeId(e)==idg then
+			k=k+1
+			CreateGroundSaw(e,GetUnitFacing(e))
+			ShowUnit(e,false)
+			--KillUnit(e)
 		end
 		GroupRemoveUnit(perebor,e)
 	end

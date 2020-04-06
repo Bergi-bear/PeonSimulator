@@ -10,7 +10,6 @@ gg_rct_WalkSpawnZone = nil
 gg_snd_Load = nil
 gg_trg_GuiInit = nil
 gg_trg_DeadHumanLumber = nil
-gg_trg_EverWolf = nil
 gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_dest_LTlt_0097 = nil
@@ -74,7 +73,7 @@ function CreateBuildingsForPlayer10()
     gg_unit_hlum_0057 = BlzCreateUnitWithSkin(p, FourCC("hlum"), -928.0, -2336.0, 270.000, FourCC("hlum"))
     u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -768.0, -2816.0, 270.000, FourCC("hctw"))
     u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -384.0, -2112.0, 270.000, FourCC("hctw"))
-    u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -1024.0, -1728.0, 270.000, FourCC("hctw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -832.0, -1920.0, 270.000, FourCC("hctw"))
     u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -2080.0, 2848.0, 270.000, FourCC("hlum"))
 end
 
@@ -105,7 +104,6 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -1975.5, 378.1, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -1804.4, 946.4, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("o002"), -2951.2, -2927.0, 123.880, FourCC("o002"))
-    u = BlzCreateUnitWithSkin(p, FourCC("o002"), -1224.8, -534.2, 123.880, FourCC("o002"))
 end
 
 function CreateBuildingsForPlayer11()
@@ -120,6 +118,21 @@ function CreateBuildingsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2624.0, 2880.0, 270.000, FourCC("h001"))
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2880.0, 2368.0, 270.000, FourCC("h001"))
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 2048.0, 270.000, FourCC("h001"))
+end
+
+function CreateUnitsForPlayer11()
+    local p = Player(11)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -736.3, 1087.7, 0.000, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -1406.1, 2627.6, 0.000, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -2415.9, 3416.5, 303.180, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -3197.3, 2290.6, 48.410, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -2675.8, 2013.7, 0.000, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -265.4, 1754.9, 180.000, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e004"), -388.9, 2729.5, 180.000, FourCC("e004"))
 end
 
 function CreateNeutralHostile()
@@ -185,8 +198,17 @@ function CreateNeutralHostile()
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2642.9, 1077.5, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2485.0, -2767.8, 171.590, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), -1164.0, 434.9, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3129.1, -2767.8, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3065.1, -2385.2, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3202.6, -2918.6, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -3227.4, -1826.9, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2722.4, -466.7, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2677.1, -757.8, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2233.8, -460.7, 171.590, FourCC("n001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2154.6, -799.6, 171.590, FourCC("n001"))
 end
 
 function CreatePlayerBuildings()
@@ -198,6 +220,7 @@ end
 function CreatePlayerUnits()
     CreateUnitsForPlayer5()
     CreateUnitsForPlayer10()
+    CreateUnitsForPlayer11()
 end
 
 function CreateAllUnits()
@@ -616,7 +639,10 @@ texture={
 	"ReplaceableTextures\\CommandButtons\\BTNBoots",
 	"ReplaceableTextures\\CommandButtons\\BTNBandit",
 	"ReplaceableTextures\\CommandButtons\\BTNHeroMountainKing",
-	"ReplaceableTextures\\CommandButtons\\BTNAbomination",
+	"ReplaceableTextures\\CommandButtons\\BTNAbomination", --пудж
+	"ReplaceableTextures\\CommandButtons\\BTNKotoBeast",
+	"ReplaceableTextures\\CommandButtons\\BTNGatherGold", -- кирка
+	"ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade"-- техника безопасности
 }
 Name= {
 	"Работник месяца",
@@ -626,6 +652,7 @@ Name= {
 	"Блудливый",
 	"Ученик Тора",
 	"Ожирение 0 степени",
+	"Толстокожий друг"
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -635,12 +662,13 @@ description={
 	"Убейте любого врага, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
+	"Приручите кодоя, чтобы получить 10 ед брони "
 }
 
 function PerkButtonLine()
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next=0.039
-	for i=1,7 do -- число талантов
+	for i=1,#Name do -- число талантов
 		local face = BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)--Create a new frame of Type BACKDROP
 		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
 		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)--Create the BoxedText Frame
@@ -672,7 +700,7 @@ function PerkButtonLine()
 		for i=0,3 do
 			local data=HERO[i]
 			if GetLocalPlayer()==Player(i) then
-				for k=1,7 do
+				for k=1,#Name  do
 					if k==1 then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
 					elseif k==2  then
@@ -687,6 +715,8 @@ function PerkButtonLine()
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
 					elseif k==7  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
+					elseif k==8  then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
 					end
 				end
 			end
@@ -701,7 +731,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья")
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья ")
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
@@ -716,6 +746,27 @@ function CreateMouseHelper(sec)
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
+				end
+			end
+		end
+	end)
+end
+
+function CreateStatusBar()
+	local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(status, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
+	BlzFrameSetSize(status, 0.019, 0.019)
+	BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.04 , 0.6-0.04)
+
+	--обновление текста
+	TimerStart(CreateTimer(), 1, true, function()
+		for i=0,3 do
+			local data=HERO[i]
+			if GetLocalPlayer()==Player(i) then
+				for k=1,7 do
+					if k==1 then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
+					end
 				end
 			end
 		end
@@ -932,14 +983,27 @@ function InitDamage()
 
 		if isEventDamaged then
 			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
-				print("урон по кодою")
+				--print("урон по кодою")
 				local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
 				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
 				IssuePointOrder(target,"move",endX,endY)
-				if IsUnitInRangeXY(target,endX,endY,50) then
+				if IsUnitInRangeXY(target,endX,endY,120) then
 					SetUnitOwner(target,casterOwner,true)
 					--print("Ачивка кодоя")
+					local data=HERO[GetPlayerId(casterOwner)]
+					data.KodoCount=data.KodoCount+1-- считаем бездействие
+					if not data.Perk8 then
+						if data.KodoCount>=1 then
+							data.Perk8=true
+							BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
+							if GetLocalPlayer()==casterOwner then
+								BlzFrameSetVisible(PerkIsLock[8],false)
+							end
+							print("Рабочий поднял бунт")
+							--Allian
+						end
+					end
 					--Старт ИИ кодоя
 					TimerStart(CreateTimer(), 10, true, function()
 						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
@@ -986,6 +1050,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local OnlyCHK=false
 	local isdamage=false
 	local e=nil
+	local hero=nil
 	if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
 	--print("Поиск целей в на высоте "..ZDamageSource)
 	GroupEnumUnitsInRange(perebor,x,y,range,nil)
@@ -996,6 +1061,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 
 			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
 			isdamage=true
+			hero=e
 			if EffectModel~=nil then
 				--print("эффеет")
 				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
@@ -1028,7 +1094,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		GroupRemoveUnit(perebor,e)
 	end
 	if PointContentDestructable(x,y,range,true,1+damage/4,u) then	isdamage=true	end
-	return isdamage
+	return isdamage, hero
 end
 
 function IsUnitZCollision(hero,ZDamageSource)
@@ -1144,6 +1210,7 @@ function InitGameCore()
 	HideEverything()
 	PerkButtonLine()-- табличка перков
 	CreateMouseHelper(10)
+	--CreateStatusBar()
 	-----Настоящая инициализация
 	for i=0,3 do
 		HERO[i]={
@@ -1179,17 +1246,19 @@ function InitGameCore()
 			Kills=0,
 			Repairs=0,
 			Heals=0,
+			KodoCount=0,
 			---открытие перков
-			Perk1=false,
-			Perk2=false,
-			Perk3=false,
-			Perk4=false,
-			Perk5=false,
-			Perk6=false,
-			Perk7=false,
-			Perk8=false,
+			Perk1=false, --Работник
+			Perk2=false, -- Бунт
+			Perk3=false,-- Суицидник
+			Perk4=false, -- Лесной болван
+			Perk5=false, -- Убийца
+			Perk6=false, -- Ученика кузнеца
+			Perk7=false, -- Ожирение
+			Perk8=false, -- Кодой
 			----
 			MHoldSec=0,
+			Reflection=false,
 		}
 
 		if HERO[i] then
@@ -1331,6 +1400,7 @@ function InitGameCore()
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			data.ReleaseRMB=true
+			data.Reflection=true
 			local hero=data.UnitHero
 			data.AttackTime=0.7
 			randomeffect=GetRandomInt(1,15)
@@ -1348,6 +1418,7 @@ function InitGameCore()
 			local data=HERO[pid]
 			local hero=data.UnitHero
 			data.ReleaseRMB=false
+			data.Reflection=false
 			if data.IsWood then
 				SetUnitAnimationByIndex(hero,11)
 			else
@@ -1448,6 +1519,7 @@ function InitGameCore()
 						BlzFrameSetVisible(PerkIsLock[2],false)
 					end
 					print("Рабочий поднял бунт")
+					--Allian
 				end
 			end
 			if data.ReleaseRMB then
@@ -1461,6 +1533,7 @@ function InitGameCore()
 				if data.ReleaseRMB then
 					data.isattack=true
 					--print("time attack")
+					data.Reflection=true
 					AfterAttack(hero,0.4)
 					--SingleCannon(hero)
 				end
@@ -3343,11 +3416,10 @@ function AfterAttack(hero, delay)
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-
+		data.Reflection=false
 		if UnitDamageArea(hero,BlzGetUnitBaseDamage(hero,0),x,y,70) then
 			data.RevoltSec=0
 		end
-
 	end)
 end
 ---
@@ -3517,6 +3589,7 @@ end
 
 SawDiskModel="Chakram_02.mdl"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
 SawChainModel="abilities\\weapons\\wyvernspear\\wyvernspearmissile.mdl"
+CollisionEffect="Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl"
 function CreateRoundSawZ(hero,ChainCount,angle,z)
 	local xs,ys=GetUnitXY(hero)
 	local saw=AddSpecialEffect(SawDiskModel,xs,ys)
@@ -3535,6 +3608,8 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
+		local OnDamage=false
+		local ReflectorUnit=nil
 		for i=1,ChainCount do
 			x,y=MoveXY(xs,ys,step*i,angle)
 			BlzSetSpecialEffectPosition(chain[i],x,y,z)
@@ -3542,7 +3617,13 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		end
 		local nx,ny=MoveXY(xs,ys,step*ChainCount,angle)
 		BlzSetSpecialEffectPosition(saw,nx,ny,z)
-		UnitDamageArea(hero,20,nx,ny,150,z-90,"Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl")
+		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,nx,ny,150,z-90,CollisionEffect)
+		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
+			if data.Reflection then
+				speed=speed*(-1)
+			end
+		end
 		angle=angle+speed
 		if UnitAlive(hero)==false then
 			DestroyTimer(GetExpiredTimer()) -- временно вечный таймер
@@ -3554,17 +3635,88 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	end)
 end
 
+
+function CreateGroundSaw(hero,angle,z)
+	local xs,ys=GetUnitXY(hero)
+	local saw=AddSpecialEffect(SawDiskModel,xs,ys)
+	BlzSetSpecialEffectRoll(saw,math.rad(90))
+	BlzSetSpecialEffectYaw(saw,math.rad(angle))
+	if z==nil then z=GetUnitZ(hero)+60 end
+	BlzSetSpecialEffectScale(saw,0.9)
+	BlzSetSpecialEffectZ(saw,z)
+	local step=10
+	local i=0
+	local turn=false
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		local x,y=0,0
+
+		local OnDamage=false
+		local ReflectorUnit=nil
+
+
+		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
+			if data.Reflection then
+				speed=speed*(-1)
+			end
+		end
+
+
+		if not turn then
+			i=i+1
+		else
+			i=i-1
+		end
+		--print(i)
+		x,y=MoveXY(xs,ys,step*i,angle)
+		BlzSetSpecialEffectPosition(saw,x,y,z)
+		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
+		local nx,ny=MoveXY(x,y,60,angle)
+		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
+		nx,ny=MoveXY(x,y,-60,angle)
+		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
+
+		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
+			if data.Reflection then
+				if i<=50 then
+					turn=true
+				else
+					turn=false
+				end
+			end
+		end
+
+
+
+		if i==100 then
+			turn=true
+		end
+		if i==0 then
+			turn=false
+		end
+		end)
+end
+
+
 function StartAllSaw()
 	local e--временный юнит
 	local k=0
-	local id=FourCC('h001')
+	local id=FourCC('h001') -- колонная с пилой
+	local idg=FourCC('e004') --
 	GroupEnumUnitsInRect(perebor,bj_mapInitialPlayableArea,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
 		if UnitAlive(e) and GetUnitTypeId(e)==id then
-			k=k+1
+			--k=k+1
 			CreateRoundSawZ(e,6,GetRandomInt(0,360))
+		end
+		if UnitAlive(e) and GetUnitTypeId(e)==idg then
+			k=k+1
+			CreateGroundSaw(e,GetUnitFacing(e))
+			ShowUnit(e,false)
+			--KillUnit(e)
 		end
 		GroupRemoveUnit(perebor,e)
 	end
@@ -3598,7 +3750,7 @@ end
 --- Created by Bergi.
 --- DateTime: 05.04.2020 18:56
 function WolfAttack()
-	TimerStart(CreateTimer(), 300, true, function()
+	TimerStart(CreateTimer(), 60, true, function()
 		local x,y=GetRectCenterX(gg_rct_WalkSpawnZone),GetRectCenterY(gg_rct_WalkSpawnZone)
 		local wolf=CreateUnit(Player(10), FourCC('n000'), x, y, 0)
 		IssuePointOrder(wolf,"attack",0,0)
@@ -3635,19 +3787,9 @@ function InitTrig_DeadHumanLumber()
     TriggerAddAction(gg_trg_DeadHumanLumber, Trig_DeadHumanLumber_Actions)
 end
 
-function Trig_EverWolf_Actions()
-end
-
-function InitTrig_EverWolf()
-    gg_trg_EverWolf = CreateTrigger()
-    TriggerRegisterTimerEventPeriodic(gg_trg_EverWolf, 300.00)
-    TriggerAddAction(gg_trg_EverWolf, Trig_EverWolf_Actions)
-end
-
 function InitCustomTriggers()
     InitTrig_GuiInit()
     InitTrig_DeadHumanLumber()
-    InitTrig_EverWolf()
 end
 
 function RunInitializationTriggers()
@@ -3797,7 +3939,7 @@ function config()
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)
-    DefineStartLocation(4, 1536.0, -2368.0)
+    DefineStartLocation(4, 960.0, -2560.0)
     DefineStartLocation(5, 0.0, 512.0)
     InitCustomPlayerSlots()
     InitCustomTeams()

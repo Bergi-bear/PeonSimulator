@@ -27,6 +27,7 @@ function InitGameCore()
 	HideEverything()
 	PerkButtonLine()-- табличка перков
 	CreateMouseHelper(10)
+	--CreateStatusBar()
 	-----Настоящая инициализация
 	for i=0,3 do
 		HERO[i]={
@@ -62,17 +63,19 @@ function InitGameCore()
 			Kills=0,
 			Repairs=0,
 			Heals=0,
+			KodoCount=0,
 			---открытие перков
-			Perk1=false,
-			Perk2=false,
-			Perk3=false,
-			Perk4=false,
-			Perk5=false,
-			Perk6=false,
-			Perk7=false,
-			Perk8=false,
+			Perk1=false, --Работник
+			Perk2=false, -- Бунт
+			Perk3=false,-- Суицидник
+			Perk4=false, -- Лесной болван
+			Perk5=false, -- Убийца
+			Perk6=false, -- Ученика кузнеца
+			Perk7=false, -- Ожирение
+			Perk8=false, -- Кодой
 			----
 			MHoldSec=0,
+			Reflection=false,
 		}
 
 		if HERO[i] then
@@ -214,6 +217,7 @@ function InitGameCore()
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			data.ReleaseRMB=true
+			data.Reflection=true
 			local hero=data.UnitHero
 			data.AttackTime=0.7
 			randomeffect=GetRandomInt(1,15)
@@ -231,6 +235,7 @@ function InitGameCore()
 			local data=HERO[pid]
 			local hero=data.UnitHero
 			data.ReleaseRMB=false
+			data.Reflection=false
 			if data.IsWood then
 				SetUnitAnimationByIndex(hero,11)
 			else
@@ -331,6 +336,7 @@ function InitGameCore()
 						BlzFrameSetVisible(PerkIsLock[2],false)
 					end
 					print("Рабочий поднял бунт")
+					--Allian
 				end
 			end
 			if data.ReleaseRMB then
@@ -344,6 +350,7 @@ function InitGameCore()
 				if data.ReleaseRMB then
 					data.isattack=true
 					--print("time attack")
+					data.Reflection=true
 					AfterAttack(hero,0.4)
 					--SingleCannon(hero)
 				end
