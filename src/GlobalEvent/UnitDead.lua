@@ -44,6 +44,7 @@ function InitUnitDeath()
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
 			data.Kills=data.Kills+1
+			data.RevoltSec=0
 			if data.Kills==1 then
 				if not data.Perk5 then
 					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)

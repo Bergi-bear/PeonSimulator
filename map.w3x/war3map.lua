@@ -33,15 +33,6 @@ function CreateAllDestructables()
     gg_dest_LTlt_0097 = BlzCreateDestructableWithSkin(FourCC("LTlt"), -480.0, 864.0, 270.000, 0.895, 2, FourCC("LTlt"))
 end
 
-function CreateUnitsForPlayer0()
-    local p = Player(0)
-    local u
-    local unitID
-    local t
-    local life
-    u = BlzCreateUnitWithSkin(p, FourCC("o002"), -2951.2, -2927.0, 123.880, FourCC("o002"))
-end
-
 function CreateBuildingsForPlayer5()
     local p = Player(5)
     local u
@@ -58,7 +49,7 @@ function CreateBuildingsForPlayer5()
     u = BlzCreateUnitWithSkin(p, FourCC("npgf"), 672.0, -96.0, 270.000, FourCC("npgf"))
     life = GetUnitState(u, UNIT_STATE_LIFE)
     SetUnitState(u, UNIT_STATE_LIFE, 0.70 * life)
-    u = BlzCreateUnitWithSkin(p, FourCC("o003"), 256.0, 128.0, 270.000, FourCC("o003"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o003"), 384.0, 128.0, 270.000, FourCC("o003"))
     life = GetUnitState(u, UNIT_STATE_LIFE)
     SetUnitState(u, UNIT_STATE_LIFE, 0.50 * life)
 end
@@ -104,6 +95,17 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -623.7, -2485.9, 45.133, FourCC("hpea"))
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -691.2, -2196.4, 121.765, FourCC("hpea"))
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.876, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3147.9, 509.6, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3076.0, 1298.6, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3008.9, 864.8, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2746.5, 492.7, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2446.4, 336.0, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2193.9, 691.5, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2228.9, 1354.8, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -1975.5, 378.1, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -1804.4, 946.4, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o002"), -2951.2, -2927.0, 123.880, FourCC("o002"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o002"), -1224.8, -534.2, 123.880, FourCC("o002"))
 end
 
 function CreateBuildingsForPlayer11()
@@ -177,20 +179,13 @@ function CreateNeutralHostile()
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2922.3, -467.1, 232.060, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2283.7, -1509.1, 185.477, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2123.9, -1706.9, 317.207, FourCC("n001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3147.9, 509.6, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3076.0, 1298.6, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3008.9, 864.8, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2746.5, 492.7, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2446.4, 336.0, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2193.9, 691.5, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2228.9, 1354.8, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -1975.5, 378.1, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -1804.4, 946.4, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 1458.8, 810.6, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2224.8, 190.5, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2642.9, 1077.5, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), -1164.0, 434.9, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
 end
 
@@ -201,7 +196,6 @@ function CreatePlayerBuildings()
 end
 
 function CreatePlayerUnits()
-    CreateUnitsForPlayer0()
     CreateUnitsForPlayer5()
     CreateUnitsForPlayer10()
 end
@@ -937,23 +931,48 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-			if GetUnitTypeId(target)==DummyID  then--попадание в даммика эффект ракеты
-				local x,y=GetUnitX(target),GetUnitY(target)
-				ShowUnit(target, false)
-				CreateTorrent(x,y)
-				UnitDamageArea(target,0,GetUnitX(target),GetUnitY(target),150)
-			end
-			if damage>=200 then
-				local angle=GetRandomReal(0,360)
-				local dist=200
-				CreateArtToss(target,"GoblinRubberDuck.mdl",angle,dist,4)
-				local r=GetRandomInt(1,2)
-				if r==1 then
-					PlaySoundAtPointBJ( gg_snd_AAA, 100, Location(GetUnitX(target),GetUnitY(target)), 0 )
-				else
-					PlaySoundAtPointBJ( gg_snd_AAA1, 100, Location(GetUnitX(target),GetUnitY(target)), 0 )
+			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
+				print("урон по кодою")
+				local x,y=GetUnitXY()
+				BlzSetEventDamage(0)
+				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
+				IssuePointOrder(target,"move",endX,endY)
+				if IsUnitInRangeXY(target,endX,endY,50) then
+					SetUnitOwner(target,casterOwner,true)
+					--print("Ачивка кодоя")
+					--Старт ИИ кодоя
+					TimerStart(CreateTimer(), 10, true, function()
+						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
+						if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+							local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
+							IssuePointOrder(target,"move", rx,ry)
+						end
+					end)
+					TimerStart(CreateTimer(), 1, true, function()
+						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
+						local e=nil
+						GroupEnumUnitsInRange(perebor,GetUnitX(target),GetUnitY(target),600,nil)
+						while true do
+							e = FirstOfGroup(perebor)
+
+							if e == nil then break end
+							if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(target)) then
+								--print("пытаемся скушать врага")
+								--if Cast(target,0,0,e) then
+								if IssueTargetOrder(target,"devour",e) then
+									--print("успешно")
+								else
+
+								end
+							end
+							GroupRemoveUnit(perebor,e)
+						end
+					end)
 				end
-				--JumpEffect
+				TimerStart(CreateTimer(), 2, false, function()
+					IssueImmediateOrder(target,"stop")
+				end)
+
 			end
 		end
 	end)
@@ -996,6 +1015,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			--print("лечим")
 			local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 			data.Repairs=data.Repairs+heal
+			data.RevoltSec=0
 			if not data.Perk6 then
 				if data.Repairs>=1000 then
 					data.Perk6=true
@@ -1202,7 +1222,6 @@ function InitGameCore()
 	TriggerAddAction(TrigDepressW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-
 		data.ReleaseW=false
 	end)
 	-----------------------------------------------------------------OSKEY_S
@@ -1343,7 +1362,6 @@ function InitGameCore()
 			local data=HERO[i]
 			local hero=data.UnitHero
 			ForceUIKeyBJ(GetOwningPlayer(hero),"M")
-			--ForceUICancelBJ(GetOwningPlayer(hero))
 			IssueImmediateOrder(hero,"stop")
 		end
 	end)
@@ -1890,6 +1908,7 @@ function InitUnitDeath()
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
 			data.Kills=data.Kills+1
+			data.RevoltSec=0
 			if data.Kills==1 then
 				if not data.Perk5 then
 					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
@@ -3385,8 +3404,9 @@ function RegisterCollision(hero)
 				SetUnitExploded(CollisionUnit,true)
 				local data=AnyData[GetHandleId(CollisionUnit)]
 				local x,y=data.x,data.y
-				UnitDamageArea(CollisionUnit,100,x,y,150)
-				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				local nx,ny=GetUnitXY(CollisionUnit)
+				UnitDamageArea(CollisionUnit,100,nx,ny,150)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",nx,ny))
 				KillUnit(CollisionUnit)
 				TimerStart(CreateTimer(), 30, false, function()
 					local new =CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
@@ -3470,7 +3490,7 @@ function EntInTrees()
 						if GetDestructableTypeId(d)==FourCC('LTlt') then
 							if GetDestructableLife(d)>0 then
 								KillDestructable(d)
-								local new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
+								local new=CreateUnit(Player(10), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
 								SetUnitAnimation(new,"birth")
 							end
 						end
@@ -3484,6 +3504,11 @@ function EntInTrees()
 
 
 end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 06.04.2020 3:31
+--FourCC('o002')
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -3559,7 +3584,7 @@ function SetSheepPoint(id,flag,x,y)
 
 			if e == nil then break end
 			if UnitAlive(e) and GetUnitTypeId(e)==id then
-				print("set")
+				--print("set")
 				AnyData[GetHandleId(e)]={
 					x=GetUnitX(e),
 					y=GetUnitY(e),
@@ -3772,7 +3797,7 @@ function config()
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)
-    DefineStartLocation(4, -2624.0, 896.0)
+    DefineStartLocation(4, 1536.0, -2368.0)
     DefineStartLocation(5, 0.0, 512.0)
     InitCustomPlayerSlots()
     InitCustomTeams()

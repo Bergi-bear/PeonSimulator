@@ -3,7 +3,7 @@
 --- Created by Bergi.
 --- DateTime: 05.04.2020 18:56
 function WolfAttack()
-	TimerStart(CreateTimer(), 300, true, function()
+	TimerStart(CreateTimer(), 60, true, function()
 		local x,y=GetRectCenterX(gg_rct_WalkSpawnZone),GetRectCenterY(gg_rct_WalkSpawnZone)
 		local wolf=CreateUnit(Player(10), FourCC('n000'), x, y, 0)
 		IssuePointOrder(wolf,"attack",0,0)

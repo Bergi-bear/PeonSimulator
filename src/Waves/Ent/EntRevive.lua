@@ -25,7 +25,7 @@ function EntInTrees()
 						if GetDestructableTypeId(d)==FourCC('LTlt') then
 							if GetDestructableLife(d)>0 then
 								KillDestructable(d)
-								local new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
+								local new=CreateUnit(Player(10), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
 								SetUnitAnimation(new,"birth")
 							end
 						end

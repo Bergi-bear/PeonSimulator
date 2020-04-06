@@ -26,23 +26,48 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-			if GetUnitTypeId(target)==DummyID  then--попадание в даммика эффект ракеты
-				local x,y=GetUnitX(target),GetUnitY(target)
-				ShowUnit(target, false)
-				CreateTorrent(x,y)
-				UnitDamageArea(target,0,GetUnitX(target),GetUnitY(target),150)
-			end
-			if damage>=200 then
-				local angle=GetRandomReal(0,360)
-				local dist=200
-				CreateArtToss(target,"GoblinRubberDuck.mdl",angle,dist,4)
-				local r=GetRandomInt(1,2)
-				if r==1 then
-					PlaySoundAtPointBJ( gg_snd_AAA, 100, Location(GetUnitX(target),GetUnitY(target)), 0 )
-				else
-					PlaySoundAtPointBJ( gg_snd_AAA1, 100, Location(GetUnitX(target),GetUnitY(target)), 0 )
+			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
+				--print("урон по кодою")
+				local x,y=GetUnitXY()
+				BlzSetEventDamage(0)
+				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
+				IssuePointOrder(target,"move",endX,endY)
+				if IsUnitInRangeXY(target,endX,endY,80) then
+					SetUnitOwner(target,casterOwner,true)
+					--print("Ачивка кодоя")
+					--Старт ИИ кодоя
+					TimerStart(CreateTimer(), 10, true, function()
+						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
+						if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+							local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
+							IssuePointOrder(target,"move", rx,ry)
+						end
+					end)
+					TimerStart(CreateTimer(), 1, true, function()
+						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
+						local e=nil
+						GroupEnumUnitsInRange(perebor,GetUnitX(target),GetUnitY(target),600,nil)
+						while true do
+							e = FirstOfGroup(perebor)
+
+							if e == nil then break end
+							if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(target)) then
+								--print("пытаемся скушать врага")
+								--if Cast(target,0,0,e) then
+								if IssueTargetOrder(target,"devour",e) then
+									--print("успешно")
+								else
+
+								end
+							end
+							GroupRemoveUnit(perebor,e)
+						end
+					end)
 				end
-				--JumpEffect
+				TimerStart(CreateTimer(), 2, false, function()
+					IssueImmediateOrder(target,"stop")
+				end)
+
 			end
 		end
 	end)
@@ -85,6 +110,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			--print("лечим")
 			local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 			data.Repairs=data.Repairs+heal
+			data.RevoltSec=0
 			if not data.Perk6 then
 				if data.Repairs>=1000 then
 					data.Perk6=true

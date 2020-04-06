@@ -52,8 +52,9 @@ function RegisterCollision(hero)
 				SetUnitExploded(CollisionUnit,true)
 				local data=AnyData[GetHandleId(CollisionUnit)]
 				local x,y=data.x,data.y
-				UnitDamageArea(CollisionUnit,100,x,y,150)
-				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				local nx,ny=GetUnitXY(CollisionUnit)
+				UnitDamageArea(CollisionUnit,100,nx,ny,150)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",nx,ny))
 				KillUnit(CollisionUnit)
 				TimerStart(CreateTimer(), 30, false, function()
 					local new =CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)

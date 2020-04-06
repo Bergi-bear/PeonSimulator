@@ -105,7 +105,6 @@ function InitGameCore()
 	TriggerAddAction(TrigDepressW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-
 		data.ReleaseW=false
 	end)
 	-----------------------------------------------------------------OSKEY_S
@@ -246,7 +245,6 @@ function InitGameCore()
 			local data=HERO[i]
 			local hero=data.UnitHero
 			ForceUIKeyBJ(GetOwningPlayer(hero),"M")
-			--ForceUICancelBJ(GetOwningPlayer(hero))
 			IssueImmediateOrder(hero,"stop")
 		end
 	end)
