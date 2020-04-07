@@ -76,6 +76,8 @@ function InitGameCore()
 			----
 			MHoldSec=0,
 			Reflection=false,
+			---ИИ
+			RangeDesMove=0,
 		}
 
 		if HERO[i] then
@@ -83,6 +85,9 @@ function InitGameCore()
 			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 			RegisterCollision(hero)
 			HealthBarAdd(hero)
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
+				StartPeonAI(hero)
+			end
 			--print("111111")
 		end
 	end
@@ -305,6 +310,7 @@ function InitGameCore()
 				data.LastMouseX=GetPlayerMouseX[id]
 			end
 
+
 			local aSpeed=0.7
 			local Vector3 = wGeometry.Vector3
 
@@ -406,6 +412,14 @@ function InitGameCore()
 				turn=data.LastTurn
 				--print("нет")
 			end
+
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
+				angle=data.LastTurn
+				if data.RangeDesMove>80 then
+					IiMoving=true
+				end
+			end
+
 
 
 			local dif=100
