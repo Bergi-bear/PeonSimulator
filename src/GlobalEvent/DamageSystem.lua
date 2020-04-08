@@ -115,6 +115,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 				if data.Perk6 then -- удар тора
+					--print("удар тора")
 					CastArea(u,FourCC('A003'),x,y)
 				end
 			end

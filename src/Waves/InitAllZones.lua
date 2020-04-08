@@ -6,6 +6,7 @@
 function InitAllZones()
 	EntInTrees()-- превращаем энтов в деревья
 	StartAllSaw()
-	WolfAttack()
+	WaveAttack()
 	SetSheepPoint()
+	StartWinter()
 end

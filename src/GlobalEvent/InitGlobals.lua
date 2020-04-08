@@ -55,6 +55,11 @@ function InitGameCore()
 			IsMouseMove=false,
 			LastMouseX=0,
 			LastTurn=0,
+			ForcesCount=0,
+			ForceRemain={},
+			ForceAngle={},
+			ForceSpeed={},
+			IsForce={},
 			---накопление перков
 			SingleWoodCount=0,
 			RevoltSec=0,
@@ -106,8 +111,11 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		data.ReleaseW=true
-		SetUnitAnimationByIndex(data.legs,16)
+		if not data.ReleaseW then
+			data.ReleaseW=true
+			UnitAddVectorForce(data.UnitHero,90,10,30)
+			SetUnitAnimationByIndex(data.legs,16)
+		end
 	end)
 	local TrigDepressW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -128,8 +136,11 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		data.ReleaseS=true
-		SetUnitAnimationByIndex(data.legs,16)
+		if not data.ReleaseS then
+			data.ReleaseS=true
+			UnitAddVectorForce(data.UnitHero,270,10,30)
+			SetUnitAnimationByIndex(data.legs,16)
+		end
 	end)
 	local TrigDepressS = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -150,8 +161,11 @@ function InitGameCore()
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		data.ReleaseD=true
-		SetUnitAnimationByIndex(data.legs,16)
+		if not data.ReleaseD then
+			data.ReleaseD=true
+			UnitAddVectorForce(data.UnitHero,0,10,30)
+			SetUnitAnimationByIndex(data.legs,16)
+		end
 	end)
 	local TrigDePressD = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -172,8 +186,11 @@ function InitGameCore()
 	TriggerAddAction(TrigPressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		data.ReleaseA=true
-		SetUnitAnimationByIndex(data.legs,16)
+		if not data.ReleaseA then
+			UnitAddVectorForce(data.UnitHero,180,10,30)
+			data.ReleaseA=true
+			SetUnitAnimationByIndex(data.legs,16)
+		end
 	end)
 	local TrigDePressA = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -419,7 +436,7 @@ function InitGameCore()
 
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				angle=data.LastTurn
-				if data.RangeDesMove>80 then
+				if data.RangeDesMove>100 then
 					IiMoving=true
 				end
 			end
@@ -428,9 +445,9 @@ function InitGameCore()
 
 			local dif=100
 			if angle+dif>turn and angle-dif<turn then
-				SetUnitTurnSpeed(data.legs,1)
+				SetUnitTimeScale(data.legs,speed*.1)
 			else
-				SetUnitTurnSpeed(data.legs,-1)
+				SetUnitTimeScale(data.legs,-1*(speed*.1))
 			end
 
 			--Любой тик движения
@@ -494,7 +511,9 @@ function InitGameCore()
 					if walk and walkattack then
 						BlzSetUnitFacingEx(data.legs,angle)
 						SetUnitAnimationByIndex(data.legs,16)
+						SetUnitTimeScale(data.legs,speed*.1)
 						walk=false
+
 						--print("перебирай ногами"..GetUnitName(data.legs))
 					end
 					------------------------------Движение
@@ -568,6 +587,7 @@ function InitGameCore()
 					data.IsFrizzyDisabled=false
 					DestroyEffect(data.FrizzyEff)
 					KillUnit(hero)
+					data.FrozenTime=0
 				end
 
 				else

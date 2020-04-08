@@ -3,12 +3,13 @@ function UnitAddVectorForce(hero,Angle,Speed,Distance)
 	local data=nil
 	local k=0
 	local h=0
+	--print("ForceFor "..GetUnitName(hero))
 	if IsUnitType(hero,UNIT_TYPE_HERO) then
-		h=UnitGetPid(hero)
+		h=GetPlayerId(GetOwningPlayer(hero))
 
 	else
 		h=GetHandleId(hero)
-		print("НЕГЕРОЙ толкаемый")
+	--	print("НЕГЕРОЙ толкаемый "..GetUnitName(hero))
 	end
 	if not HERO[h] then
 		--print("первый толчек для "..GetUnitName(hero))

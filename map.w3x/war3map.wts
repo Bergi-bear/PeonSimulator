@@ -171,3 +171,27 @@ STRING 32
 Это даммми юнит
 }
 
+STRING 33
+// Units: e005 (Огненная ловушка), Name (Name)
+{
+Огненная ловушка
+}
+
+STRING 34
+// Units: e005 (Огненная ловушка), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 35
+// Units: e005 (Огненная ловушка), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+
+STRING 36
+// Abilities: A005 (Ветер), Name (Name)
+{
+Ветер
+}
+

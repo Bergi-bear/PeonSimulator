@@ -11,6 +11,7 @@ function CastArea(caster,id,x,y,range, xPoz,yPoz)
 		dx,dy=xPoz,yPoz
 	end
 	local dummy=CreateUnit(GetOwningPlayer(caster), DummyID, dx, dy, 0)--
+	UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 	if UnitAddAbility(dummy,id) then
 	else
 		print("ошибка добавления способности")
@@ -36,5 +37,6 @@ function CastArea(caster,id,x,y,range, xPoz,yPoz)
 		end
 		GroupRemoveUnit(perebor,e)
 	end
-	UnitApplyTimedLife(dummy,FourCC('e000'),3)
+
+
 end

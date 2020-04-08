@@ -29,10 +29,24 @@ end
 
 GTotalWood=0
 function CreateWoodFrame ()
+	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wood, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
 	BlzFrameSetSize(wood, 0.04, 0.04)
-	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.8-0.02 , 0.6-0.02)
+	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.8-0.02 , 0.6-0.02)--0.2
+
+
+
+	local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", wood,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
+	local tooltip = BlzCreateFrame("BoxedText", wood, 0, 0)--Create the BoxedText Frame
+	local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
+	BlzFrameSetAllPoints(faceHover, wood) --faceHover copies the size and position of face.
+	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
+	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
+	BlzFrameSetSize(tooltip, 0.18, 0.18)
+	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
+	BlzFrameSetText(UpDest, "Количество древисины, необходимое для победы. Потеря лесопилки приведёт к поражению всех игроков")
+
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
 
@@ -55,6 +69,7 @@ function CreateWoodFrame ()
 end
 
 function MoveWoodAsFarm(hero,k)
+
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetVisible(wood,false)
 	if GetLocalPlayer()==GetOwningPlayer(hero) then
@@ -212,7 +227,10 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья ")
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья и")
+	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
+	BlzFrameSetText(new_FrameChargesText2, "Используйте кнопки WASD, для движения")
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
@@ -227,6 +245,7 @@ function CreateMouseHelper(sec)
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
+					BlzFrameSetVisible(new_FrameChargesText2,false)
 				end
 			end
 		end
