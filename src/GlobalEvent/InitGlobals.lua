@@ -74,10 +74,14 @@ function InitGameCore()
 			Perk7=false, -- Ожирение
 			Perk8=false, -- Кодой
 			----
-			MHoldSec=0,
-			Reflection=false,
-			---ИИ
+			MHoldSec=0, -- удержания мыши для подсказки
+			Reflection=false, --время на отражение снаряда
+			--- ИИ
 			RangeDesMove=0,
+			--- заморозка
+			IsFrizzyDisabled=false,
+			FrozenTime=0,
+			FrizzyEff=nil
 		}
 
 		if HERO[i] then
@@ -458,48 +462,47 @@ function InitGameCore()
 				end
 			end
 			--анимации
-			if IiMoving then
-
-				data.TotalWay=data.TotalWay+speed-- считаем бездействие
-				if not data.Perk4 then
-					if data.TotalWay>=400000 then
-						data.Perk4=true
-						if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[4],false)
-						end
-						print("Лесной болван")
-					end
-				end
-
-
-				if startwalk==false then
-					data.sec=1
-					startwalk=true
-				end
-				if data.isattack==false then
-					if walkattack then
-
-						if data.ReleaseRMB==false then
-						--	print("reset in walk")
-							SetUnitAnimation(hero,"Stand")
+			if IiMoving  then
+				if not data.IsFrizzyDisabled then
+					data.TotalWay=data.TotalWay+speed-- считаем бездействие
+					if not data.Perk4 then
+						if data.TotalWay>=400000 then
+							data.Perk4=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[4],false)
+							end
+							print("Лесной болван")
 						end
 					end
-				end
 
 
-				if walk and walkattack then
-					BlzSetUnitFacingEx(data.legs,angle)
-					SetUnitAnimationByIndex(data.legs,16)
-					walk=false
-					--print("перебирай ногами"..GetUnitName(data.legs))
-				end
-				------------------------------Движение
+					if startwalk==false then
+						data.sec=1
+						startwalk=true
+					end
+					if data.isattack==false then
+						if walkattack then
+
+							if data.ReleaseRMB==false then
+								--	print("reset in walk")
+								SetUnitAnimation(hero,"Stand")
+							end
+						end
+					end
+
+
+					if walk and walkattack then
+						BlzSetUnitFacingEx(data.legs,angle)
+						SetUnitAnimationByIndex(data.legs,16)
+						walk=false
+						--print("перебирай ногами"..GetUnitName(data.legs))
+					end
+					------------------------------Движение
 
 
 					newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 
-
-
+				end
 			else--не двигается
 				if standanim then
 					SetUnitAnimationByIndex(data.legs,11)
@@ -549,9 +552,38 @@ function InitGameCore()
 				end
 			end
 			--каждый тик
-			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then
+			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then --
 				newPos=newPos+Vector3:new(-5, 0, 0)
-				--print("поток")
+
+				data.FrozenTime=data.FrozenTime+TIMER_PERIOD
+				if not data.IsFrizzyDisabled then
+					if data.FrozenTime >=15 then --and not data.FrizzyEff then
+						data.FrizzyEff=AddSpecialEffectTarget("ice cube",hero,"origin")
+						--print("обморожение "..data.FrozenTime)
+						data.IsFrizzyDisabled=true
+					end
+				end
+
+				if data.FrozenTime >=30 then
+					data.IsFrizzyDisabled=false
+					DestroyEffect(data.FrizzyEff)
+					KillUnit(hero)
+				end
+
+				else
+				if GetOwningPlayer(hero)==Player(0) then
+					--print("в тёплой зоне")
+					if data.IsFrizzyDisabled then
+						--print("Таем "..data.FrozenTime)
+						data.FrozenTime=data.FrozenTime-TIMER_PERIOD*5
+
+						if data.FrozenTime <=0 then
+							DestroyEffect(data.FrizzyEff)
+							--print("Оттаял "..data.FrozenTime)
+							data.IsFrizzyDisabled=false
+						end
+					end
+				end
 			end
 
 			SetUnitPositionSmooth(hero,newPos.x,newPos.y)

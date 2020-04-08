@@ -259,6 +259,7 @@ function StartPeonAI(hero)
 	local ErrorTime2=0
 	local Base=FindUnitOfType(FourCC('o001'))
 	local k=1
+	local IMFree=0
 	TimerStart(CreateTimer(), 1, true, function()
 		data.ReleaseW=false
 		data.ReleaseA=false
@@ -284,29 +285,43 @@ function StartPeonAI(hero)
 
 
 		if not d or ErrorTime>=10  then --	if not d or ErrorTime>=10  then --
-			print("хз что делать")
-			data.LastTurn=GetRandomReal(0,360)
-			local fr=GetRandomInt(1,8)
-			if fr==1 then
-				data.ReleaseW=true
-			elseif fr==2 then
-				data.ReleaseA=true
-			elseif fr==3 then
-				data.ReleaseS=true
-			elseif fr==4 then
-				data.ReleaseD=true
-			elseif fr==5 then
-				data.ReleaseW=true
-				data.ReleaseD=true
-			elseif fr==6 then
-				data.ReleaseD=true
-				data.ReleaseS=true
-			elseif fr==7 then
-				data.ReleaseS=true
-				data.ReleaseA=true
-			elseif fr==8 then
-				data.ReleaseA=true
-				data.ReleaseW=true
+			--print("хз что делать")
+			IMFree=IMFree+1
+			local ab=nil
+			if IMFree>=3 then
+				ab=GetAllyBuild(hero,500)
+			end
+			if IMFree>=7 then
+				IMFree=0
+			end
+			if not ab then
+				data.LastTurn=GetRandomReal(0,360)
+				local fr=GetRandomInt(1,8)
+				if fr==1 then
+					data.ReleaseW=true
+				elseif fr==2 then
+					data.ReleaseA=true
+				elseif fr==3 then
+					data.ReleaseS=true
+				elseif fr==4 then
+					data.ReleaseD=true
+				elseif fr==5 then
+					data.ReleaseW=true
+					data.ReleaseD=true
+				elseif fr==6 then
+					data.ReleaseD=true
+					data.ReleaseS=true
+				elseif fr==7 then
+					data.ReleaseS=true
+					data.ReleaseA=true
+				elseif fr==8 then
+					data.ReleaseA=true
+					data.ReleaseW=true
+				end
+			else
+				ErrorTime=ErrorTime+1
+				data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))/bj_DEGTORAD
+				data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))
 			end
 		end
 
@@ -323,8 +338,8 @@ function StartPeonAI(hero)
 			ErrorTime2=0
 			k=1
 
-			if ErrorTime>=10  then --	if not d or ErrorTime>=10  then --
-				print("я застрял, пока нёс дерево")
+			if ErrorTime>=13  then --	if not d or ErrorTime>=10  then --
+				--print("я застрял, пока нёс дерево")
 				data.LastTurn=GetRandomReal(0,360)
 
 				local fr=GetRandomInt(1,8)
@@ -368,6 +383,23 @@ function GetNearbyDes(hero, range)
 
 		end
 	end)
+	return this
+end
+
+function GetAllyBuild(hero, range)
+	local e=nil
+	local x,y=GetUnitXY(hero)
+	local this=nil
+	GroupEnumUnitsInRange(perebor,x,y,range,nil)
+	while true do
+		e = FirstOfGroup(perebor)
+
+		if e == nil then break end
+		if UnitAlive(e) and IsUnitType(e,UNIT_TYPE_STRUCTURE) and IsUnitAlly(e,GetOwningPlayer(hero)) and GetLosingHP(e)>=10 then
+			this=e
+		end
+		GroupRemoveUnit(perebor,e)
+	end
 	return this
 end
 ---
@@ -1388,10 +1420,14 @@ function InitGameCore()
 			Perk7=false, -- Ожирение
 			Perk8=false, -- Кодой
 			----
-			MHoldSec=0,
-			Reflection=false,
-			---ИИ
+			MHoldSec=0, -- удержания мыши для подсказки
+			Reflection=false, --время на отражение снаряда
+			--- ИИ
 			RangeDesMove=0,
+			--- заморозка
+			IsFrizzyDisabled=false,
+			FrozenTime=0,
+			FrizzyEff=nil
 		}
 
 		if HERO[i] then
@@ -1772,48 +1808,47 @@ function InitGameCore()
 				end
 			end
 			--анимации
-			if IiMoving then
-
-				data.TotalWay=data.TotalWay+speed-- считаем бездействие
-				if not data.Perk4 then
-					if data.TotalWay>=400000 then
-						data.Perk4=true
-						if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[4],false)
-						end
-						print("Лесной болван")
-					end
-				end
-
-
-				if startwalk==false then
-					data.sec=1
-					startwalk=true
-				end
-				if data.isattack==false then
-					if walkattack then
-
-						if data.ReleaseRMB==false then
-						--	print("reset in walk")
-							SetUnitAnimation(hero,"Stand")
+			if IiMoving  then
+				if not data.IsFrizzyDisabled then
+					data.TotalWay=data.TotalWay+speed-- считаем бездействие
+					if not data.Perk4 then
+						if data.TotalWay>=400000 then
+							data.Perk4=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[4],false)
+							end
+							print("Лесной болван")
 						end
 					end
-				end
 
 
-				if walk and walkattack then
-					BlzSetUnitFacingEx(data.legs,angle)
-					SetUnitAnimationByIndex(data.legs,16)
-					walk=false
-					--print("перебирай ногами"..GetUnitName(data.legs))
-				end
-				------------------------------Движение
+					if startwalk==false then
+						data.sec=1
+						startwalk=true
+					end
+					if data.isattack==false then
+						if walkattack then
+
+							if data.ReleaseRMB==false then
+								--	print("reset in walk")
+								SetUnitAnimation(hero,"Stand")
+							end
+						end
+					end
+
+
+					if walk and walkattack then
+						BlzSetUnitFacingEx(data.legs,angle)
+						SetUnitAnimationByIndex(data.legs,16)
+						walk=false
+						--print("перебирай ногами"..GetUnitName(data.legs))
+					end
+					------------------------------Движение
 
 
 					newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 
-
-
+				end
 			else--не двигается
 				if standanim then
 					SetUnitAnimationByIndex(data.legs,11)
@@ -1863,9 +1898,37 @@ function InitGameCore()
 				end
 			end
 			--каждый тик
-			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then
+			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then --
 				newPos=newPos+Vector3:new(-5, 0, 0)
-				--print("поток")
+
+				data.FrozenTime=data.FrozenTime+TIMER_PERIOD
+				if not data.IsFrizzyDisabled then
+					if data.FrozenTime >=15 then --and not data.FrizzyEff then
+						data.FrizzyEff=AddSpecialEffectTarget("ice cube",hero,"origin")
+						--print("обморожение "..data.FrozenTime)
+						data.IsFrizzyDisabled=true
+					end
+				end
+
+				if data.FrozenTime >=30 then
+					data.IsFrizzyDisabled=false
+					KillUnit(hero)
+				end
+
+				else
+				if GetOwningPlayer(hero)==Player(0) then
+					--print("в тёплой зоне")
+					if data.IsFrizzyDisabled then
+						--print("Таем "..data.FrozenTime)
+						data.FrozenTime=data.FrozenTime-TIMER_PERIOD*5
+
+						if data.FrozenTime <=0 then
+							DestroyEffect(data.FrizzyEff)
+							--print("Оттаял "..data.FrozenTime)
+							data.IsFrizzyDisabled=false
+						end
+					end
+				end
 			end
 
 			SetUnitPositionSmooth(hero,newPos.x,newPos.y)
@@ -2240,6 +2303,13 @@ function HealUnit(hero,amount,flag)
 	if  flag==2 then
 		return OverHeal
 	end
+end
+
+function GetLosingHP(hero)
+	local MaxHP=BlzGetUnitMaxHP(hero)
+	local CurrentHP=GetUnitState(hero,UNIT_STATE_LIFE)
+	local LoosingHP=MaxHP-CurrentHP
+	return LoosingHP
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

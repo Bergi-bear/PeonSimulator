@@ -12,6 +12,7 @@ function StartPeonAI(hero)
 	local ErrorTime2=0
 	local Base=FindUnitOfType(FourCC('o001'))
 	local k=1
+	local IMFree=0
 	TimerStart(CreateTimer(), 1, true, function()
 		data.ReleaseW=false
 		data.ReleaseA=false
@@ -38,28 +39,42 @@ function StartPeonAI(hero)
 
 		if not d or ErrorTime>=10  then --	if not d or ErrorTime>=10  then --
 			--print("хз что делать")
-			data.LastTurn=GetRandomReal(0,360)
-			local fr=GetRandomInt(1,8)
-			if fr==1 then
-				data.ReleaseW=true
-			elseif fr==2 then
-				data.ReleaseA=true
-			elseif fr==3 then
-				data.ReleaseS=true
-			elseif fr==4 then
-				data.ReleaseD=true
-			elseif fr==5 then
-				data.ReleaseW=true
-				data.ReleaseD=true
-			elseif fr==6 then
-				data.ReleaseD=true
-				data.ReleaseS=true
-			elseif fr==7 then
-				data.ReleaseS=true
-				data.ReleaseA=true
-			elseif fr==8 then
-				data.ReleaseA=true
-				data.ReleaseW=true
+			IMFree=IMFree+1
+			local ab=nil
+			if IMFree>=3 then
+				ab=GetAllyBuild(hero,500)
+			end
+			if IMFree>=7 then
+				IMFree=0
+			end
+			if not ab then
+				data.LastTurn=GetRandomReal(0,360)
+				local fr=GetRandomInt(1,8)
+				if fr==1 then
+					data.ReleaseW=true
+				elseif fr==2 then
+					data.ReleaseA=true
+				elseif fr==3 then
+					data.ReleaseS=true
+				elseif fr==4 then
+					data.ReleaseD=true
+				elseif fr==5 then
+					data.ReleaseW=true
+					data.ReleaseD=true
+				elseif fr==6 then
+					data.ReleaseD=true
+					data.ReleaseS=true
+				elseif fr==7 then
+					data.ReleaseS=true
+					data.ReleaseA=true
+				elseif fr==8 then
+					data.ReleaseA=true
+					data.ReleaseW=true
+				end
+			else
+				ErrorTime=ErrorTime+1
+				data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))/bj_DEGTORAD
+				data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))
 			end
 		end
 
@@ -121,5 +136,22 @@ function GetNearbyDes(hero, range)
 
 		end
 	end)
+	return this
+end
+
+function GetAllyBuild(hero, range)
+	local e=nil
+	local x,y=GetUnitXY(hero)
+	local this=nil
+	GroupEnumUnitsInRange(perebor,x,y,range,nil)
+	while true do
+		e = FirstOfGroup(perebor)
+
+		if e == nil then break end
+		if UnitAlive(e) and IsUnitType(e,UNIT_TYPE_STRUCTURE) and IsUnitAlly(e,GetOwningPlayer(hero)) and GetLosingHP(e)>=10 then
+			this=e
+		end
+		GroupRemoveUnit(perebor,e)
+	end
 	return this
 end

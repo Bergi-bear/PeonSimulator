@@ -38,3 +38,10 @@ function HealUnit(hero,amount,flag)
 		return OverHeal
 	end
 end
+
+function GetLosingHP(hero)
+	local MaxHP=BlzGetUnitMaxHP(hero)
+	local CurrentHP=GetUnitState(hero,UNIT_STATE_LIFE)
+	local LoosingHP=MaxHP-CurrentHP
+	return LoosingHP
+end
