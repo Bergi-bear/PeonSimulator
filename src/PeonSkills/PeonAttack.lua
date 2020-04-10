@@ -13,3 +13,35 @@ function AfterAttack(hero, delay)
 		end
 	end)
 end
+
+function MakeUnitAllEnemy(hero)
+	--SetPlayerAlliance()
+	local p=GetOwningPlayer(hero)
+	SetPlayerAllianceStateBJ(p, Player(0), bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(p, Player(1), bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(p, Player(2), bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(p, Player(3), bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(p, Player(5), bj_ALLIANCE_UNALLIED)
+
+	SetPlayerAllianceStateBJ(Player(0),p, bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(Player(1),p, bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(Player(2),p, bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(Player(3),p, bj_ALLIANCE_UNALLIED)
+	SetPlayerAllianceStateBJ(Player(5),p, bj_ALLIANCE_UNALLIED)
+end
+
+function MakeUnitAllAlly(hero)
+	--SetPlayerAlliance()
+	local p=GetOwningPlayer(hero)
+	SetPlayerAllianceStateBJ(p, Player(0), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(p, Player(1), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(p, Player(2), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(p, Player(3), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(p, Player(5), bj_ALLIANCE_ALLIED_VISION)
+
+	SetPlayerAllianceStateBJ(Player(0),p, bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(1),p, bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(2),p, bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(3),p, bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(5),p, bj_ALLIANCE_ALLIED_VISION)
+end

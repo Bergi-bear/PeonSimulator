@@ -133,8 +133,9 @@ texture={
 	"ReplaceableTextures\\CommandButtons\\BTNKotoBeast",
 	"ReplaceableTextures\\CommandButtons\\BTNGatherGold", -- кирка
 	"ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade",-- техника безопасности
-	"",
-	"",
+	"ReplaceableTextures\\PassiveButtons\\PASBTNDemolish",
+	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf"
 }
 Name= { --Определяет количество талантов
 	"Работник месяца",
@@ -145,8 +146,11 @@ Name= { --Определяет количество талантов
 	"Ученик Тора",
 	"Ожирение 0 степени",
 	"Толстокожий друг",
-	"Калёная кирка",
-	"Техника безопасности"
+	"Калёная кирка",--9
+	"Правила ТБ",
+	"Погром",
+	"Отмороженный",
+	"Шавка волка",
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -157,8 +161,11 @@ description={
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 	"Приручите кодоя, чтобы получить 10 ед брони ",
-	"Накалите кирку до краса, чтобы увеличить следующую атаку в 5 раз",
+	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
 	"Донесите деревья с полным здоровьем, чтобы обучиться парированию",
+	"Сломайте лесопилку людей, чтобы научиться бить ногой",
+	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
+	"Убейте 10 волков, чтобы получить шапку волка"
 }
 
 function PerkButtonLine()
@@ -213,6 +220,17 @@ function PerkButtonLine()
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
 					elseif k==8  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
+					elseif k==9  then
+						if not data.Perk9 then
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.FireCount.."/5|r" ) --|cffffff00AAAA|r
+						else
+							if not data.HaveAFire then
+								BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Обычная|r" ) --|cffffff00AAAA|r
+							else
+								BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Калёная|r" ) --|cffffff00AAAA|r
+							end
+						end
+					elseif k==10  then --техника безопусноти
 					end
 				end
 			end

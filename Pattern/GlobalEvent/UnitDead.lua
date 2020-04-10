@@ -10,11 +10,14 @@ function InitUnitDeath()
 
 		local killer=GetKillingUnit()--убийца
 		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герои
+
+
 			TimerStart(CreateTimer(), 1, false, function()--юнит жив ещё 1 секунду
 				local PD=GetOwningPlayer(DeadUnit)
 				local pid=GetPlayerId(PD)
 				local data=HERO[pid]
 				data.Alive=false
+
 			end)
 
 			TimerStart(CreateTimer(), 5, false, function()

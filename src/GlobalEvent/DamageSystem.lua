@@ -102,10 +102,6 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
 		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  and IsUnitZCollision(e,ZDamageSource) then
-
-			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
-			isdamage=true
-			hero=e
 			if EffectModel~=nil then
 				--print("эффеет")
 				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
@@ -118,11 +114,37 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					--print("удар тора")
 					CastArea(u,FourCC('A003'),x,y)
 				end
+				if data.HaveAFire then
+					damage=damage*5
+					data.HaveAFire=false
+					UnitRemoveAbility(u,FourCC('A006'))
+					FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
+				end
+
 			end
+			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
+			isdamage=true
+			hero=e
 		end
 		--ремонт
 		if true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and IsUnitType(e,UNIT_TYPE_STRUCTURE) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
+			if GetUnitTypeId(e)==FourCC('n003') then-- костер
+				data.FireCount=data.FireCount+1
+				if not data.Perk9 then
+					if data.FireCount>=5 then
+						data.Perk9=true
+						--print("разблокировка перка")
+						if GetLocalPlayer()==GetOwningPlayer(u) then
+							BlzFrameSetVisible(PerkIsLock[9],false)
+						end
+					end
+				end
+				if data.Perk9 then
+					UnitAddAbility(u,FourCC('A006'))
+					data.HaveAFire=true
+				end
+			end
 			--print("лечим")
 			local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 			data.Repairs=data.Repairs+heal

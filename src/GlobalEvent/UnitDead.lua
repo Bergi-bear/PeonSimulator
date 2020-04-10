@@ -34,7 +34,9 @@ function InitUnitDeath()
 				ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
 				SelectUnitForPlayerSingle(DeadUnit,PD)
 				data.IsWood=false
-
+				MakeUnitAllAlly(DeadUnit)
+				data.RevoltSec=0
+				data.Perk2=false
 			end)
 		end
 
@@ -56,9 +58,14 @@ function InitUnitDeath()
 			end
 		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('h001') then
-			ShowUnit(DeadUnit,false)
-			DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\AnimateDead\\AnimateDeadTarget.mdl",GetUnitXY(DeadUnit)))
+		if GetUnitTypeId(DeadUnit)==FourCC('o001') then
+			print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
+			TimerStart(CreateTimer(), 5, false, function()
+				CustomDefeatBJ(Player(0),"Вы проиграли")
+				CustomDefeatBJ(Player(1),"Вы проиграли")
+				CustomDefeatBJ(Player(2),"Вы проиграли")
+				CustomDefeatBJ(Player(3),"Вы проиграли")
+			end)
 		end
 	end)
 end

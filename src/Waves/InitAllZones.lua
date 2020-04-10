@@ -6,7 +6,10 @@
 function InitAllZones()
 	EntInTrees()-- превращаем энтов в деревья
 	StartAllSaw()
-	WaveAttack()
+	TimerStart(CreateTimer(), 90, false, function()
+		WaveAttack()
+	end)
 	SetSheepPoint()
 	StartWinter()
+	CreateVulkano(913,-2550)
 end

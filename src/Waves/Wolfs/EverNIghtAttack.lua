@@ -41,6 +41,10 @@ function WaveAttack()
 		loc =GetRandomLocInRect(gg_rct_SheepZone)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		new=CreateUnit(Player(10), FourCC('n001'), x, y, 0)
+		AnyData[GetHandleId(new)]={
+			x=GetUnitX(new),
+			y=GetUnitY(new),
+		}
 		IssuePointOrder(new,"move",0,0)
 	end)
 	--RemoveLocation(loc)

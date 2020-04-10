@@ -195,3 +195,15 @@ STRING 36
 Ветер
 }
 
+STRING 37
+// Abilities: A007 (Щит в руке), Name (Name)
+{
+Щит в руке
+}
+
+STRING 38
+// Units: o005 (Тележка), Name (Name)
+{
+Тележка
+}
+

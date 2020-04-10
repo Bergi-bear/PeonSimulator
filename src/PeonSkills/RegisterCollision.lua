@@ -17,7 +17,16 @@ function RegisterCollision(hero)
 		--print("any reg "..GetUnitName(CollisionUnit))
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
-			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then
+			if GetUnitTypeId(CollisionUnit)==FourCC('o005') then--тележка
+				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
+					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
+					TimerStart(CreateTimer(), 0.1, true, function()
+						local x,y=GetUnitXY(hero)
+						IssuePointOrder(CollisionUnit,"move",x,y)
+					end)
+				end
+			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова
 				if data.IsWood then
 					local k=1
 					if data.Perk1 then
@@ -35,7 +44,7 @@ function RegisterCollision(hero)
 					AddLumber(k,hero)
 					MoveWoodAsFarm(hero,k)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение
-
+					data.RevoltSec=0
 					--CreateItem(FourCC('I000'),0,0)
 				end
 			end
@@ -50,12 +59,12 @@ function RegisterCollision(hero)
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
 				SetUnitExploded(CollisionUnit,true)
-				local data=AnyData[GetHandleId(CollisionUnit)]
-				local x,y=data.x,data.y
 				local nx,ny=GetUnitXY(CollisionUnit)
 				UnitDamageArea(CollisionUnit,100,nx,ny,150)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",nx,ny))
 				KillUnit(CollisionUnit)
+				local data=AnyData[GetHandleId(CollisionUnit)]
+				local x,y=data.x,data.y
 				TimerStart(CreateTimer(), 30, false, function()
 					local new =CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
 					AnyData[GetHandleId(new)]={

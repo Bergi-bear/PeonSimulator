@@ -69,6 +69,8 @@ function InitGameCore()
 			Repairs=0,
 			Heals=0,
 			KodoCount=0,
+			FireCount=0,
+			HaveAFire=false,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -78,6 +80,7 @@ function InitGameCore()
 			Perk6=false, -- Ученика кузнеца
 			Perk7=false, -- Ожирение
 			Perk8=false, -- Кодой
+			Perk9=false, -- Кирка
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда
@@ -111,7 +114,7 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseW then
+		if not data.ReleaseW  and not data.IsFrizzyDisabled then
 			data.ReleaseW=true
 			UnitAddVectorForce(data.UnitHero,90,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -136,7 +139,7 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseS then
+		if not data.ReleaseS and not data.IsFrizzyDisabled then
 			data.ReleaseS=true
 			UnitAddVectorForce(data.UnitHero,270,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -161,7 +164,7 @@ function InitGameCore()
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseD then
+		if not data.ReleaseD and not data.IsFrizzyDisabled then
 			data.ReleaseD=true
 			UnitAddVectorForce(data.UnitHero,0,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -186,7 +189,7 @@ function InitGameCore()
 	TriggerAddAction(TrigPressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseA then
+		if not data.ReleaseA and not data.IsFrizzyDisabled then
 			UnitAddVectorForce(data.UnitHero,180,10,30)
 			data.ReleaseA=true
 			SetUnitAnimationByIndex(data.legs,16)
@@ -242,11 +245,11 @@ function InitGameCore()
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
-			data.ReleaseRMB=true
-			data.Reflection=true
-			local hero=data.UnitHero
+			if not data.IsFrizzyDisabled then --if not data.ReleaseA and not data.IsFrizzyDisabled then
+				data.ReleaseRMB=true
+				data.Reflection=true
+			end
 			data.AttackTime=0.7
-			randomeffect=GetRandomInt(1,15)
 		end
 	end)
 	local TrigDePressRMB=CreateTrigger()
@@ -317,19 +320,21 @@ function InitGameCore()
 
 			local turn=0
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then
-				turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+				if not  data.IsFrizzyDisabled then
+					turn=AngleBetweenXY(x,y,GetPlayerMouseX[id],GetPlayerMouseY[id])/bj_DEGTORAD
+				end
 
 				if data.LastMouseX==GetPlayerMouseX[id] then
-					--print("курсор не движется "..data.LastMouseX)
-					--turn=GetUnitFacing(hero)
-					data.IsMouseMove=false
+				--print("курсор не движется "..data.LastMouseX)
+				--turn=GetUnitFacing(hero)
+				data.IsMouseMove=false
 
 				else
-					data.LastTurn=turn
-					--print("движется")
-				end
-				data.LastMouseX=GetPlayerMouseX[id]
+				data.LastTurn=turn
+			--print("движется")
 			end
+			data.LastMouseX=GetPlayerMouseX[id]
+				end
 
 
 			local aSpeed=0.7
@@ -357,13 +362,13 @@ function InitGameCore()
 			-- таланты просчеты
 			data.RevoltSec=data.RevoltSec+TIMER_PERIOD-- считаем бездействие
 			if not data.Perk2 then
-				if data.RevoltSec>=30 then
+				if data.RevoltSec>=300 then
 					data.Perk2=true
 					if GetLocalPlayer()==GetOwningPlayer(hero) then
 						BlzFrameSetVisible(PerkIsLock[2],false)
 					end
 					print("Рабочий поднял бунт")
-					--Allian
+					MakeUnitAllEnemy(hero)
 				end
 			end
 			if data.ReleaseRMB then
@@ -488,7 +493,7 @@ function InitGameCore()
 							if GetLocalPlayer()==GetOwningPlayer(hero) then
 								BlzFrameSetVisible(PerkIsLock[4],false)
 							end
-							print("Лесной болван")
+							--print("Лесной болван")
 						end
 					end
 
@@ -574,25 +579,26 @@ function InitGameCore()
 			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then --
 				newPos=newPos+Vector3:new(-5, 0, 0)
 
-				data.FrozenTime=data.FrozenTime+TIMER_PERIOD
-				if not data.IsFrizzyDisabled then
-					if data.FrozenTime >=15 then --and not data.FrizzyEff then
-						data.FrizzyEff=AddSpecialEffectTarget("ice cube",hero,"origin")
-						--print("обморожение "..data.FrozenTime)
-						data.IsFrizzyDisabled=true
+				if not data.HaveAFire then
+					data.FrozenTime=data.FrozenTime+TIMER_PERIOD
+					if not data.IsFrizzyDisabled then
+						if data.FrozenTime >=15 then --and not data.FrizzyEff then
+							data.FrizzyEff=AddSpecialEffectTarget("ice cube",hero,"origin")
+							--print("обморожение "..data.FrozenTime)
+							data.IsFrizzyDisabled=true
+						end
+					end
+
+					if data.FrozenTime >=30 then
+						data.IsFrizzyDisabled=false
+						DestroyEffect(data.FrizzyEff)
+						KillUnit(hero)
+						data.FrozenTime=0
 					end
 				end
 
-				if data.FrozenTime >=30 then
-					data.IsFrizzyDisabled=false
-					DestroyEffect(data.FrizzyEff)
-					KillUnit(hero)
-					data.FrozenTime=0
-				end
-
 				else
-				if GetOwningPlayer(hero)==Player(0) then
-					--print("в тёплой зоне")
+				--print("в тёплой зоне")
 					if data.IsFrizzyDisabled then
 						--print("Таем "..data.FrozenTime)
 						data.FrozenTime=data.FrozenTime-TIMER_PERIOD*5
@@ -603,7 +609,6 @@ function InitGameCore()
 							data.IsFrizzyDisabled=false
 						end
 					end
-				end
 			end
 
 			SetUnitPositionSmooth(hero,newPos.x,newPos.y)
