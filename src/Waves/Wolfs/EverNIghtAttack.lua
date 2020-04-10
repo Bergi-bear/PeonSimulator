@@ -19,7 +19,7 @@ function WaveAttack()
 		new=CreateUnit(Player(10), FourCC('e001'), x, y, 0)
 		IssuePointOrder(new,"attack",0,0)
 	end)
-	TimerStart(CreateTimer(), 80, true, function() -- камни
+	TimerStart(CreateTimer(), 80, true, function() -- камни големы
 		loc =GetRandomLocInRect(gg_rct_StoneZoneS)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		new=CreateUnit(Player(10), FourCC('n002'), x, y, 0)

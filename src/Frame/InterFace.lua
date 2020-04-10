@@ -135,7 +135,9 @@ texture={
 	"ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade",-- техника безопасности
 	"ReplaceableTextures\\PassiveButtons\\PASBTNDemolish",
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
-	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf"
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
+	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
+	"ReplaceableTextures/CommandButtons/BTNResistantSkin"
 }
 Name= { --Определяет количество талантов
 	"Работник месяца",
@@ -151,6 +153,8 @@ Name= { --Определяет количество талантов
 	"Погром",
 	"Отмороженный",
 	"Шавка волка",
+	"Каменный Shit",
+	"Репак из торрента"
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -165,7 +169,9 @@ description={
 	"Донесите деревья с полным здоровьем, чтобы обучиться парированию",
 	"Сломайте лесопилку людей, чтобы научиться бить ногой",
 	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
-	"Убейте 10 волков, чтобы получить шапку волка"
+	"Убейте 10 волков, чтобы получить шапку волка (друг волков)",
+	"Убейте каменных големов, чтобы получить каменный щит ",
+	"Ёхохоу"
 }
 
 function PerkButtonLine()
@@ -231,6 +237,12 @@ function PerkButtonLine()
 							end
 						end
 					elseif k==10  then --техника безопусноти
+					elseif k==14  then
+						if not data.Perk14 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает назад. ".."|cffffff00".."Удерживайте левую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
+						end
 					end
 				end
 			end

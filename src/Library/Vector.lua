@@ -1,5 +1,5 @@
 ---------ВЕКТОРА
-function UnitAddVectorForce(hero,Angle,Speed,Distance)
+function UnitAddVectorForce(hero,Angle,Speed,Distance,AfterMoving)
 	local data=nil
 	local k=0
 	local h=0
@@ -31,5 +31,13 @@ function UnitAddVectorForce(hero,Angle,Speed,Distance)
 	data.ForceAngle[k]=Angle
 	data.IsForce[k]=true
 	data.AngleForce=Angle
+
+	if  AfterMoving==nil then
+		AfterMoving=true
+	end
+	if  data.AfterMoving==nil then
+		data.AfterMoving=AfterMoving
+	end
+	data.AfterMoving=AfterMoving
 	--print("параметры заданы"..GetUnitName(hero)..k)
 end

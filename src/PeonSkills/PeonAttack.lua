@@ -7,9 +7,12 @@ function AfterAttack(hero, delay)
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-		data.Reflection=false
-		if UnitDamageArea(hero,BlzGetUnitBaseDamage(hero,0),x,y,70) then
-			data.RevoltSec=0
+
+		if not data.ReleaseLMB  then
+			data.Reflection=false
+			if UnitDamageArea(hero,BlzGetUnitBaseDamage(hero,0),x,y,70) then
+				data.RevoltSec=0
+			end
 		end
 	end)
 end

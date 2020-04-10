@@ -56,6 +56,17 @@ function InitUnitDeath()
 					BlzFrameSetVisible(PerkIsLock[5],false)
 				end
 			end
+			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
+				data.StoneCount=data.StoneCount+1
+
+				if data.StoneCount==1 then
+					--UnitAddAbility(Killer,FourCC('A007'))
+					data.Perk14=true
+					if GetLocalPlayer()==PD then
+						BlzFrameSetVisible(PerkIsLock[14],false)
+					end
+				end
+			end
 		end
 
 		if GetUnitTypeId(DeadUnit)==FourCC('o001') then

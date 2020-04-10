@@ -27,7 +27,7 @@ function RegisterCollision(hero)
 					end)
 				end
 			end
-			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова
+			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова на лесопилке
 				if data.IsWood then
 					local k=1
 					if data.Perk1 then
@@ -49,13 +49,15 @@ function RegisterCollision(hero)
 					--CreateItem(FourCC('I000'),0,0)
 				end
 			end
-			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then
+			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then-- дрова у юнита
 
 				if not data.IsWood then
 					--print("звук подбора")
-					PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
-					KillUnit(CollisionUnit)
-					data.IsWood=true
+					if not data.ReleaseLMB then
+						PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+						KillUnit(CollisionUnit)
+						data.IsWood=true
+					end
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца

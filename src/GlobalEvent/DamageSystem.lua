@@ -26,6 +26,24 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
+			if IsUnitType(target,UNIT_TYPE_HERO) then
+				--print("Герой получил урон")
+				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+				if data.ReleaseLMB and data.Perk14  then --and
+					--print("AllOK")
+					if data.Perk14==nil then
+					--	print("ERROR")
+					end
+					if data.Perk14 then
+					--	print("в щит")
+					end
+					BlzSetEventDamage(0)
+					local AngleSource=-180+AngleBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitX(caster),GetUnitY(caster))/bj_DEGTORAD
+					--print("в щит AngleSource="..AngleSource.." Угол юнита="..data.LastTurn+180)
+					UnitAddVectorForce(target,AngleSource,damage/3,damage,false)
+				end
+			end
+
 			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
 				--print("урон по кодою")
 				local x,y=GetUnitXY()
@@ -220,4 +238,60 @@ function UnitRocketArea(hero,x,y,range)
 		UnitApplyTimedLife(targ,DummyID,3)
 		--print("Нет врагов, летим в воду")
 	end
+end
+GlobalRect=Rect(0,0,0,0)
+function PointContentDestructable (x,y,range,iskill,damage,hero)
+	local content=false
+	if range==nil then range=80 end
+	if iskill==nil then iskill=false end
+	SetRect(GlobalRect, x - range, y - range, x + range, y +range)
+	EnumDestructablesInRect(GlobalRect,nil,function ()
+		local d=GetEnumDestructable()
+		if GetDestructableLife(d)>0 then
+			content=true
+			if iskill then
+				SetDestructableLife(d,GetDestructableLife(d)-damage)
+
+
+
+				if GetDestructableLife(d)>=1 then
+					SetDestructableAnimation(d,"Stand Hit")
+				else
+					local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+
+					if data.IsWood then
+						--print("Некуда класть звук")
+						CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+					else
+						data.IsWood=true
+						--print("Добавляем 1 дерева для "..GetUnitName(hero))
+					end
+
+				end
+				--блок голема
+				if GetDestructableTypeId(d)==FourCC('LTrc') then
+					KillDestructable(d)
+					local  new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
+
+					TimerStart(CreateTimer(),10,false, function()
+						KillUnit(new)
+						local xn,yn=GetUnitXY(new)
+						--CreateDestructable(FourCC('LTrc'),xn,yn,GetRandomReal(0,360),GetRandomReal(0.5,1.2),GetRandomInt(1,3))
+					end)
+				end
+				--блок голема
+			end
+		else
+			local data=HERO(UnitGetPid(hero))
+			--print("атака по мертвому "..GetUnitName(hero))
+			data.IsWood=true
+		end
+	end)
+	return content
+end
+
+function CreateFreeWood(x,y)
+	local  new=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'),x,y , 0)
+	UnitAddAbility(new,FourCC('A000'))
+	IssueImmediateOrder(new,"WindWalk")
 end

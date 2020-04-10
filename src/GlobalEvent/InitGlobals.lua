@@ -74,6 +74,7 @@ function InitGameCore()
 			KodoCount=0,
 			FireCount=0,
 			HaveAFire=false,
+			StoneCount=0,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -84,6 +85,11 @@ function InitGameCore()
 			Perk7=false, -- Ожирение
 			Perk8=false, -- Кодой
 			Perk9=false, -- Кирка
+			Perk10=false, -- Кирка
+			Perk11=false, -- Кирка
+			Perk12=false, -- Кирка
+			Perk13=false, -- Кирка
+			Perk14=false, -- Щит
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда
@@ -219,8 +225,18 @@ function InitGameCore()
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
-			data.ReleaseLMB=true
-			local hero=data.UnitHero
+			if not data.ReleaseLMB then
+				data.ReleaseLMB=true
+			end
+			--local hero=data.UnitHero
+			if data.Perk14 then
+				UnitAddAbility(data.UnitHero,FourCC('A007'))
+				if data.IsWood then
+					local x,y=GetUnitXY(data.UnitHero)
+					CreateFreeWood(MoveXY(x,y,-60,data.LastTurn))
+					data.IsWood=false
+				end
+			end
 		end
 	end)
 	local TrigDePressLMB=CreateTrigger()
@@ -235,6 +251,7 @@ function InitGameCore()
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			data.ReleaseLMB=false
+			UnitRemoveAbility(data.UnitHero,FourCC('A007'))
 		end
 	end)
 	-----------------------------------------------------------------RMB
@@ -350,6 +367,14 @@ function InitGameCore()
 			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
 			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
 
+
+			if data.ReleaseLMB and data.Perk14  then
+				SetUnitAnimation(hero,"stand defend")
+				--print("Стоит с щитом")
+				--SetUnitAnimationByIndex(hero,20)
+			end
+
+
 			data.sec=data.sec+TIMER_PERIOD--анимация движения
 			if data.sec>=1 then
 				data.sec=0
@@ -395,7 +420,9 @@ function InitGameCore()
 					data.isattack=true
 					--print("time attack")
 					data.Reflection=true
-					AfterAttack(hero,0.4)
+					if not data.ReleaseLMB then
+						AfterAttack(hero,0.4)
+					end
 					--SingleCannon(hero)
 				end
 			end
@@ -447,6 +474,7 @@ function InitGameCore()
 				--print("да")
 				if turn<0 and turn>-180 then
 					turn=turn+360
+					data.LastTurn=turn
 				end
 			else
 				turn=data.LastTurn
@@ -474,14 +502,16 @@ function InitGameCore()
 			local WASDMoving = Vector3:copyFromUnit(hero)
 			local newPos=WASDMoving
 
-
-			if true then
+			if  data.AfterMoving then-- вектор внешней силы if false then--
+				--print("true")
 				local f=0
 				for i=1,k do
 					if data.ForceRemain[i]>0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
 						f=f+1
-						newPos=newPos+newPos:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
+						newPos=newPos+WASDMoving:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
+						--newPos=newPos+Vector3:new(-5, 0, 0)
+						--newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
 						data.ForceRemain[i]=data.ForceRemain[i]-data.ForceSpeed[i]
 					else
@@ -497,6 +527,7 @@ function InitGameCore()
 					--print("нет больше сил")
 				end
 			end
+
 			--анимации
 			if IiMoving  then
 				if not data.IsFrizzyDisabled then
@@ -519,7 +550,7 @@ function InitGameCore()
 					if data.isattack==false then
 						if walkattack then
 
-							if data.ReleaseRMB==false then
+							if data.ReleaseRMB==false and not data.ReleaseLMB then
 								--	print("reset in walk")
 								SetUnitAnimation(hero,"Stand")
 							end
@@ -555,44 +586,75 @@ function InitGameCore()
 				BlzSetUnitFacingEx(data.legs,turn)
 			end
 
-			if data.isattack then
-				walkattack=false
-				--SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
-				if data.IsWood then
-					SetUnitAnimationByIndex(hero,7)
-				else
-					SetUnitAnimationByIndex(hero,3)
+			if  data.AfterMoving==false then-- вектор внешней силы
+				--print("false")
+				local f=0
+				for i=1,k do
+					if data.ForceRemain[i]>0 then
+						--print("Внешняя сила="..data.ForceRemain[i])
+						f=f+1
+						newPos=newPos+WASDMoving:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
+						--newPos=newPos+Vector3:new(-5, 0, 0)
+						--newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
+						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
+						data.ForceRemain[i]=data.ForceRemain[i]-data.ForceSpeed[i]
+					else
+						if data.IsForce[i] then
+							data.IsForce[i]=false
+						end
+					end
 				end
-				--print("play attack")
-				data.isattack=false
-			else
-				if standanim then
-					standanim=false
-					if IiMoving==false and data.ReleaseRMB==false then
-						--print("Анимация Stand")
-						if data.IsWood then
-							SetUnitAnimationByIndex(hero,11)
-						else
-							ResetPeonAnimation(hero)
+				if f==0 then
+					data.ForcesCount=0
+					data.IsDisabled=false
+					SetUnitPathing(hero,true)
+					--print("нет больше сил")
+				end
+			end
+
+
+			if not data.ReleaseLMB then
+				if data.isattack then
+					walkattack=false
+					--SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
+					if data.IsWood then
+						SetUnitAnimationByIndex(hero,7)
+					else
+						SetUnitAnimationByIndex(hero,3)
+					end
+					--print("play attack")
+					data.isattack=false
+				else
+					if standanim then
+						standanim=false
+						if IiMoving==false and data.ReleaseRMB==false then
+							--print("Анимация Stand")
+							if data.IsWood then
+								SetUnitAnimationByIndex(hero,11)
+							else
+								ResetPeonAnimation(hero)
+							end
 						end
 					end
 				end
 			end
 			---дополнительный сборс
-			if data.ReleaseRMB==false and data.isattack==false and IiMoving then
-				if IiMoving then
-					if walkattack then
-						walkattack=false
-						--print("анимация движения без атаки")
-						if data.IsWood then
-							SetUnitAnimationByIndex(hero,16)
-						else
-							SetUnitAnimationByIndex(hero,1)
+			if not data.ReleaseLMB then
+				if data.ReleaseRMB==false and data.isattack==false and IiMoving then
+					if IiMoving then
+						if walkattack then
+							walkattack=false
+							--print("анимация движения без атаки")
+							if data.IsWood then
+								SetUnitAnimationByIndex(hero,16)
+							else
+								SetUnitAnimationByIndex(hero,1)
+							end
 						end
+					else
+						print("total reset")
+						SetUnitAnimation(hero,"Stand")
 					end
-				else
-					print("total reset")
-					SetUnitAnimation(hero,"Stand")
 				end
 			end
 			--каждый тик
