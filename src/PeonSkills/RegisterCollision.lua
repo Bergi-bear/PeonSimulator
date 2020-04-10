@@ -20,9 +20,10 @@ function RegisterCollision(hero)
 			if GetUnitTypeId(CollisionUnit)==FourCC('o005') then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
+					data.CartUnit=CollisionUnit
 					TimerStart(CreateTimer(), 0.1, true, function()
-						local x,y=GetUnitXY(hero)
-						IssuePointOrder(CollisionUnit,"move",x,y)
+						--local x,y=GetUnitXY(hero)
+						--IssuePointOrder(CollisionUnit,"move",x,y)
 					end)
 				end
 			end

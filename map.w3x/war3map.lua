@@ -18,6 +18,7 @@ gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
+gg_rct_MiniWater = nil
 function InitGlobals()
 end
 
@@ -256,6 +257,7 @@ function CreateRegions()
     gg_rct_StoneZoneS = Rect(3104.0, 2368.0, 3296.0, 2560.0)
     gg_rct_Lava = Rect(1248.0, -2592.0, 1472.0, -2368.0)
     gg_rct_Region_012 = Rect(4256.0, 128.0, 4288.0, 160.0)
+    gg_rct_MiniWater = Rect(-800.0, -128.0, -736.0, -32.0)
 end
 
 --CUSTOM_CODE
@@ -1768,6 +1770,9 @@ function InitGameCore()
 			ForceAngle={},
 			ForceSpeed={},
 			IsForce={},
+			CartUnit=nil,
+			CartAngle=0,
+			WalkCart=false,
 			---накопление перков
 			SingleWoodCount=0,
 			RevoltSec=0,
@@ -2025,6 +2030,7 @@ function InitGameCore()
 			local startwalk=false
 			local standanim=false
 			local walkattack=false
+			local WalkCart=false
 
 			local turn=0
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then
@@ -2054,7 +2060,7 @@ function InitGameCore()
 			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
 			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
 
-			data.sec=data.sec+TIMER_PERIOD
+			data.sec=data.sec+TIMER_PERIOD--анимация движения
 			if data.sec>=1 then
 				data.sec=0
 				walk=true
@@ -2062,11 +2068,19 @@ function InitGameCore()
 
 			end
 
-			data.sec2=data.sec2+TIMER_PERIOD
+			data.sec2=data.sec2+TIMER_PERIOD -- анимация атаки
 			if data.sec2>=1 then
 				data.sec2=0
 				walkattack=true
 			end
+			if not data.sec3 then data.sec3=0 end
+			data.sec3=data.sec3+TIMER_PERIOD -- движения карта
+			if data.sec3>=1 then
+				data.sec3=0
+				data.WalkCart=true
+			end
+
+
 			-- таланты просчеты
 			data.RevoltSec=data.RevoltSec+TIMER_PERIOD-- считаем бездействие
 			if not data.Perk2 then
@@ -2137,6 +2151,8 @@ function InitGameCore()
 				angle=180
 				IiMoving=true
 			end
+
+
 			if data.IsMouseMove then
 				--print("да")
 				if turn<0 and turn>-180 then
@@ -2236,6 +2252,12 @@ function InitGameCore()
 
 				end
 			else--не двигается
+				if GetOwningPlayer(hero)==Player(0) then
+				--	print("не двигается")
+				end
+				if data.CartUnit then
+					SetUnitAnimationByIndex(data.CartUnit,0)
+				end
 				if standanim then
 					SetUnitAnimationByIndex(data.legs,11)
 				end
@@ -2323,6 +2345,47 @@ function InitGameCore()
 			--Синхронизация ног
 			SetUnitX(data.legs,newPos.x)
 			SetUnitY(data.legs,newPos.y)
+			-- карт сзади юнита
+			if data.CartUnit then
+				if not data.ReleaseW and not data.ReleaseD and not data.ReleaseA and data.ReleaseA then
+					IiMoving=false
+					print("alldepress")
+				end
+				local rangeCart=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(data.CartUnit),GetUnitY(data.CartUnit))
+				--print(rangeCart)
+				if rangeCart>=81 then
+					--print("угол пеона ="..angle.." тележки "..data.CartAngle)
+
+					data.CartAngle=-180+AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(data.CartUnit),GetUnitY(data.CartUnit))/bj_DEGTORAD
+					local cx,cy=MoveXY(GetUnitX(hero),GetUnitY(hero),-80,data.CartAngle )
+					SetUnitPositionSmooth(data.CartUnit,cx,cy)
+
+					if IiMoving then
+						--print("111")
+						local ac=data.CartAngle   --+AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(data.CartUnit),GetUnitY(data.CartUnit))/bj_DEGTORAD
+						SetUnitFacing(data.CartUnit,ac)
+						if data.WalkCart then
+						  --  print("тележка движется")
+							data.WalkCart=false
+							--SetUnitAnimation(data.CartUnit,"Walk")
+							SetUnitAnimationByIndex(data.CartUnit,1)
+						end
+					else
+					--	print("у этого события нет детекта")
+					end
+
+					if not IiMoving then
+					--	print("баг попался")
+					end
+				else
+					SetUnitFacing(data.CartUnit,-180+AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(data.CartUnit),GetUnitY(data.CartUnit))/bj_DEGTORAD)
+				end
+				if rangeCart>=115 then
+					SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
+					SetUnitAnimationByIndex(data.CartUnit,0)
+					data.CartUnit=nil
+				end
+			end
 			SetUnitFacing(hero,turn)
 		end
 	end)
@@ -4087,9 +4150,10 @@ function RegisterCollision(hero)
 			if GetUnitTypeId(CollisionUnit)==FourCC('o005') then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
+					data.CartUnit=CollisionUnit
 					TimerStart(CreateTimer(), 0.1, true, function()
-						local x,y=GetUnitXY(hero)
-						IssuePointOrder(CollisionUnit,"move",x,y)
+						--local x,y=GetUnitXY(hero)
+						--IssuePointOrder(CollisionUnit,"move",x,y)
 					end)
 				end
 			end
