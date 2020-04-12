@@ -26,21 +26,25 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-			if IsUnitType(target,UNIT_TYPE_HERO) then
+
+			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-				if data.ReleaseLMB and data.Perk14  then --and
-					--print("AllOK")
-					if data.Perk14==nil then
-					--	print("ERROR")
+				if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
+					local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
+					--print("угол поворота пеона="..GetUnitFacing(target))
+					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+					--print("угол между юнитами="..AngleSource)
+					local Vector3 = wGeometry.Vector3
+					local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
+					local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
+					AngleSourceVector = AngleSourceVector:normalize()
+					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
+					--print("dot="..dot.." арккосинусдот="..math.deg(math.acos(dot)))
+					if 0 < dot then
+						UnitAddVectorForce(target, AngleSource, damage / 3, damage, false)  -- отталкивание
+						BlzSetEventDamage(0)
 					end
-					if data.Perk14 then
-					--	print("в щит")
-					end
-					BlzSetEventDamage(0)
-					local AngleSource=-180+AngleBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitX(caster),GetUnitY(caster))/bj_DEGTORAD
-					--print("в щит AngleSource="..AngleSource.." Угол юнита="..data.LastTurn+180)
-					UnitAddVectorForce(target,AngleSource,damage/3,damage,false)
 				end
 			end
 

@@ -4,6 +4,8 @@
 --- DateTime: 03.04.2020 2:31
 function HideEverything()
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,-1)
+
 	for i = 1,11 do
 		BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
 	end
@@ -137,7 +139,9 @@ texture={
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
 	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
 	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
-	"ReplaceableTextures/CommandButtons/BTNResistantSkin"
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
 }
 Name= { --Определяет количество талантов
 	"Работник месяца",
@@ -154,7 +158,9 @@ Name= { --Определяет количество талантов
 	"Отмороженный",
 	"Шавка волка",
 	"Каменный Shit",
-	"Репак из торрента"
+	"Репак из торрента",
+	"Препоследний",
+	"Последний",
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -171,7 +177,9 @@ description={
 	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
 	"Убейте 10 волков, чтобы получить шапку волка (друг волков)",
 	"Убейте каменных големов, чтобы получить каменный щит ",
-	"Ёхохоу"
+	"Ёхохоу",
+	"Препоследний",
+	"Последний",
 }
 
 function PerkButtonLine()
@@ -186,23 +194,22 @@ function PerkButtonLine()
 		BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 		BlzFrameSetSize(face, 0.04, 0.04)
 		BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.02)
-		--	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.2, 0.3)
+		--BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.03)
 		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
 		BlzFrameSetSize(tooltip, 0.15, 0.08)
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 		BlzFrameSetText(UpDest, description[i])
 		BlzFrameSetTexture(face, texture[i],0, true)--face uses paladin blp as texture.
-
-		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)
+		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)--замочек
 		BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0.,0.)
 		BlzFrameSetSize(lock, 0.04, 0.04)
 		BlzFrameSetTexture(lock, "close",0, true)
-
 
 		--глобалки
 		PerkIsLock[i]=lock --замочек
 		PerkToolTip[i]=UpDest -- тултип в описании
 	end
+
 
 	--обновление текста
 	TimerStart(CreateTimer(), 1, true, function()
@@ -241,7 +248,7 @@ function PerkButtonLine()
 						if not data.Perk14 then
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает назад. ".."|cffffff00".."Удерживайте левую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает назад. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
 						end
 					end
 				end
@@ -257,7 +264,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья и")
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую нопку мыши, чтобы рубить деревья и")
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
 	BlzFrameSetText(new_FrameChargesText2, "Используйте кнопки WASD, для движения")

@@ -11,6 +11,7 @@ gg_rct_SheepZone = nil
 gg_rct_StoneZoneS = nil
 gg_rct_Lava = nil
 gg_rct_Region_012 = nil
+gg_rct_MiniWater = nil
 gg_snd_Load = nil
 gg_trg_GuiInit = nil
 gg_trg_DeadHumanLumber = nil
@@ -18,7 +19,7 @@ gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
-gg_rct_MiniWater = nil
+gg_rct_Morlok = nil
 function InitGlobals()
 end
 
@@ -257,7 +258,8 @@ function CreateRegions()
     gg_rct_StoneZoneS = Rect(3104.0, 2368.0, 3296.0, 2560.0)
     gg_rct_Lava = Rect(1248.0, -2592.0, 1472.0, -2368.0)
     gg_rct_Region_012 = Rect(4256.0, 128.0, 4288.0, 160.0)
-    gg_rct_MiniWater = Rect(-800.0, -128.0, -736.0, -32.0)
+    gg_rct_MiniWater = Rect(-768.0, 0.0, -672.0, 96.0)
+    gg_rct_Morlok = Rect(-672.0, 416.0, -544.0, 544.0)
 end
 
 --CUSTOM_CODE
@@ -706,6 +708,8 @@ end
 --- DateTime: 03.04.2020 2:31
 function HideEverything()
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,-1)
+
 	for i = 1,11 do
 		BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
 	end
@@ -839,7 +843,9 @@ texture={
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
 	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
 	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
-	"ReplaceableTextures/CommandButtons/BTNResistantSkin"
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
+	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
 }
 Name= { --Определяет количество талантов
 	"Работник месяца",
@@ -856,7 +862,9 @@ Name= { --Определяет количество талантов
 	"Отмороженный",
 	"Шавка волка",
 	"Каменный Shit",
-	"Репак из торрента"
+	"Репак из торрента",
+	"Препоследний",
+	"Последний",
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -873,7 +881,9 @@ description={
 	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
 	"Убейте 10 волков, чтобы получить шапку волка (друг волков)",
 	"Убейте каменных големов, чтобы получить каменный щит ",
-	"Ёхохоу"
+	"Ёхохоу",
+	"Препоследний",
+	"Последний",
 }
 
 function PerkButtonLine()
@@ -888,23 +898,22 @@ function PerkButtonLine()
 		BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 		BlzFrameSetSize(face, 0.04, 0.04)
 		BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.02)
-		--	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.2, 0.3)
+		--BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.03)
 		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
 		BlzFrameSetSize(tooltip, 0.15, 0.08)
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 		BlzFrameSetText(UpDest, description[i])
 		BlzFrameSetTexture(face, texture[i],0, true)--face uses paladin blp as texture.
-
-		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)
+		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)--замочек
 		BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0.,0.)
 		BlzFrameSetSize(lock, 0.04, 0.04)
 		BlzFrameSetTexture(lock, "close",0, true)
-
 
 		--глобалки
 		PerkIsLock[i]=lock --замочек
 		PerkToolTip[i]=UpDest -- тултип в описании
 	end
+
 
 	--обновление текста
 	TimerStart(CreateTimer(), 1, true, function()
@@ -943,7 +952,7 @@ function PerkButtonLine()
 						if not data.Perk14 then
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает назад. ".."|cffffff00".."Удерживайте левую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает назад. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
 						end
 					end
 				end
@@ -959,7 +968,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте правую нопку мыши, чтобы рубить деревья и")
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую нопку мыши, чтобы рубить деревья и")
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
 	BlzFrameSetText(new_FrameChargesText2, "Используйте кнопки WASD, для движения")
@@ -1498,21 +1507,25 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-			if IsUnitType(target,UNIT_TYPE_HERO) then
+
+			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-				if data.ReleaseLMB and data.Perk14  then --and
-					--print("AllOK")
-					if data.Perk14==nil then
-					--	print("ERROR")
+				if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
+					local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
+					--print("угол поворота пеона="..GetUnitFacing(target))
+					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+					--print("угол между юнитами="..AngleSource)
+					local Vector3 = wGeometry.Vector3
+					local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
+					local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
+					AngleSourceVector = AngleSourceVector:normalize()
+					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
+					--print("dot="..dot.." арккосинусдот="..math.deg(math.acos(dot)))
+					if 0 < dot then
+						UnitAddVectorForce(target, AngleSource, damage / 3, damage, false)  -- отталкивание
+						BlzSetEventDamage(0)
 					end
-					if data.Perk14 then
-					--	print("в щит")
-					end
-					BlzSetEventDamage(0)
-					local AngleSource=-180+AngleBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitX(caster),GetUnitY(caster))/bj_DEGTORAD
-					--print("в щит AngleSource="..AngleSource.." Угол юнита="..data.LastTurn+180)
-					UnitAddVectorForce(target,AngleSource,damage/3,damage,false)
 				end
 			end
 
@@ -2010,7 +2023,7 @@ function InitGameCore()
 		local data=HERO[pid]
 		data.ReleaseA=false
 	end)
-	-----------------------------------------------------------------LMB
+	-----------------------------------------------------------------LMB SWAP RMB
 	local TrigPressLMB=CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
@@ -2018,7 +2031,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigPressLMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			if not data.ReleaseLMB then
@@ -2043,14 +2056,14 @@ function InitGameCore()
 
 	TriggerAddAction(TrigDePressLMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			data.ReleaseLMB=false
 			UnitRemoveAbility(data.UnitHero,FourCC('A007'))
 		end
 	end)
-	-----------------------------------------------------------------RMB
+	-----------------------------------------------------------------RMB swap LMB
 	local TrigPressRMB=CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
@@ -2058,7 +2071,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			if not data.IsFrizzyDisabled then --if not data.ReleaseA and not data.IsFrizzyDisabled then
@@ -2075,7 +2088,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigDePressRMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			local hero=data.UnitHero
@@ -2711,7 +2724,6 @@ function InitUnitDeath()
 		end
 	end)
 end
-
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
 --- DateTime: 03.01.2020 12:16
@@ -4469,7 +4481,8 @@ function CreateGroundSaw(hero,angle,z)
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
 			if data.Reflection then
-				speed=speed*(-1)
+				--speed=speed*(-1)
+				--turn=true
 			end
 		end
 
@@ -4481,6 +4494,8 @@ function CreateGroundSaw(hero,angle,z)
 		end
 		--print(i)
 		x,y=MoveXY(xs,ys,step*i,angle)
+		SetUnitX(hero,x)
+		SetUnitY(hero,y)
 		BlzSetSpecialEffectPosition(saw,x,y,z)
 		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
 		local nx,ny=MoveXY(x,y,60,angle)
@@ -4498,8 +4513,6 @@ function CreateGroundSaw(hero,angle,z)
 				end
 			end
 		end
-
-
 
 		if i==100 then
 			turn=true

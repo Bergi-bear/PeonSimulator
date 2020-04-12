@@ -214,7 +214,7 @@ function InitGameCore()
 		local data=HERO[pid]
 		data.ReleaseA=false
 	end)
-	-----------------------------------------------------------------LMB
+	-----------------------------------------------------------------LMB SWAP RMB
 	local TrigPressLMB=CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
@@ -222,7 +222,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigPressLMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			if not data.ReleaseLMB then
@@ -247,14 +247,14 @@ function InitGameCore()
 
 	TriggerAddAction(TrigDePressLMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			data.ReleaseLMB=false
 			UnitRemoveAbility(data.UnitHero,FourCC('A007'))
 		end
 	end)
-	-----------------------------------------------------------------RMB
+	-----------------------------------------------------------------RMB swap LMB
 	local TrigPressRMB=CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
@@ -262,7 +262,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			if not data.IsFrizzyDisabled then --if not data.ReleaseA and not data.IsFrizzyDisabled then
@@ -279,7 +279,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigDePressRMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			local hero=data.UnitHero

@@ -74,7 +74,8 @@ function CreateGroundSaw(hero,angle,z)
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
 			if data.Reflection then
-				speed=speed*(-1)
+				--speed=speed*(-1)
+				--turn=true
 			end
 		end
 
@@ -86,6 +87,8 @@ function CreateGroundSaw(hero,angle,z)
 		end
 		--print(i)
 		x,y=MoveXY(xs,ys,step*i,angle)
+		SetUnitX(hero,x)
+		SetUnitY(hero,y)
 		BlzSetSpecialEffectPosition(saw,x,y,z)
 		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
 		local nx,ny=MoveXY(x,y,60,angle)
@@ -103,8 +106,6 @@ function CreateGroundSaw(hero,angle,z)
 				end
 			end
 		end
-
-
 
 		if i==100 then
 			turn=true
