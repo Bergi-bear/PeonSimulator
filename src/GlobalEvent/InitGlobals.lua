@@ -75,6 +75,8 @@ function InitGameCore()
 			FireCount=0,
 			HaveAFire=false,
 			StoneCount=0,
+			WolfCount=0,
+			WolfHelper=nil,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -106,6 +108,7 @@ function InitGameCore()
 			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 			RegisterCollision(hero)
 			HealthBarAdd(hero)
+			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
 			end

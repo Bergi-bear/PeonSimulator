@@ -32,17 +32,18 @@ function InitDamage()
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 				if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
 					local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
-					--print("угол поворота пеона="..GetUnitFacing(target))
 					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-					--print("угол между юнитами="..AngleSource)
 					local Vector3 = wGeometry.Vector3
 					local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
 					local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
 					AngleSourceVector = AngleSourceVector:normalize()
 					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
-					--print("dot="..dot.." арккосинусдот="..math.deg(math.acos(dot)))
+					local dist=damage
+					if dist >=100 then dist=100 end
 					if 0 < dot then
-						UnitAddVectorForce(target, AngleSource, damage / 3, damage, false)  -- отталкивание
+						local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
+						DestroyEffect(eff)
+						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
 						BlzSetEventDamage(0)
 					end
 				end
@@ -199,50 +200,7 @@ function IsUnitZCollision(hero,ZDamageSource)
 end
 
 
-function UnitDamageLine(u,damage,x,y,range,distance,angle,z)
-	local isdamage=false
-	local nx,ny
-	for i=0,distance/range do
-		nx=MoveX(x,i*range,angle)
-		ny=MoveY(y,i*range,angle)
-		UnitDamageArea(u,damage,nx,ny,range,z)
-	end
-	return isdamage
-end
 
-function UnitRocketArea(hero,x,y,range)
-	local find=false
-	local e--временный юнит
-	local targ=nil
-	--print("стреляем")
-	GroupEnumUnitsInRange(perebor,x,y,range,nil)
-	while true do
-		e = FirstOfGroup(perebor)
-		if e == nil or find==true then break end
-		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(hero)) then
-			targ=e
-		end
-		GroupRemoveUnit(perebor,e)
-	end
-	local dummy=CreateUnit(GetOwningPlayer(hero), DummyID, GetUnitX(hero), GetUnitY(hero), 0)
-	SetUnitZ(dummy,GetUnitZ(hero))
-	UnitAddAbility(dummy,FourCC('A003'))
-	UnitApplyTimedLife(dummy,DummyID,1)
-	if targ~=nil then
-		--print("цель определена- "..GetUnitName(targ))
-		Cast(dummy,0,0,targ)
-	else
-		targ=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), DummyID, x, y, 0)
-
-		UnitRemoveAbility(targ,FourCC('Aloc'))
-		if Cast(dummy,0,0,targ)==false then
-			--print("выстрел в пустоту")
-			HeroUpdateWeaponCharges(hero,3,-1)
-		end
-		UnitApplyTimedLife(targ,DummyID,3)
-		--print("Нет врагов, летим в воду")
-	end
-end
 GlobalRect=Rect(0,0,0,0)
 function PointContentDestructable (x,y,range,iskill,damage,hero)
 	local content=false
@@ -253,6 +211,15 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 		local d=GetEnumDestructable()
 		if GetDestructableLife(d)>0 then
 			content=true
+			local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+			if data.HaveAFire then
+				damage=damage*5
+				data.HaveAFire=false
+				UnitRemoveAbility(hero,FourCC('A006'))
+				--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
+			end
+
+
 			if iskill then
 				SetDestructableLife(d,GetDestructableLife(d)-damage)
 
@@ -261,7 +228,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 				if GetDestructableLife(d)>=1 then
 					SetDestructableAnimation(d,"Stand Hit")
 				else
-					local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+
 
 					if data.IsWood then
 						--print("Некуда класть звук")

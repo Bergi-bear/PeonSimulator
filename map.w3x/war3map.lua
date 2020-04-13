@@ -12,6 +12,7 @@ gg_rct_StoneZoneS = nil
 gg_rct_Lava = nil
 gg_rct_Region_012 = nil
 gg_rct_MiniWater = nil
+gg_rct_Morlok = nil
 gg_snd_Load = nil
 gg_trg_GuiInit = nil
 gg_trg_DeadHumanLumber = nil
@@ -19,7 +20,6 @@ gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
-gg_rct_Morlok = nil
 function InitGlobals()
 end
 
@@ -858,7 +858,7 @@ Name= { --Определяет количество талантов
 	"Толстокожий друг",
 	"Калёная кирка",--9
 	"Правила ТБ",
-	"Погром",
+	"Технологии людей",
 	"Отмороженный",
 	"Шавка волка",
 	"Каменный Shit",
@@ -876,8 +876,8 @@ description={
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 	"Приручите кодоя, чтобы получить 10 ед брони ",
 	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
-	"Донесите деревья с полным здоровьем, чтобы обучиться парированию",
-	"Сломайте лесопилку людей, чтобы научиться бить ногой",
+	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
+	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
 	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
 	"Убейте 10 волков, чтобы получить шапку волка (друг волков)",
 	"Убейте каменных големов, чтобы получить каменный щит ",
@@ -948,11 +948,23 @@ function PerkButtonLine()
 							end
 						end
 					elseif k==10  then --техника безопусноти
+					elseif k==11  then -- погром
+						if  data.Perk11 then
+							BlzFrameSetText(PerkToolTip[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/1|r" ) --|cffffff00AAAA|r
+						end
+					elseif k==13  then
+						if not data.Perk13 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.WolfCount.."/10|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Призывает волка, который будет вам помогать ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
+						end
 					elseif k==14  then
 						if not data.Perk14 then
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает назад. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает вас назад. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
 						end
 					end
 				end
@@ -1513,17 +1525,18 @@ function InitDamage()
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 				if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
 					local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
-					--print("угол поворота пеона="..GetUnitFacing(target))
 					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-					--print("угол между юнитами="..AngleSource)
 					local Vector3 = wGeometry.Vector3
 					local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
 					local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
 					AngleSourceVector = AngleSourceVector:normalize()
 					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
-					--print("dot="..dot.." арккосинусдот="..math.deg(math.acos(dot)))
+					local dist=damage
+					if dist >=100 then dist=100 end
 					if 0 < dot then
-						UnitAddVectorForce(target, AngleSource, damage / 3, damage, false)  -- отталкивание
+						local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
+						DestroyEffect(eff)
+						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
 						BlzSetEventDamage(0)
 					end
 				end
@@ -1680,50 +1693,7 @@ function IsUnitZCollision(hero,ZDamageSource)
 end
 
 
-function UnitDamageLine(u,damage,x,y,range,distance,angle,z)
-	local isdamage=false
-	local nx,ny
-	for i=0,distance/range do
-		nx=MoveX(x,i*range,angle)
-		ny=MoveY(y,i*range,angle)
-		UnitDamageArea(u,damage,nx,ny,range,z)
-	end
-	return isdamage
-end
 
-function UnitRocketArea(hero,x,y,range)
-	local find=false
-	local e--временный юнит
-	local targ=nil
-	--print("стреляем")
-	GroupEnumUnitsInRange(perebor,x,y,range,nil)
-	while true do
-		e = FirstOfGroup(perebor)
-		if e == nil or find==true then break end
-		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(hero)) then
-			targ=e
-		end
-		GroupRemoveUnit(perebor,e)
-	end
-	local dummy=CreateUnit(GetOwningPlayer(hero), DummyID, GetUnitX(hero), GetUnitY(hero), 0)
-	SetUnitZ(dummy,GetUnitZ(hero))
-	UnitAddAbility(dummy,FourCC('A003'))
-	UnitApplyTimedLife(dummy,DummyID,1)
-	if targ~=nil then
-		--print("цель определена- "..GetUnitName(targ))
-		Cast(dummy,0,0,targ)
-	else
-		targ=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), DummyID, x, y, 0)
-
-		UnitRemoveAbility(targ,FourCC('Aloc'))
-		if Cast(dummy,0,0,targ)==false then
-			--print("выстрел в пустоту")
-			HeroUpdateWeaponCharges(hero,3,-1)
-		end
-		UnitApplyTimedLife(targ,DummyID,3)
-		--print("Нет врагов, летим в воду")
-	end
-end
 GlobalRect=Rect(0,0,0,0)
 function PointContentDestructable (x,y,range,iskill,damage,hero)
 	local content=false
@@ -1734,6 +1704,15 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 		local d=GetEnumDestructable()
 		if GetDestructableLife(d)>0 then
 			content=true
+			local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+			if data.HaveAFire then
+				damage=damage*5
+				data.HaveAFire=false
+				UnitRemoveAbility(hero,FourCC('A006'))
+				--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
+			end
+
+
 			if iskill then
 				SetDestructableLife(d,GetDestructableLife(d)-damage)
 
@@ -1742,7 +1721,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 				if GetDestructableLife(d)>=1 then
 					SetDestructableAnimation(d,"Stand Hit")
 				else
-					local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+
 
 					if data.IsWood then
 						--print("Некуда класть звук")
@@ -1884,6 +1863,8 @@ function InitGameCore()
 			FireCount=0,
 			HaveAFire=false,
 			StoneCount=0,
+			WolfCount=0,
+			WolfHelper=nil,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -1915,6 +1896,7 @@ function InitGameCore()
 			SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 			RegisterCollision(hero)
 			HealthBarAdd(hero)
+			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
 			end
@@ -2658,6 +2640,11 @@ function InitUnitDeath()
 			local PD=GetOwningPlayer(DeadUnit)
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
+
+			data.CartUnit=nil
+			SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
+			SetUnitAnimationByIndex(data.CartUnit,0)
+
 			data.Dies=data.Dies+1
 			if data.Dies==15 then
 				if not data.Perk3 then
@@ -2711,9 +2698,38 @@ function InitUnitDeath()
 					end
 				end
 			end
+			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
+				data.WolfCount=data.WolfCount+1
+
+				if data.WolfCount==1 then
+					--UnitAddAbility(Killer,FourCC('A007'))
+					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
+					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
+					UnitAddAbility(data.WolfHelper,FourCC('Aloc'))
+					data.Perk13=true
+
+					TimerStart(CreateTimer(), 1, true, function()
+						local x,y=GetUnitXY(Killer)
+						local distance=DistanceBetweenXY(x,y,GetUnitX(data.WolfHelper),GetUnitY(data.WolfHelper))
+						if distance>600 then
+							SetUnitPosition(data.WolfHelper,x,y)
+						else
+							if GetUnitCurrentOrder(data.WolfHelper)~=String2OrderIdBJ("Attack") then
+								local rx,ry=x+GetRandomInt(-500,500),y+GetRandomInt(-500,500)
+								IssuePointOrder(data.WolfHelper,"attack", rx,ry)
+							end
+						end
+					end)
+
+
+					if GetLocalPlayer()==PD then
+						BlzFrameSetVisible(PerkIsLock[13],false)
+					end
+				end
+			end
 		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('o001') then
+		if GetUnitTypeId(DeadUnit)==FourCC('o001') then--лесопилка орков
 			print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
 			TimerStart(CreateTimer(), 5, false, function()
 				CustomDefeatBJ(Player(0),"Вы проиграли")
@@ -2722,6 +2738,42 @@ function InitUnitDeath()
 				CustomDefeatBJ(Player(3),"Вы проиграли")
 			end)
 		end
+
+		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людец
+			for i=0,3 do
+				local data=HERO[i]
+				local hero=data.UnitHero
+				local distance=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(DeadUnit),GetUnitY(DeadUnit))
+				if distance<=500 then
+					if not data.Perk11 then
+						--Действие перка погрома
+						AddSpecialEffectTarget("GearAura",hero,"origin")
+						TimerStart(CreateTimer(), 1, true, function()
+							local e=nil
+							local x,y=GetUnitXY(hero)
+							GroupEnumUnitsInRange(perebor,x,y,400,nil)
+							while true do
+								e = FirstOfGroup(perebor)
+								if e == nil then break end
+
+								--ремонт
+								if true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(hero)) and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
+									local amount=HealUnit(e,10)
+									data.Repairs=data.Repairs+amount
+								end
+								GroupRemoveUnit(perebor,e)
+							end
+						end)
+
+						data.Perk11=true
+						if GetLocalPlayer()==Player(i) then
+							BlzFrameSetVisible(PerkIsLock[11],false)
+						end
+					end
+				end
+			end
+		end
+
 	end)
 end
 --- Generated by EmmyLua(https://github.com/EmmyLua)

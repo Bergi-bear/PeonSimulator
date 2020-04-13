@@ -14,6 +14,11 @@ function InitUnitDeath()
 			local PD=GetOwningPlayer(DeadUnit)
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
+
+			data.CartUnit=nil
+			SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
+			SetUnitAnimationByIndex(data.CartUnit,0)
+
 			data.Dies=data.Dies+1
 			if data.Dies==15 then
 				if not data.Perk3 then
@@ -67,9 +72,41 @@ function InitUnitDeath()
 					end
 				end
 			end
+			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
+				data.WolfCount=data.WolfCount+1
+
+				if data.WolfCount==1 then
+					--UnitAddAbility(Killer,FourCC('A007'))
+					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
+					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
+					UnitAddAbility(data.WolfHelper,FourCC('Aloc'))
+					data.Perk13=true
+
+					TimerStart(CreateTimer(), 1, true, function()
+						local x,y=GetUnitXY(Killer)
+						local distance=DistanceBetweenXY(x,y,GetUnitX(data.WolfHelper),GetUnitY(data.WolfHelper))
+						if distance>600 then
+							local effmodel=""
+							DestroyEffect(AddSpecialEffect(effmodel,GetUnitXY(data.WolfHelper)))
+							DestroyEffect(AddSpecialEffect(effmodel,x,y))
+							SetUnitPosition(data.WolfHelper,x,y)
+						else
+							if GetUnitCurrentOrder(data.WolfHelper)~=String2OrderIdBJ("Attack") then
+								local rx,ry=x+GetRandomInt(-500,500),y+GetRandomInt(-500,500)
+								IssuePointOrder(data.WolfHelper,"attack", rx,ry)
+							end
+						end
+					end)
+
+
+					if GetLocalPlayer()==PD then
+						BlzFrameSetVisible(PerkIsLock[13],false)
+					end
+				end
+			end
 		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('o001') then
+		if GetUnitTypeId(DeadUnit)==FourCC('o001') then--лесопилка орков
 			print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
 			TimerStart(CreateTimer(), 5, false, function()
 				CustomDefeatBJ(Player(0),"Вы проиграли")
@@ -78,5 +115,41 @@ function InitUnitDeath()
 				CustomDefeatBJ(Player(3),"Вы проиграли")
 			end)
 		end
+
+		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людец
+			for i=0,3 do
+				local data=HERO[i]
+				local hero=data.UnitHero
+				local distance=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(DeadUnit),GetUnitY(DeadUnit))
+				if distance<=500 then
+					if not data.Perk11 then
+						--Действие перка погрома
+						AddSpecialEffectTarget("GearAura",hero,"origin")
+						TimerStart(CreateTimer(), 1, true, function()
+							local e=nil
+							local x,y=GetUnitXY(hero)
+							GroupEnumUnitsInRange(perebor,x,y,400,nil)
+							while true do
+								e = FirstOfGroup(perebor)
+								if e == nil then break end
+
+								--ремонт
+								if true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(hero)) and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
+									local amount=HealUnit(e,10)
+									data.Repairs=data.Repairs+amount
+								end
+								GroupRemoveUnit(perebor,e)
+							end
+						end)
+
+						data.Perk11=true
+						if GetLocalPlayer()==Player(i) then
+							BlzFrameSetVisible(PerkIsLock[11],false)
+						end
+					end
+				end
+			end
+		end
+
 	end)
 end
