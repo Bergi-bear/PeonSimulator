@@ -18,11 +18,11 @@ function StartAllTorch()
 			local angle=GetUnitFacing(e)
 			local torch=e
 			TimerStart(CreateTimer(), 2+rf, true, function()
-				print("стреляем "..GetUnitName(torch))
+				--print("стреляем "..GetUnitName(torch))
 				SingleCannon(torch,angle,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl")
 			end)
 		end
 		GroupRemoveUnit(perebor,e)
 	end
-	print("Запущено факелов: "..k)
+	--print("Запущено факелов: "..k)
 end

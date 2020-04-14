@@ -28,11 +28,12 @@ function RegisterCollision(hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова на лесопилке
+				local k=1
+				if data.Perk1 then
+					k=k+1
+				end
 				if data.IsWood then
-					local k=1
-					if data.Perk1 then
-						k=k+1
-					end
+
 					data.SingleWoodCount=data.SingleWoodCount+k
 					--print(data.SingleWoodCount)
 					if data.SingleWoodCount>=25 then
@@ -46,19 +47,50 @@ function RegisterCollision(hero)
 					MoveWoodAsFarm(hero,k)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение
 					data.RevoltSec=0
-					--CreateItem(FourCC('I000'),0,0)
+				end
+				if data.CartUnit  and GetUnitUserData(data.CartUnit)>0 then
+					local wc=GetUnitUserData(data.CartUnit)
+					--k=wc*k
+					HealUnit(hero,1000)
+					AddLumber(k,hero)
+					UnitAddItemById(hero,FourCC('I000'))-- ускорение
+					TimerStart(CreateTimer(), 0.1, true, function()
+						MoveWoodAsFarm(hero,k)
+
+						data.RevoltSec=0
+						SetUnitUserData(data.CartUnit,GetUnitUserData(data.CartUnit)-1)
+						SetVisualWood(data.CartUnit,GetUnitUserData(data.CartUnit))
+						if GetUnitUserData(data.CartUnit)==0 then
+							DestroyTimer(GetExpiredTimer())
+						end
+					end)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e002') then-- дрова у юнита
-
-				if not data.IsWood then
-					--print("звук подбора")
-					if not data.ReleaseLMB then
+				if data.CartUnit then
+					local wc=GetUnitUserData(data.CartUnit)
+					if wc<=5 then
+						SetUnitUserData(data.CartUnit,wc+1)
+						wc=wc+1
+						--print("Всего дерева в тачке="..wc)
 						PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 						KillUnit(CollisionUnit)
-						data.IsWood=true
+						SetVisualWood(data.CartUnit,wc)
+					end
+				else
+					if not data.IsWood then
+						--print("звук подбора")
+						if not data.ReleaseLMB then
+							PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+							KillUnit(CollisionUnit)
+							data.IsWood=true
+						end
 					end
 				end
+
+
+
+
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
 				SetUnitExploded(CollisionUnit,true)
@@ -90,5 +122,42 @@ function AddLumber (ttk,caster)
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)
 		AdjustPlayerStateBJ(ttk, ownplayer, PLAYER_STATE_RESOURCE_LUMBER )
 		data.IsWood=false
+	end
+end
+
+function SetVisualWood(CartUnit,wc)
+	UnitRemoveAbility(CartUnit,FourCC('A008'))--1
+	UnitRemoveAbility(CartUnit,FourCC('A009'))--2
+	UnitRemoveAbility(CartUnit,FourCC('A00A'))--3
+	UnitRemoveAbility(CartUnit,FourCC('A00B'))--4
+	UnitRemoveAbility(CartUnit,FourCC('A00C'))--5
+	UnitRemoveAbility(CartUnit,FourCC('A00D'))--6
+	if wc==1 then
+		UnitAddAbility(CartUnit,FourCC('A008'))--1
+	elseif wc==2  then
+		UnitAddAbility(CartUnit,FourCC('A008'))--1
+		UnitAddAbility(CartUnit,FourCC('A009'))--2
+	elseif wc==3  then
+		UnitAddAbility(CartUnit,FourCC('A008'))--1
+		UnitAddAbility(CartUnit,FourCC('A009'))--2
+		UnitAddAbility(CartUnit,FourCC('A00A'))--3
+	elseif wc==4  then
+		UnitAddAbility(CartUnit,FourCC('A008'))--1
+		UnitAddAbility(CartUnit,FourCC('A009'))--2
+		UnitAddAbility(CartUnit,FourCC('A00A'))--3
+		UnitAddAbility(CartUnit,FourCC('A00B'))--4
+	elseif wc==5  then
+		UnitAddAbility(CartUnit,FourCC('A008'))--1
+		UnitAddAbility(CartUnit,FourCC('A009'))--2
+		UnitAddAbility(CartUnit,FourCC('A00A'))--3
+		UnitAddAbility(CartUnit,FourCC('A00B'))--4
+		UnitAddAbility(CartUnit,FourCC('A00C'))--5
+	elseif wc==6  then
+		UnitAddAbility(CartUnit,FourCC('A008'))--1
+		UnitAddAbility(CartUnit,FourCC('A009'))--2
+		UnitAddAbility(CartUnit,FourCC('A00A'))--3
+		UnitAddAbility(CartUnit,FourCC('A00B'))--4
+		UnitAddAbility(CartUnit,FourCC('A00C'))--5
+		UnitAddAbility(CartUnit,FourCC('A00D'))--6
 	end
 end

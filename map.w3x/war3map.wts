@@ -231,3 +231,75 @@ STRING 42
 Это даммми юнит
 }
 
+STRING 43
+// Abilities: A008 (Дрова на тележке), Name (Name)
+{
+Дрова на тележке
+}
+
+STRING 44
+// Abilities: A008 (Дрова на тележке), EditorSuffix (Editor Suffix)
+{
+1
+}
+
+STRING 45
+// Abilities: A009 (Дрова на тележке), Name (Name)
+{
+Дрова на тележке
+}
+
+STRING 46
+// Abilities: A009 (Дрова на тележке), EditorSuffix (Editor Suffix)
+{
+2
+}
+
+STRING 47
+// Abilities: A00A (Дрова на тележке), Name (Name)
+{
+Дрова на тележке
+}
+
+STRING 48
+// Abilities: A00A (Дрова на тележке), EditorSuffix (Editor Suffix)
+{
+3
+}
+
+STRING 49
+// Abilities: A00B (Дрова на тележке), Name (Name)
+{
+Дрова на тележке
+}
+
+STRING 50
+// Abilities: A00B (Дрова на тележке), EditorSuffix (Editor Suffix)
+{
+4
+}
+
+STRING 51
+// Abilities: A00C (Дрова на тележке), Name (Name)
+{
+Дрова на тележке
+}
+
+STRING 52
+// Abilities: A00C (Дрова на тележке), EditorSuffix (Editor Suffix)
+{
+5
+}
+
+STRING 53
+// Abilities: A00D (Дрова на тележке), Name (Name)
+{
+Дрова на тележке
+}
+
+STRING 54
+// Abilities: A00D (Дрова на тележке), EditorSuffix (Editor Suffix)
+{
+6
+}
+

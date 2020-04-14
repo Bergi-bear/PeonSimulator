@@ -175,7 +175,7 @@ description={
 	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
 	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
-	"Убейте 10 волков, чтобы получить шапку волка (друг волков)",
+	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы получить каменный щит ",
 	"Ёхохоу",
 	"Препоследний",
@@ -252,7 +252,7 @@ function PerkButtonLine()
 						end
 					elseif k==13  then
 						if not data.Perk13 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.WolfCount.."/10|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.WolfCount.."/5|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Призывает волка, который будет вам помогать. ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
 						end

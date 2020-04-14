@@ -735,7 +735,7 @@ function InitGameCore()
 				else
 					SetUnitFacing(data.CartUnit,-180+AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(data.CartUnit),GetUnitY(data.CartUnit))/bj_DEGTORAD)
 				end
-				if rangeCart>=115 then
+				if rangeCart>=115 or not UnitAlive(hero) then
 					SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
 					SetUnitAnimationByIndex(data.CartUnit,0)
 					data.CartUnit=nil

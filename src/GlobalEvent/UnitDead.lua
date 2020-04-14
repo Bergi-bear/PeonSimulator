@@ -15,9 +15,9 @@ function InitUnitDeath()
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
 
-			data.CartUnit=nil
-			SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
-			SetUnitAnimationByIndex(data.CartUnit,0)
+			--data.CartUnit=nil
+			--SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
+			--SetUnitAnimationByIndex(data.CartUnit,0)
 
 			data.Dies=data.Dies+1
 			if data.Dies==15 then
@@ -75,7 +75,7 @@ function InitUnitDeath()
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
 				data.WolfCount=data.WolfCount+1
 
-				if data.WolfCount==1 then
+				if data.WolfCount==5 then
 					--UnitAddAbility(Killer,FourCC('A007'))
 					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
 					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
