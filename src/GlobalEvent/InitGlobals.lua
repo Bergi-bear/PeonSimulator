@@ -77,6 +77,7 @@ function InitGameCore()
 			StoneCount=0,
 			WolfCount=0,
 			WolfHelper=nil,
+			TreeCountOnTB=0,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -91,7 +92,7 @@ function InitGameCore()
 			Perk11=false, -- Кирка
 			Perk12=false, -- Кирка
 			Perk13=false, -- Кирка
-			Perk14=true, -- Щит
+			Perk14=false, -- Щит
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда

@@ -6,8 +6,8 @@
 function InitAllZones()
 	EntInTrees()-- превращаем энтов в деревья
 	StartAllSaw()
-	TimerStart(CreateTimer(), 90, false, function()
-		WaveAttack()
+	TimerStart(CreateTimer(), 120, false, function()
+		WaveAttack(30)
 	end)
 	SetSheepPoint()
 	StartWinter()

@@ -58,6 +58,7 @@ function CreateBuildingsForPlayer5()
     u = BlzCreateUnitWithSkin(p, FourCC("o003"), 384.0, 128.0, 270.000, FourCC("o003"))
     life = GetUnitState(u, UNIT_STATE_LIFE)
     SetUnitState(u, UNIT_STATE_LIFE, 0.50 * life)
+    u = BlzCreateUnitWithSkin(p, FourCC("nten"), -480.0, -672.0, 270.000, FourCC("nten"))
 end
 
 function CreateUnitsForPlayer5()
@@ -157,9 +158,9 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -623.7, -2485.9, 45.133, FourCC("hpea"))
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -691.2, -2196.4, 121.765, FourCC("hpea"))
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.876, FourCC("hpea"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3147.9, 509.6, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3076.0, 1298.6, 196.738, FourCC("e001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -3008.9, 864.8, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2984.2, 796.5, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2519.4, 1437.1, 196.738, FourCC("e001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2264.9, 936.9, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2746.5, 492.7, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2446.4, 336.0, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2193.9, 691.5, 196.738, FourCC("e001"))
@@ -205,6 +206,25 @@ function CreateBuildingsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2624.0, 2880.0, 270.000, FourCC("h001"))
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -2880.0, 2368.0, 270.000, FourCC("h001"))
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -832.0, 2048.0, 270.000, FourCC("h001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), -1248.0, 4512.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), -224.0, 4448.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), 672.0, 4768.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), 2016.0, 4768.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), 3360.0, 4512.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 3808.0, 3488.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 4000.0, 2272.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 2976.0, -4000.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 928.0, -4000.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 1120.0, -3808.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 1824.0, -3872.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 2080.0, -4128.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh0"), 2528.0, -3872.0, 270.000, FourCC("nmh0"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), 1632.0, -4064.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), -4768.0, 800.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), -4448.0, 736.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), -4448.0, -160.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), -4128.0, -352.0, 270.000, FourCC("nmh1"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmh1"), -4128.0, -864.0, 270.000, FourCC("nmh1"))
 end
 
 function CreateUnitsForPlayer11()
@@ -220,6 +240,34 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("e004"), -2675.8, 2013.7, 0.000, FourCC("e004"))
     u = BlzCreateUnitWithSkin(p, FourCC("e004"), -265.4, 1754.9, 180.000, FourCC("e004"))
     u = BlzCreateUnitWithSkin(p, FourCC("e004"), -388.9, 2729.5, 180.000, FourCC("e004"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), -4879.0, 589.8, 353.320, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), -4693.2, 655.9, 297.288, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), -4258.3, -131.2, 21.127, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), -4322.5, -348.5, 276.402, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), 1368.8, -3850.1, 21.633, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), 2297.0, -4095.0, 107.900, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), 2804.5, -4072.4, 122.875, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3871.1, 2147.1, 322.052, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3880.7, 3318.2, 164.163, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3197.8, 4392.6, 350.639, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 589.3, 4615.5, 83.718, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), -395.8, 4371.1, 349.903, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), -1774.2, 4251.7, 88.168, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), -2806.2, 4603.9, 288.092, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), -1304.2, 4382.9, 238.663, FourCC("nmrr"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqn"), -4118.1, 2794.7, -29.186, FourCC("ndqn"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqv"), -3978.7, 2909.2, -63.729, FourCC("ndqv"))
+    SetUnitState(u, UNIT_STATE_MANA, 0)
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqt"), -3799.9, 2743.4, 262.991, FourCC("ndqt"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqp"), -4089.8, 3049.3, -60.439, FourCC("ndqp"))
+    SetUnitState(u, UNIT_STATE_MANA, 0)
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqs"), -3851.3, 3043.6, 267.934, FourCC("ndqs"))
+    SetUnitState(u, UNIT_STATE_MANA, 0)
+    SetUnitAcquireRange(u, 200.0)
 end
 
 function CreateNeutralPassive()
@@ -958,6 +1006,11 @@ function PerkButtonLine()
 							end
 						end
 					elseif k==10  then --техника безопусноти
+						if  data.Perk10 then
+							BlzFrameSetText(PerkToolTip[k],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/10|r" ) --|cffffff00AAAA|r
+						end
 					elseif k==11  then -- погром
 						if  data.Perk11 then
 							BlzFrameSetText(PerkToolTip[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
@@ -1915,6 +1968,7 @@ function InitGameCore()
 			StoneCount=0,
 			WolfCount=0,
 			WolfHelper=nil,
+			TreeCountOnTB=0,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -1929,7 +1983,7 @@ function InitGameCore()
 			Perk11=false, -- Кирка
 			Perk12=false, -- Кирка
 			Perk13=false, -- Кирка
-			Perk14=true, -- Щит
+			Perk14=false, -- Щит
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда
@@ -4337,8 +4391,16 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-
 					data.SingleWoodCount=data.SingleWoodCount+k
+					if GetLosingHP(hero)<1 then
+						data.TreeCountOnTB=k+data.TreeCountOnTB
+						if data.TreeCountOnTB>=10 and not data.Perk10 then
+							data.Perk10=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[10],false)
+							end
+						end
+					end
 					--print(data.SingleWoodCount)
 					if data.SingleWoodCount>=25 then
 						data.Perk1=true
@@ -4492,8 +4554,8 @@ end
 function InitAllZones()
 	EntInTrees()-- превращаем энтов в деревья
 	StartAllSaw()
-	TimerStart(CreateTimer(), 90, false, function()
-		WaveAttack()
+	TimerStart(CreateTimer(), 120, false, function()
+		WaveAttack(30)
 	end)
 	SetSheepPoint()
 	StartWinter()
@@ -4777,16 +4839,16 @@ end
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
 --- DateTime: 05.04.2020 18:56
-function WaveAttack()
+function WaveAttack(delay)
 	local new
 	local x,y=0,0
 	local loc=nil
-	TimerStart(CreateTimer(), 60, true, function() --волки
+	TimerStart(CreateTimer(), 60+delay, true, function() --волки
 		x,y=GetRectCenterX(gg_rct_WalkSpawnZone),GetRectCenterY(gg_rct_WalkSpawnZone)
 		new=CreateUnit(Player(10), FourCC('n000'), x, y, 0)
 		IssuePointOrder(new,"attack",0,0)
 	end)
-	TimerStart(CreateTimer(), 70, true, function() --энты
+	TimerStart(CreateTimer(), 70+delay, true, function() --энты
 		loc =GetRandomLocInRect(gg_rct_TrentZone)
 
 		x,y=GetLocationX(loc),GetLocationY(loc)
@@ -4794,25 +4856,25 @@ function WaveAttack()
 		new=CreateUnit(Player(10), FourCC('e001'), x, y, 0)
 		IssuePointOrder(new,"attack",0,0)
 	end)
-	TimerStart(CreateTimer(), 80, true, function() -- камни големы
+	TimerStart(CreateTimer(), 80+delay, true, function() -- камни големы
 		loc =GetRandomLocInRect(gg_rct_StoneZoneS)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		new=CreateUnit(Player(10), FourCC('n002'), x, y, 0)
 		IssuePointOrder(new,"attack",0,0)
 	end)
-	TimerStart(CreateTimer(), 90, true, function() --лава
+	TimerStart(CreateTimer(), 90+delay, true, function() --лава
 		loc =GetRandomLocInRect(gg_rct_Lava)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		new=CreateUnit(Player(10), FourCC('n004'), x, y, 0)
 		IssuePointOrder(new,"attack",0,0)
 	end)
-	TimerStart(CreateTimer(), 50, true, function() --люди
+	TimerStart(CreateTimer(), 50+delay, true, function() --люди
 		loc =GetRandomLocInRect(gg_rct_Workers)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		new=CreateUnit(Player(10), FourCC('hpea'), x, y, 0)
 		IssuePointOrder(new,"attack",0,0)
 	end)
-	TimerStart(CreateTimer(), 60, true, function() --овцы
+	TimerStart(CreateTimer(), 60+delay, true, function() --овцы
 		loc =GetRandomLocInRect(gg_rct_SheepZone)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		new=CreateUnit(Player(10), FourCC('n001'), x, y, 0)
@@ -4821,6 +4883,12 @@ function WaveAttack()
 			y=GetUnitY(new),
 		}
 		IssuePointOrder(new,"move",0,0)
+	end)
+	TimerStart(CreateTimer(), 90+delay, true, function() --мурлоки
+		loc =GetRandomLocInRect(gg_rct_Lava)
+		x,y=GetLocationX(loc),GetLocationY(loc)
+		new=CreateUnit(Player(10), FourCC('n004'), x, y, 0)
+		IssuePointOrder(new,"attack",0,0)
 	end)
 	--RemoveLocation(loc)
 end

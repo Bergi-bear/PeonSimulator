@@ -33,8 +33,16 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-
 					data.SingleWoodCount=data.SingleWoodCount+k
+					if GetLosingHP(hero)<1 then
+						data.TreeCountOnTB=k+data.TreeCountOnTB
+						if data.TreeCountOnTB>=10 and not data.Perk10 then
+							data.Perk10=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[10],false)
+							end
+						end
+					end
 					--print(data.SingleWoodCount)
 					if data.SingleWoodCount>=25 then
 						data.Perk1=true

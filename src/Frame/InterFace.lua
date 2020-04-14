@@ -244,6 +244,11 @@ function PerkButtonLine()
 							end
 						end
 					elseif k==10  then --техника безопусноти
+						if  data.Perk10 then
+							BlzFrameSetText(PerkToolTip[k],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/10|r" ) --|cffffff00AAAA|r
+						end
 					elseif k==11  then -- погром
 						if  data.Perk11 then
 							BlzFrameSetText(PerkToolTip[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
