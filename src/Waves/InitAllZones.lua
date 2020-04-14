@@ -12,4 +12,5 @@ function InitAllZones()
 	SetSheepPoint()
 	StartWinter()
 	CreateVulkano(913,-2550)
+	StartAllTorch()
 end

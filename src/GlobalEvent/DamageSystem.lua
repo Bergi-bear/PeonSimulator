@@ -39,9 +39,10 @@ function InitDamage()
 					AngleSourceVector = AngleSourceVector:normalize()
 					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
 					local dist=damage
-					if dist >=100 then dist=100 end
+					if dist >=30 then dist=30 end
 					if 0 < dot then
 						local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
+						BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 						DestroyEffect(eff)
 						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
 						BlzSetEventDamage(0)
@@ -67,7 +68,7 @@ function InitDamage()
 							if GetLocalPlayer()==casterOwner then
 								BlzFrameSetVisible(PerkIsLock[8],false)
 							end
-							print("Рабочий поднял бунт")
+							--print("Рабочий поднял бунт")
 							--Allian
 						end
 					end

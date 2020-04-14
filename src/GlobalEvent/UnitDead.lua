@@ -86,7 +86,7 @@ function InitUnitDeath()
 						local x,y=GetUnitXY(Killer)
 						local distance=DistanceBetweenXY(x,y,GetUnitX(data.WolfHelper),GetUnitY(data.WolfHelper))
 						if distance>600 then
-							local effmodel=""
+							local effmodel="Abilities\\Spells\\NightElf\\Blink\\BlinkCaster"
 							DestroyEffect(AddSpecialEffect(effmodel,GetUnitXY(data.WolfHelper)))
 							DestroyEffect(AddSpecialEffect(effmodel,x,y))
 							SetUnitPosition(data.WolfHelper,x,y)

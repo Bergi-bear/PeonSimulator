@@ -213,3 +213,21 @@ STRING 39
 Дух волка
 }
 
+STRING 40
+// Units: e006 (Стреляющий факел), Name (Name)
+{
+Стреляющий факел
+}
+
+STRING 41
+// Units: e006 (Стреляющий факел), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 42
+// Units: e006 (Стреляющий факел), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+

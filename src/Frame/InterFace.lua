@@ -254,13 +254,13 @@ function PerkButtonLine()
 						if not data.Perk13 then
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.WolfCount.."/10|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],"Призывает волка, который будет вам помогать ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Призывает волка, который будет вам помогать. ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==14  then
 						if not data.Perk14 then
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в лицо и отталкивает вас назад. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в щит. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
 						end
 					end
 				end
