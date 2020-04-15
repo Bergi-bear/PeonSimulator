@@ -247,7 +247,7 @@ function PerkButtonLine()
 						if  data.Perk10 then
 							BlzFrameSetText(PerkToolTip[k],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/10|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==11  then -- погром
 						if  data.Perk11 then

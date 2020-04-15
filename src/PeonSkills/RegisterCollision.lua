@@ -34,7 +34,8 @@ function RegisterCollision(hero)
 				end
 				if data.IsWood then
 					data.SingleWoodCount=data.SingleWoodCount+k
-					if GetLosingHP(hero)<1 then
+					if GetLosingHP(hero)<=5 then
+						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true

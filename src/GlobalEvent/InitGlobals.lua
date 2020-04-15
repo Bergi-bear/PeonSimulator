@@ -127,7 +127,7 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseW  and not data.IsFrizzyDisabled then
+		if not data.ReleaseW  and not data.IsFrizzyDisabled and  UnitAlive(data.UnitHero)  then
 			data.ReleaseW=true
 			UnitAddVectorForce(data.UnitHero,90,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -152,7 +152,7 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseS and not data.IsFrizzyDisabled then
+		if not data.ReleaseS and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero) then
 			data.ReleaseS=true
 			UnitAddVectorForce(data.UnitHero,270,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -177,7 +177,7 @@ function InitGameCore()
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseD and not data.IsFrizzyDisabled then
+		if not data.ReleaseD and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero) then
 			data.ReleaseD=true
 			UnitAddVectorForce(data.UnitHero,0,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -202,7 +202,7 @@ function InitGameCore()
 	TriggerAddAction(TrigPressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseA and not data.IsFrizzyDisabled then
+		if not data.ReleaseA and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero)  then
 			UnitAddVectorForce(data.UnitHero,180,10,30)
 			data.ReleaseA=true
 			SetUnitAnimationByIndex(data.legs,16)
@@ -289,10 +289,12 @@ function InitGameCore()
 			local hero=data.UnitHero
 			data.ReleaseRMB=false
 			data.Reflection=false
-			if data.IsWood then
-				SetUnitAnimationByIndex(hero,11)
-			else
-				ResetPeonAnimation(hero)
+			if UnitAlive(hero) then
+				if data.IsWood then
+					SetUnitAnimationByIndex(hero,11)
+				else
+					ResetPeonAnimation(hero)
+				end
 			end
 		end
 	end)
@@ -368,11 +370,16 @@ function InitGameCore()
 
 
 			--Камера
-			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
-			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
+			if UnitAlive(hero) then
+				SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
+				SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
+			else
+				SetCameraQuickPosition(GetUnitX(data.legs),GetUnitY(data.legs))
+				SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(data.legs),data.legs, 10,10,true)
+			end
 
 
-			if data.ReleaseLMB and data.Perk14  then
+			if data.ReleaseLMB and data.Perk14 and UnitAlive(hero) then
 				SetUnitAnimation(hero,"stand defend")
 				--print("Стоит с щитом")
 				--SetUnitAnimationByIndex(hero,20)
@@ -554,7 +561,7 @@ function InitGameCore()
 					if data.isattack==false then
 						if walkattack then
 
-							if data.ReleaseRMB==false and not data.ReleaseLMB then
+							if data.ReleaseRMB==false and not data.ReleaseLMB and UnitAlive(hero) then
 								--	print("reset in walk")
 								SetUnitAnimation(hero,"Stand")
 							end
@@ -562,7 +569,7 @@ function InitGameCore()
 					end
 
 
-					if walk and walkattack then
+					if walk and walkattack and UnitAlive(hero) then
 						BlzSetUnitFacingEx(data.legs,angle)
 						SetUnitAnimationByIndex(data.legs,16)
 						SetUnitTimeScale(data.legs,speed*.1)
@@ -621,10 +628,12 @@ function InitGameCore()
 				if data.isattack then
 					walkattack=false
 					--SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
-					if data.IsWood then
-						SetUnitAnimationByIndex(hero,7)
-					else
-						SetUnitAnimationByIndex(hero,3)
+					if  UnitAlive(hero) then
+						if data.IsWood then
+							SetUnitAnimationByIndex(hero,7)
+						else
+							SetUnitAnimationByIndex(hero,3)
+						end
 					end
 					--print("play attack")
 					data.isattack=false
@@ -633,10 +642,12 @@ function InitGameCore()
 						standanim=false
 						if IiMoving==false and data.ReleaseRMB==false then
 							--print("Анимация Stand")
-							if data.IsWood then
-								SetUnitAnimationByIndex(hero,11)
-							else
-								ResetPeonAnimation(hero)
+							if  UnitAlive(hero) then
+								if data.IsWood then
+									SetUnitAnimationByIndex(hero,11)
+								else
+									ResetPeonAnimation(hero)
+								end
 							end
 						end
 					end
@@ -649,10 +660,12 @@ function InitGameCore()
 						if walkattack then
 							walkattack=false
 							--print("анимация движения без атаки")
-							if data.IsWood then
-								SetUnitAnimationByIndex(hero,16)
-							else
-								SetUnitAnimationByIndex(hero,1)
+							if  UnitAlive(hero) then
+								if data.IsWood then
+									SetUnitAnimationByIndex(hero,16)
+								else
+									SetUnitAnimationByIndex(hero,1)
+								end
 							end
 						end
 					else

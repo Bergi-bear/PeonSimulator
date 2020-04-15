@@ -1009,7 +1009,7 @@ function PerkButtonLine()
 						if  data.Perk10 then
 							BlzFrameSetText(PerkToolTip[k],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/10|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==11  then -- погром
 						if  data.Perk11 then
@@ -2018,7 +2018,7 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseW  and not data.IsFrizzyDisabled then
+		if not data.ReleaseW  and not data.IsFrizzyDisabled and  UnitAlive(data.UnitHero)  then
 			data.ReleaseW=true
 			UnitAddVectorForce(data.UnitHero,90,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -2043,7 +2043,7 @@ function InitGameCore()
 	TriggerAddAction(gg_trg_EventUpS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseS and not data.IsFrizzyDisabled then
+		if not data.ReleaseS and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero) then
 			data.ReleaseS=true
 			UnitAddVectorForce(data.UnitHero,270,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -2068,7 +2068,7 @@ function InitGameCore()
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseD and not data.IsFrizzyDisabled then
+		if not data.ReleaseD and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero) then
 			data.ReleaseD=true
 			UnitAddVectorForce(data.UnitHero,0,10,30)
 			SetUnitAnimationByIndex(data.legs,16)
@@ -2093,7 +2093,7 @@ function InitGameCore()
 	TriggerAddAction(TrigPressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
-		if not data.ReleaseA and not data.IsFrizzyDisabled then
+		if not data.ReleaseA and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero)  then
 			UnitAddVectorForce(data.UnitHero,180,10,30)
 			data.ReleaseA=true
 			SetUnitAnimationByIndex(data.legs,16)
@@ -2180,10 +2180,12 @@ function InitGameCore()
 			local hero=data.UnitHero
 			data.ReleaseRMB=false
 			data.Reflection=false
-			if data.IsWood then
-				SetUnitAnimationByIndex(hero,11)
-			else
-				ResetPeonAnimation(hero)
+			if UnitAlive(hero) then
+				if data.IsWood then
+					SetUnitAnimationByIndex(hero,11)
+				else
+					ResetPeonAnimation(hero)
+				end
 			end
 		end
 	end)
@@ -2259,11 +2261,16 @@ function InitGameCore()
 
 
 			--Камера
-			SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
-			SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
+			if UnitAlive(hero) then
+				SetCameraQuickPosition(GetUnitX(hero),GetUnitY(hero))
+				SetCameraTargetControllerNoZForPlayer(p,hero, 10,10,true) -- не дергается
+			else
+				SetCameraQuickPosition(GetUnitX(data.legs),GetUnitY(data.legs))
+				SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(data.legs),data.legs, 10,10,true)
+			end
 
 
-			if data.ReleaseLMB and data.Perk14  then
+			if data.ReleaseLMB and data.Perk14 and UnitAlive(hero) then
 				SetUnitAnimation(hero,"stand defend")
 				--print("Стоит с щитом")
 				--SetUnitAnimationByIndex(hero,20)
@@ -2445,7 +2452,7 @@ function InitGameCore()
 					if data.isattack==false then
 						if walkattack then
 
-							if data.ReleaseRMB==false and not data.ReleaseLMB then
+							if data.ReleaseRMB==false and not data.ReleaseLMB and UnitAlive(hero) then
 								--	print("reset in walk")
 								SetUnitAnimation(hero,"Stand")
 							end
@@ -2453,7 +2460,7 @@ function InitGameCore()
 					end
 
 
-					if walk and walkattack then
+					if walk and walkattack and UnitAlive(hero) then
 						BlzSetUnitFacingEx(data.legs,angle)
 						SetUnitAnimationByIndex(data.legs,16)
 						SetUnitTimeScale(data.legs,speed*.1)
@@ -2512,10 +2519,12 @@ function InitGameCore()
 				if data.isattack then
 					walkattack=false
 					--SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
-					if data.IsWood then
-						SetUnitAnimationByIndex(hero,7)
-					else
-						SetUnitAnimationByIndex(hero,3)
+					if  UnitAlive(hero) then
+						if data.IsWood then
+							SetUnitAnimationByIndex(hero,7)
+						else
+							SetUnitAnimationByIndex(hero,3)
+						end
 					end
 					--print("play attack")
 					data.isattack=false
@@ -2524,10 +2533,12 @@ function InitGameCore()
 						standanim=false
 						if IiMoving==false and data.ReleaseRMB==false then
 							--print("Анимация Stand")
-							if data.IsWood then
-								SetUnitAnimationByIndex(hero,11)
-							else
-								ResetPeonAnimation(hero)
+							if  UnitAlive(hero) then
+								if data.IsWood then
+									SetUnitAnimationByIndex(hero,11)
+								else
+									ResetPeonAnimation(hero)
+								end
 							end
 						end
 					end
@@ -2540,10 +2551,12 @@ function InitGameCore()
 						if walkattack then
 							walkattack=false
 							--print("анимация движения без атаки")
-							if data.IsWood then
-								SetUnitAnimationByIndex(hero,16)
-							else
-								SetUnitAnimationByIndex(hero,1)
+							if  UnitAlive(hero) then
+								if data.IsWood then
+									SetUnitAnimationByIndex(hero,16)
+								else
+									SetUnitAnimationByIndex(hero,1)
+								end
 							end
 						end
 					else
@@ -4392,7 +4405,8 @@ function RegisterCollision(hero)
 				end
 				if data.IsWood then
 					data.SingleWoodCount=data.SingleWoodCount+k
-					if GetLosingHP(hero)<1 then
+					if GetLosingHP(hero)<=5 then
+						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
@@ -4843,6 +4857,7 @@ function WaveAttack(delay)
 	local new
 	local x,y=0,0
 	local loc=nil
+	local OrkStove=FindUnitOfType(FourCC('o001'))
 	TimerStart(CreateTimer(), 60+delay, true, function() --волки
 		x,y=GetRectCenterX(gg_rct_WalkSpawnZone),GetRectCenterY(gg_rct_WalkSpawnZone)
 		new=CreateUnit(Player(10), FourCC('n000'), x, y, 0)
@@ -4885,10 +4900,12 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"move",0,0)
 	end)
 	TimerStart(CreateTimer(), 90+delay, true, function() --мурлоки
-		loc =GetRandomLocInRect(gg_rct_Lava)
+		loc =GetRandomLocInRect(gg_rct_Morlok)
 		x,y=GetLocationX(loc),GetLocationY(loc)
-		new=CreateUnit(Player(10), FourCC('n004'), x, y, 0)
-		IssuePointOrder(new,"attack",0,0)
+		for _=1,3 do
+			new=CreateUnit(Player(11), FourCC('n005'), x, y, 0)
+			IssueTargetOrder(new,"attack",OrkStove)
+		end
 	end)
 	--RemoveLocation(loc)
 end

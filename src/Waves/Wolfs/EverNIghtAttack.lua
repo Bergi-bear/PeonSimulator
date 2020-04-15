@@ -51,8 +51,8 @@ function WaveAttack(delay)
 	TimerStart(CreateTimer(), 90+delay, true, function() --мурлоки
 		loc =GetRandomLocInRect(gg_rct_Morlok)
 		x,y=GetLocationX(loc),GetLocationY(loc)
-		for _=1,3 do
-			new=CreateUnit(Player(11), FourCC('n004'), x, y, 0)
+		for _=1,GetRandomInt(1,3) do
+			new=CreateUnit(Player(11), FourCC('n005'), x, y, 0)
 			IssueTargetOrder(new,"attack",OrkStove)
 		end
 	end)
