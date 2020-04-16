@@ -22,7 +22,8 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	end
 	-- установки
 	BlzSetSpecialEffectScale(saw,0.9)
-
+	local DamageDealer=CreateUnit(GetOwningPlayer(hero),DummyID,xs,ys,0)
+	ShowUnit(DamageDealer,false)
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
 		local OnDamage=false
@@ -34,7 +35,9 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		end
 		local nx,ny=MoveXY(xs,ys,step*ChainCount,angle)
 		BlzSetSpecialEffectPosition(saw,nx,ny,z)
-		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,nx,ny,150,z-90,CollisionEffect)
+		SetUnitX(DamageDealer,nx)
+		SetUnitY(DamageDealer,ny)
+		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
 			if data.Reflection then

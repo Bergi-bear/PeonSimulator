@@ -39,13 +39,17 @@ function InitDamage()
 					AngleSourceVector = AngleSourceVector:normalize()
 					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
 					local dist=damage
-					if dist >=30 then dist=30 end
+					if dist >=25 then dist=25 end
 					if 0 < dot then
 						local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
 						BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 						DestroyEffect(eff)
 						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
-						BlzSetEventDamage(0)
+						if data.Perk14A then
+							BlzSetEventDamage(0)
+						else
+							BlzSetEventDamage(damage/2)
+						end
 					end
 				end
 			end
@@ -120,12 +124,15 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local e=nil
 	local hero=nil
 	if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
+	if GetOwningPlayer(u)==Player(0) then
+	--	print("Выызов функции урона")
+	end
 	--print("Поиск целей в на высоте "..ZDamageSource)
 	GroupEnumUnitsInRange(perebor,x,y,range,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
-		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  and IsUnitZCollision(e,ZDamageSource) then
+		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  and IsUnitZCollision(e,ZDamageSource) then -- момент урона
 			if EffectModel~=nil then
 				--print("эффеет")
 				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
@@ -137,6 +144,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if data.Perk6 then -- удар тора
 					--print("удар тора")
 					CastArea(u,FourCC('A003'),x,y)
+					--print("ПОСТ удар тора")
 				end
 				if data.HaveAFire then
 					damage=damage*5
@@ -151,36 +159,39 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			hero=e
 		end
 		--ремонт
-		if true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and IsUnitType(e,UNIT_TYPE_STRUCTURE) then
+		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and e~=u then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-			if GetUnitTypeId(e)==FourCC('n003') then-- костер
-				data.FireCount=data.FireCount+1
-				if not data.Perk9 then
-					if data.FireCount>=5 then
-						data.Perk9=true
-						--print("разблокировка перка")
+			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and IsUnitType(e,UNIT_TYPE_STRUCTURE) then
+				if GetUnitTypeId(e)==FourCC('n003') then-- костер
+					data.FireCount=data.FireCount+1
+					if not data.Perk9 then
+						if data.FireCount>=5 then
+							data.Perk9=true
+							--print("разблокировка перка")
+							if GetLocalPlayer()==GetOwningPlayer(u) then
+								BlzFrameSetVisible(PerkIsLock[9],false)
+							end
+						end
+					end
+					if data.Perk9 then
+						UnitAddAbility(u,FourCC('A006'))
+						data.HaveAFire=true
+					end
+				end
+				--print("лечим")
+				local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
+				data.Repairs=data.Repairs+heal
+				data.RevoltSec=0
+				if not data.Perk6 then
+					if data.Repairs>=1000 then
+						data.Perk6=true
 						if GetLocalPlayer()==GetOwningPlayer(u) then
-							BlzFrameSetVisible(PerkIsLock[9],false)
+							BlzFrameSetVisible(PerkIsLock[6],false)
 						end
 					end
 				end
-				if data.Perk9 then
-					UnitAddAbility(u,FourCC('A006'))
-					data.HaveAFire=true
-				end
 			end
-			--print("лечим")
-			local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
-			data.Repairs=data.Repairs+heal
-			data.RevoltSec=0
-			if not data.Perk6 then
-				if data.Repairs>=1000 then
-					data.Perk6=true
-					if GetLocalPlayer()==GetOwningPlayer(u) then
-						BlzFrameSetVisible(PerkIsLock[6],false)
-					end
-				end
-			end
+			hero=e
 		end
 		GroupRemoveUnit(perebor,e)
 	end
@@ -230,13 +241,16 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					SetDestructableAnimation(d,"Stand Hit")
 				else
 
-
-					if data.IsWood then
-						--print("Некуда класть звук")
-						CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+					if DistanceBetweenXY(GetDestructableX(d), GetDestructableY(d),GetUnitXY(hero))<=200 then
+						if data.IsWood then
+							--print("Некуда класть звук")
+							CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+						else
+							data.IsWood=true
+							--print("Добавляем 1 дерева для "..GetUnitName(hero))
+						end
 					else
-						data.IsWood=true
-						--print("Добавляем 1 дерева для "..GetUnitName(hero))
+						CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
 					end
 
 				end

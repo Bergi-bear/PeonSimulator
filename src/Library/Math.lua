@@ -199,6 +199,7 @@ function SetUnitPositionSmooth(source, x, y)
 	end
 end
 
+--Bergi
 function GetUnitXY(unit)
 	return GetUnitX(unit),GetUnitY(unit)
 end
@@ -210,4 +211,9 @@ end
 function UnitCollisionOFF(unit)
 	UnitAddAbility(unit,FourCC('A000'))
 	IssueImmediateOrder(unit,"windwalk")
+end
+
+function AngleBetweenUnits(caster,target)
+	local yb,ya,xb,xa=GetUnitY(target),GetUnitY(caster),GetUnitX(target),GetUnitX(caster)
+	return Atan2(yb - ya, xb - xa)
 end

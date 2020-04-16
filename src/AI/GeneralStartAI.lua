@@ -152,7 +152,7 @@ function GetAnyEnemy(hero, range)
 		e = FirstOfGroup(perebor)
 
 		if e == nil then break end
-		if UnitAlive(e)  and IsUnitEnemy(e,GetOwningPlayer(hero)) and IsUnitVisible(e,GetOwningPlayer(hero)) then
+		if UnitAlive(e)  and IsUnitEnemy(e,GetOwningPlayer(hero)) and IsUnitVisible(e,GetOwningPlayer(hero)) and GetUnitAbilityLevel(e,FourCC('Avul'))==0 then
 			this=e
 		end
 		GroupRemoveUnit(perebor,e)

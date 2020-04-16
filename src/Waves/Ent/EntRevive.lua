@@ -17,7 +17,7 @@ function EntInTrees()
 				KillUnit(e)
 				DestroyEffect(AddSpecialEffect("",x,y))
 				CreateDestructable(FourCC('LTlt'),x,y,0,GetRandomInt(1,1),GetRandomInt(1,3))
-				local range=150
+				local range=80
 				TimerStart(CreateTimer(), 10, false, function()
 					SetRect(GlobalRect, x - range, y - range, x + range, y +range)
 					EnumDestructablesInRect(GlobalRect,nil,function ()

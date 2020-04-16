@@ -23,8 +23,9 @@ function CastArea(caster,id,x,y,range, xPoz,yPoz)
 		Cast(dummy,x,y)
 		--IssuePointOrder(dummy,"acidbomb",x,y)-- на точку
 	end
-	local e--временный юнит
-	GroupEnumUnitsInRange(perebor,x,y,range,null)
+	--print("Каст был успешен 1")
+	--[[local e=nil
+	GroupEnumUnitsInRange(perebor,x,y,range,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		--print("перебор юнитов в радиусе "..range.." "..GetUnitName(e))
@@ -36,7 +37,6 @@ function CastArea(caster,id,x,y,range, xPoz,yPoz)
 			Cast(dummy,0,0,e)
 		end
 		GroupRemoveUnit(perebor,e)
-	end
-
-
+	end]]
+	--print("Каст был успешен конец")
 end

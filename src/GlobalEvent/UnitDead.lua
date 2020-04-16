@@ -66,7 +66,7 @@ function InitUnitDeath()
 
 				if data.StoneCount==1 then
 					--UnitAddAbility(Killer,FourCC('A007'))
-					data.Perk14=true
+					data.Perk14A=true
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[14],false)
 					end

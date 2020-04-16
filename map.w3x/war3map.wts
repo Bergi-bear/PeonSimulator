@@ -303,3 +303,45 @@ STRING 54
 6
 }
 
+STRING 55
+// Abilities: A00E (Рывок), Name (Name)
+{
+Рывок
+}
+
+STRING 56
+// Abilities: A00E (Рывок), EditorSuffix (Editor Suffix)
+{
+ (красный)
+}
+
+STRING 57
+// Abilities: A00F (Рывок), Name (Name)
+{
+Рывок
+}
+
+STRING 58
+// Abilities: A00F (Рывок), EditorSuffix (Editor Suffix)
+{
+ (голубой)
+}
+
+STRING 59
+// Units: e007 (Сфера огня), Name (Name)
+{
+Сфера огня
+}
+
+STRING 60
+// Units: e007 (Сфера огня), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 61
+// Units: e007 (Сфера огня), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+

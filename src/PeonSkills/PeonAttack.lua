@@ -7,12 +7,18 @@ function AfterAttack(hero, delay)
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-
-		if not data.ReleaseLMB  then
+		local damage=BlzGetUnitBaseDamage(hero,0)
+		if not data.ReleaseLMB and data.ReleaseRMB then
 			data.Reflection=false
-			if UnitDamageArea(hero,BlzGetUnitBaseDamage(hero,0),x,y,70) then
+			if data.HaveAFire then
+				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				data.HaveAFire=false
+				UnitRemoveAbility(hero,FourCC('A006'))
+			end
+			if UnitDamageArea(hero,damage,x,y,70) then
 				data.RevoltSec=0
 			end
+
 		end
 	end)
 end

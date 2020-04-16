@@ -15,6 +15,7 @@ do
 		InitDamage()
 		InitUnitDeath()
 		InitAllZones()
+		--BadChat() -- Функция для починки чата
 	end
 
 end
@@ -63,6 +64,8 @@ function InitGameCore()
 			CartUnit=nil,
 			CartAngle=0,
 			WalkCart=false,
+			ChargeIsReady=true,
+			--ChargeEff=nil,
 			---накопление перков
 			SingleWoodCount=0,
 			RevoltSec=0,
@@ -92,7 +95,8 @@ function InitGameCore()
 			Perk11=false, -- Кирка
 			Perk12=false, -- Кирка
 			Perk13=false, -- Кирка
-			Perk14=false, -- Щит
+			Perk14=true, -- Щит 50
+			Perk14A=false, -- щит 100
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда
@@ -129,7 +133,9 @@ function InitGameCore()
 		local data=HERO[pid]
 		if not data.ReleaseW  and not data.IsFrizzyDisabled and  UnitAlive(data.UnitHero)  then
 			data.ReleaseW=true
-			UnitAddVectorForce(data.UnitHero,90,10,30)
+			if not data.OnCharge then
+				UnitAddVectorForce(data.UnitHero,90,10,30)
+			end
 			SetUnitAnimationByIndex(data.legs,16)
 		end
 	end)
@@ -154,7 +160,9 @@ function InitGameCore()
 		local data=HERO[pid]
 		if not data.ReleaseS and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero) then
 			data.ReleaseS=true
-			UnitAddVectorForce(data.UnitHero,270,10,30)
+			if not data.OnCharge then
+				UnitAddVectorForce(data.UnitHero,270,10,30)
+			end
 			SetUnitAnimationByIndex(data.legs,16)
 		end
 	end)
@@ -179,7 +187,9 @@ function InitGameCore()
 		local data=HERO[pid]
 		if not data.ReleaseD and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero) then
 			data.ReleaseD=true
-			UnitAddVectorForce(data.UnitHero,0,10,30)
+			if not data.OnCharge then
+				UnitAddVectorForce(data.UnitHero,0,10,30)
+			end
 			SetUnitAnimationByIndex(data.legs,16)
 		end
 	end)
@@ -203,7 +213,9 @@ function InitGameCore()
 		local pid=GetPlayerId(GetTriggerPlayer())
 		local data=HERO[pid]
 		if not data.ReleaseA and not data.IsFrizzyDisabled and UnitAlive(data.UnitHero)  then
-			UnitAddVectorForce(data.UnitHero,180,10,30)
+			if not data.OnCharge then
+				UnitAddVectorForce(data.UnitHero,180,10,30)
+			end
 			data.ReleaseA=true
 			SetUnitAnimationByIndex(data.legs,16)
 		end
@@ -226,7 +238,7 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigPressLMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then --это леваый клик всё внутри LMB
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
 			if not data.ReleaseLMB then
@@ -266,9 +278,28 @@ function InitGameCore()
 	end
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
-		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then -- это правая кнопка
 			local pid=GetPlayerId(GetTriggerPlayer())
 			local data=HERO[pid]
+			if not data.ReleaseRMB then
+				data.ReleaseRMB=true
+			end
+			if data.ReleaseLMB and data.ChargeIsReady  and true then -- И талант на рывок
+				UnitAddVectorForce(data.UnitHero,data.LastTurn,30,300, false)
+				--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
+				data.OnCharge=true
+				data.ChargeIsReady=false
+				UnitAddAbility(data.UnitHero,FourCC('A00E')) --красный
+				--UnitAddAbility(data.UnitHero,FourCC('A00А')) --Синий
+
+				TimerStart(CreateTimer(), 2, false, function()
+					data.ChargeIsReady=true
+					UnitRemoveAbility(data.UnitHero,FourCC('A00E')) --красный
+					UnitRemoveAbility(data.UnitHero,FourCC('A00А')) --Синий
+				end)
+			end
+
+
 			if not data.IsFrizzyDisabled then --if not data.ReleaseA and not data.IsFrizzyDisabled then
 				data.ReleaseRMB=true
 				data.Reflection=true
@@ -519,6 +550,7 @@ function InitGameCore()
 				for i=1,k do
 					if data.ForceRemain[i]>0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
+
 						f=f+1
 						newPos=newPos+WASDMoving:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
 						--newPos=newPos+Vector3:new(-5, 0, 0)
@@ -535,7 +567,7 @@ function InitGameCore()
 					data.ForcesCount=0
 					data.IsDisabled=false
 					SetUnitPathing(hero,true)
-					--print("нет больше сил")
+
 				end
 			end
 
@@ -603,6 +635,21 @@ function InitGameCore()
 				for i=1,k do
 					if data.ForceRemain[i]>0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
+						if data.OnCharge then
+							--print("В процессе толкания")
+							local IsDamage,DamagingUnit=UnitDamageArea(hero,1,GetUnitX(hero),GetUnitY(hero),150)
+							local angle=AngleBetweenUnits(hero,DamagingUnit)
+							if  not DamagingUnit then
+								--print("толкаемый герой не определён")
+							end
+							if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
+								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
+								UnitAddVectorForce(DamagingUnit,angle,10,50,false)
+							else
+								UnitAddForce(DamagingUnit,angle,10,50)
+							end
+						end
+
 						f=f+1
 						newPos=newPos+WASDMoving:yawPitchOffset( data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0.0 )
 						--newPos=newPos+Vector3:new(-5, 0, 0)
@@ -619,7 +666,16 @@ function InitGameCore()
 					data.ForcesCount=0
 					data.IsDisabled=false
 					SetUnitPathing(hero,true)
-					--print("нет больше сил")
+					if data.OnCharge then
+						data.OnCharge=false
+						UnitRemoveAbility(hero,FourCC('A00E')) --красный
+						UnitRemoveAbility(hero,FourCC('A00А')) --Синий
+						UnitDamageArea(hero,100,GetUnitX(hero),GetUnitY(hero),150)
+						--DestroyEffect(data.ChargeEff)
+						--data.ChargeEff=nil
+						--print("нет больше сил")
+					end
+
 				end
 			end
 
@@ -696,18 +752,22 @@ function InitGameCore()
 					end
 				end
 
-				else
+			else
 				--print("в тёплой зоне")
-					if data.IsFrizzyDisabled then
+				if data.FrozenTime>=0 then
+					data.FrozenTime=data.FrozenTime-TIMER_PERIOD*5
+				end
+				if data.IsFrizzyDisabled then
 						--print("Таем "..data.FrozenTime)
-						data.FrozenTime=data.FrozenTime-TIMER_PERIOD*5
+						--data.FrozenTime=data.FrozenTime-TIMER_PERIOD*5
 
-						if data.FrozenTime <=0 then
-							DestroyEffect(data.FrizzyEff)
+					if data.FrozenTime <=0 then
+						DestroyEffect(data.FrizzyEff)
 							--print("Оттаял "..data.FrozenTime)
-							data.IsFrizzyDisabled=false
-						end
+						data.IsFrizzyDisabled=false
 					end
+				end
+
 			end
 
 			SetUnitPositionSmooth(hero,newPos.x,newPos.y)

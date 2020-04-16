@@ -3,41 +3,39 @@
 --- Created by Bergi.
 --- DateTime: 06.02.2020 12:47
 ---
-function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys)
-	local CollisionRange=70
+function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
+	local CollisionRange=100
+	if not damage then damage=100 end
 	local xhero,yhero=GetUnitX(hero),GetUnitY(hero)
 	local zhero=GetUnitZ(hero)+60
 	local bullet=AddSpecialEffect(effectmodel,xs,ys)
 	local bam=nil--AddSpecialEffect("Abilities/Weapons/SteamTank/SteamTankImpact.mdl",xs,ys)
 	local cloud=nil--AddSpecialEffect("Abilities/Weapons/SteamTank/SteamTankImpact.mdl",xs,ys)
-	--local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 	local CollisionEnemy=false
 	local CollisisonDestr=false
 	local DamagingUnit=nil
-	--print("Скорость корабля"..data.CurrentSpeed)
 	BlzSetSpecialEffectScale(bam,0.1)
 	BlzSetSpecialEffectScale(cloud,0.02)
 	DestroyEffect(bam)
 	DestroyEffect(cloud)
 	BlzSetSpecialEffectZ(bullet,zhero)
-	--print(zhero)
-	--print("11")
 	local angleCurrent=angle
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y,z=BlzGetLocalSpecialEffectX(bullet),BlzGetLocalSpecialEffectY(bullet),BlzGetLocalSpecialEffectZ(bullet)
 		local zGround=GetTerrainZ(MoveX(x,speed*2,angleCurrent),MoveY(y,speed*2,angleCurrent))
 		BlzSetSpecialEffectPosition(bullet,MoveX(x,speed,angleCurrent),MoveY(y,speed,angleCurrent),z-2)
 		--BlzSetSpecialEffectPosition(cloud,MoveX(x,speed/3,angle),MoveY(y,speed/3,angle),z-2)
-		SetFogStateRadius(GetOwningPlayer(hero),FOG_OF_WAR_VISIBLE,x,y,300,true)-- Небольгая подсветка
+		SetFogStateRadius(GetOwningPlayer(hero),FOG_OF_WAR_VISIBLE,x,y,400,true)-- Небольгая подсветка
 
 		--local xbam,ybam=BlzGetLocalSpecialEffectX(bam),BlzGetLocalSpecialEffectY(bam)
 		--BlzSetSpecialEffectPosition(bam,MoveX(xbam,2*data.CurrentSpeed,GetUnitFacing(hero)),MoveY(ybam,2*data.CurrentSpeed,GetUnitFacing(hero)),z-50)
 		local ZBullet=BlzGetLocalSpecialEffectZ(bullet)
 		--print("zGround ="..zGround.."z= "..z)
 		--BlzSetSpecialEffectPosition(bam,MoveX(GetUnitX(hero),120,GetUnitFacing(hero)),MoveY(GetUnitY(hero),120,GetUnitFacing(hero)),z)
-		CollisionEnemy,DamagingUnit=UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
+		CollisionEnemy,DamagingUnit=UnitDamageArea(hero,damage,x,y,CollisionRange,ZBullet)
 		CollisisonDestr=PointContentDestructable(x,y,100,false)
-		if  z<=147 or CollisionEnemy or CollisisonDestr then --or zGround+z>=-70+z
+		local PerepadZ=zGround-z
+		if  z<=147 or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit,UNIT_TYPE_STRUCTURE) or PerepadZ>50 then --or zGround+z>=-70+z
 			PointContentDestructable(x,y,100,true)
 			if z<=-90 then
 				--CreateTorrent(x,y)
@@ -57,17 +55,13 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys)
 					local AngleSourceVector = Vector3:new(GetUnitX(hero) - GetUnitX(DamagingUnit), GetUnitY(hero) - GetUnitY(DamagingUnit), 0)  -- вектор получения от урона (by Doc)
 					AngleSourceVector = AngleSourceVector:normalize()
 					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
-					print(dot)
+					--print(dot)
 					if 0 < dot then
 						angleCurrent=GetUnitFacing(DamagingUnit)
 					else
 						DestroyEffect(bullet)
 						DestroyTimer(GetExpiredTimer())
 					end
-
-
-
-
 				else
 					DestroyEffect(bullet)
 					DestroyTimer(GetExpiredTimer())
@@ -85,13 +79,13 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys)
 	end)
 end
 
-function SingleCannon(hero,angle,modelEff)
+function SingleCannon(hero,angle,modelEff,damage)
 	if not angle then angle=GetUnitFacing(hero) end
-	local x=MoveX(GetUnitX(hero),110,angle)
-	local y=MoveY(GetUnitY(hero),110,angle)
+	local x=MoveX(GetUnitX(hero),80,angle)
+	local y=MoveY(GetUnitY(hero),80,angle)
 	--print("x создания="..x.." y="..y..GetUnitName(hero))
 	if not modelEff then modelEff="Abilities/Weapons/BoatMissile/BoatMissile.mdl" end
-	CreateAndForceBullet(hero,angle,30,modelEff,x,y)
+	CreateAndForceBullet(hero,angle,30,modelEff,x,y,damage)
 end
 
 ---@param board real

@@ -21,11 +21,12 @@ function RegisterCollision(hero)
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
 					data.CartUnit=CollisionUnit
-					TimerStart(CreateTimer(), 0.1, true, function()
-						--local x,y=GetUnitXY(hero)
-						--IssuePointOrder(CollisionUnit,"move",x,y)
-					end)
+
 				end
+			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
+				print("Подобрана сфера огня, учим героя метать фаер болы")
+				KillUnit(CollisionUnit)
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова на лесопилке
 				local k=1
@@ -34,6 +35,7 @@ function RegisterCollision(hero)
 				end
 				if data.IsWood then
 					data.SingleWoodCount=data.SingleWoodCount+k
+					data.IsWood=false
 					if GetLosingHP(hero)<=5 then
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
@@ -57,7 +59,7 @@ function RegisterCollision(hero)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение
 					data.RevoltSec=0
 				end
-				if data.CartUnit  and GetUnitUserData(data.CartUnit)>0 then
+				if data.CartUnit  and GetUnitUserData(data.CartUnit)>0 then -- дрова из тележки на лесопилке
 					local wc=GetUnitUserData(data.CartUnit)
 					--k=wc*k
 					HealUnit(hero,1000)
@@ -130,7 +132,8 @@ function AddLumber (ttk,caster)
 	if ttk>0 and data.IsWood then
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)
 		AdjustPlayerStateBJ(ttk, ownplayer, PLAYER_STATE_RESOURCE_LUMBER )
-		data.IsWood=false
+
+		--print("Опыт добавлен")
 	end
 end
 

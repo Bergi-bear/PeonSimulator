@@ -4,7 +4,7 @@
 --- DateTime: 03.04.2020 2:31
 function HideEverything()
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
-	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,-1)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,0.2)
 
 	for i = 1,11 do
 		BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
@@ -71,7 +71,7 @@ function CreateWoodFrame ()
 end
 
 function MoveWoodAsFarm(hero,k)
-
+	AddHeroXP(hero,100*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetVisible(wood,false)
 	if GetLocalPlayer()==GetOwningPlayer(hero) then
@@ -139,9 +139,9 @@ texture={
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
 	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
 	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
-	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
-	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
-	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
+	"ReplaceableTextures\\CommandButtons\\BTNPlagueCloud",
+	"ReplaceableTextures\\CommandButtons\\BTNOrbOfFire",
+	"ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpThree",
 }
 Name= { --Определяет количество талантов
 	"Работник месяца",
@@ -155,12 +155,12 @@ Name= { --Определяет количество талантов
 	"Калёная кирка",--9
 	"Правила ТБ",
 	"Технологии людей",
-	"Отмороженный",
+	"Ледяной щит",
 	"Шапка волка",
-	"Каменный Shit",
-	"Репак из торрента",
-	"Препоследний",
-	"Последний",
+	"Каменный Щит",
+	"Овечья болезь",
+	"Сфера огра",
+	"Рывок",
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -174,12 +174,12 @@ description={
 	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
 	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
-	"Оморозьте себе обе почки, чтобы выживать в самых критических ситауциях",
+	"Пробудьте на холоте в течении 60 сек, чтобы заморозить щит",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
-	"Убейте каменных големов, чтобы получить каменный щит ",
-	"Ёхохоу",
-	"Препоследний",
-	"Последний",
+	"Убейте каменных големов, чтобы укрепить каменный щит ",
+	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью",
+	"Найдите сферу огня, чтобы научиться метать файрболы",
+	"Соберите командой более 50 древесины, чтобы изучить рывок",
 }
 
 function PerkButtonLine()
@@ -228,7 +228,11 @@ function PerkButtonLine()
 					elseif k==5  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/1|r" ) --|cffffff00AAAA|r
 					elseif k==6  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
+						if  data.Perk6 then
+							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов вобласти 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
+						end
 					elseif k==7  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
 					elseif k==8  then
@@ -262,10 +266,10 @@ function PerkButtonLine()
 							BlzFrameSetText(PerkToolTip[k],"Призывает волка, который будет вам помогать. ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==14  then
-						if not data.Perk14 then
+						if not data.Perk14A then
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(PerkToolTip[k],"Поглощает любой урон нанесённый в щит. ".."|cffffff00".."Удерживайте правую кнопку мыши для активации|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Поглощает ".."|cffffff00".."100%% |r".." урона " ) --|cffffff00AAAA|r
 						end
 					end
 				end
