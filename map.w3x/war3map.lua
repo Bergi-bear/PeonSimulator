@@ -40,15 +40,6 @@ function CreateAllDestructables()
     gg_dest_LTlt_0097 = BlzCreateDestructableWithSkin(FourCC("LTlt"), -480.0, 864.0, 270.000, 0.895, 2, FourCC("LTlt"))
 end
 
-function CreateUnitsForPlayer4()
-    local p = Player(4)
-    local u
-    local unitID
-    local t
-    local life
-    u = BlzCreateUnitWithSkin(p, FourCC("e007"), 2904.6, -2346.4, 353.441, FourCC("e007"))
-end
-
 function CreateBuildingsForPlayer5()
     local p = Player(5)
     local u
@@ -69,15 +60,6 @@ function CreateBuildingsForPlayer5()
     life = GetUnitState(u, UNIT_STATE_LIFE)
     SetUnitState(u, UNIT_STATE_LIFE, 0.50 * life)
     u = BlzCreateUnitWithSkin(p, FourCC("nten"), -480.0, -672.0, 270.000, FourCC("nten"))
-end
-
-function CreateUnitsForPlayer5()
-    local p = Player(5)
-    local u
-    local unitID
-    local t
-    local life
-    u = BlzCreateUnitWithSkin(p, FourCC("e002"), -454.6, -323.6, 234.454, FourCC("e002"))
 end
 
 function CreateBuildingsForPlayer10()
@@ -287,7 +269,8 @@ function CreateNeutralPassive()
     u = BlzCreateUnitWithSkin(p, FourCC("e005"), 1563.7, -2290.8, 102.630, FourCC("e005"))
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), -3028.9, 2146.6, 359.290, FourCC("o005"))
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), -2592.1, -3389.6, 359.290, FourCC("o005"))
-    u = BlzCreateUnitWithSkin(p, FourCC("o005"), 996.7, -3800.0, -6.490, FourCC("o005"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o005"), 996.7, -3800.0, 353.510, FourCC("o005"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e007"), 2904.6, -2346.4, 353.440, FourCC("e007"))
 end
 
 function CreatePlayerBuildings()
@@ -297,8 +280,6 @@ function CreatePlayerBuildings()
 end
 
 function CreatePlayerUnits()
-    CreateUnitsForPlayer4()
-    CreateUnitsForPlayer5()
     CreateUnitsForPlayer10()
     CreateUnitsForPlayer11()
 end
@@ -952,9 +933,9 @@ description={
 	"Пробудьте на холоте в течении 60 сек, чтобы заморозить щит",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы укрепить каменный щит ",
-	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью",
-	"Найдите сферу огня, чтобы научиться метать файрболы",
-	"Соберите командой более 50 древесины, чтобы изучить рывок",
+	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью. ",
+	"Найдите сферу, чтобы научиться метать файрболы. ",
+	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 
 function PerkButtonLine()
@@ -1045,6 +1026,12 @@ function PerkButtonLine()
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Поглощает ".."|cffffff00".."100% |r".." урона " ) --|cffffff00AAAA|r
+						end
+					elseif k==16  then
+						if not data.Perk16 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".." Ищите за вулканом|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
 						end
 					end
 				end
@@ -1232,7 +1219,18 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
 			end
 			--print("Условие урона прошло")
 			--UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
-
+			if IsUnitType(hero,UNIT_TYPE_HERO) then
+				local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+				if data.Perk16 and IsUnitEnemy(hero,GetOwningPlayer(DamagingUnit)) and DamagingUnit then
+					--print("файрболим "..GetUnitName(DamagingUnit))
+					local dummy=CreateUnit(GetOwningPlayer(hero), DummyID, x, y, 0)--
+					UnitAddAbility(dummy,FourCC('A00G'))
+					UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+					Cast(dummy,0,0,DamagingUnit)
+					--DestroyEffect(bullet)
+					--DestroyTimer(GetExpiredTimer())
+				end
+			end
 			--блок разворота снаряда
 			if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(DamagingUnit))]
@@ -1795,7 +1793,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if data.HaveAFire then
 					damage=damage*5
 					data.HaveAFire=false
-					UnitRemoveAbility(u,FourCC('A006'))
+					if not data.Perk16 then
+						UnitRemoveAbility(u,FourCC('A006'))
+					end
 					FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 				end
 
@@ -1873,7 +1873,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 			if data.HaveAFire then
 				damage=damage*5
 				data.HaveAFire=false
-				UnitRemoveAbility(hero,FourCC('A006'))
+				if not data.Perk16 then
+					UnitRemoveAbility(hero,FourCC('A006'))
+				end
 				--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 			end
 
@@ -2053,6 +2055,9 @@ function InitGameCore()
 			Perk13=false, -- Кирка
 			Perk14=true, -- Щит 50
 			Perk14A=false, -- щит 100
+			Perk15=false, -- овечья болезнь
+			Perk16=false, -- Фаерболы
+			Perk17=false, --Рывок
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда
@@ -2594,15 +2599,15 @@ function InitGameCore()
 						if data.OnCharge then
 							--print("В процессе толкания")
 							local IsDamage,DamagingUnit=UnitDamageArea(hero,1,GetUnitX(hero),GetUnitY(hero),150)
-							local angle=AngleBetweenUnits(hero,DamagingUnit)
+							local angleU=AngleBetweenUnits(hero,DamagingUnit)
 							if  not DamagingUnit then
 								--print("толкаемый герой не определён")
 							end
 							if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
 								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
-								UnitAddVectorForce(DamagingUnit,angle,10,50,false)
+								UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
 							else
-								UnitAddForce(DamagingUnit,angle,10,50)
+								UnitAddForce(DamagingUnit,angleU,10,50)
 							end
 						end
 
@@ -2690,7 +2695,7 @@ function InitGameCore()
 			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then --
 				newPos=newPos+Vector3:new(-5, 0, 0)
 
-				if not data.HaveAFire then
+				if not data.HaveAFire and not data.Perk16 then
 					data.FrozenTime=data.FrozenTime+TIMER_PERIOD
 					if not data.IsFrizzyDisabled then
 						if data.FrozenTime >=15 then --and not data.FrizzyEff then
@@ -4488,10 +4493,12 @@ function AfterAttack(hero, delay)
 		local damage=BlzGetUnitBaseDamage(hero,0)
 		if not data.ReleaseLMB and data.ReleaseRMB then
 			data.Reflection=false
-			if data.HaveAFire then
+			if data.HaveAFire or data.Perk16 then
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
-				data.HaveAFire=false
-				UnitRemoveAbility(hero,FourCC('A006'))
+				if not data.Perk16 then
+					data.HaveAFire=false
+					UnitRemoveAbility(hero,FourCC('A006'))
+				end
 			end
 			if UnitDamageArea(hero,damage,x,y,70) then
 				data.RevoltSec=0
@@ -4559,8 +4566,15 @@ function RegisterCollision(hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
-				print("Подобрана сфера огня, учим героя метать фаер болы")
+				--print("Подобрана сфера огня, учим героя метать фаер болы")
 				KillUnit(CollisionUnit)
+				if not data.Perk16 then
+					data.Perk16=true
+					UnitAddAbility(hero,FourCC('A006'))--огонёк
+					if GetLocalPlayer()==GetOwningPlayer(hero) then
+						BlzFrameSetVisible(PerkIsLock[16],false)
+					end
+				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова на лесопилке
 				local k=1

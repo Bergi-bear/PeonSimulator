@@ -149,7 +149,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if data.HaveAFire then
 					damage=damage*5
 					data.HaveAFire=false
-					UnitRemoveAbility(u,FourCC('A006'))
+					if not data.Perk16 then
+						UnitRemoveAbility(u,FourCC('A006'))
+					end
 					FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 				end
 
@@ -227,7 +229,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 			if data.HaveAFire then
 				damage=damage*5
 				data.HaveAFire=false
-				UnitRemoveAbility(hero,FourCC('A006'))
+				if not data.Perk16 then
+					UnitRemoveAbility(hero,FourCC('A006'))
+				end
 				--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 			end
 

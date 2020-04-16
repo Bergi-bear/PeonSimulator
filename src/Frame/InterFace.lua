@@ -177,9 +177,9 @@ description={
 	"Пробудьте на холоте в течении 60 сек, чтобы заморозить щит",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы укрепить каменный щит ",
-	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью",
-	"Найдите сферу огня, чтобы научиться метать файрболы",
-	"Соберите командой более 50 древесины, чтобы изучить рывок",
+	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью. ",
+	"Найдите сферу, чтобы научиться метать файрболы. ",
+	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 
 function PerkButtonLine()
@@ -270,6 +270,12 @@ function PerkButtonLine()
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Поглощает ".."|cffffff00".."100%% |r".." урона " ) --|cffffff00AAAA|r
+						end
+					elseif k==16  then
+						if not data.Perk16 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".." Ищите за вулканом|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
 						end
 					end
 				end

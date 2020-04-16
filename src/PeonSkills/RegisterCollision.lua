@@ -25,8 +25,15 @@ function RegisterCollision(hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
-				print("Подобрана сфера огня, учим героя метать фаер болы")
+				--print("Подобрана сфера огня, учим героя метать фаер болы")
 				KillUnit(CollisionUnit)
+				if not data.Perk16 then
+					data.Perk16=true
+					UnitAddAbility(hero,FourCC('A006'))--огонёк
+					if GetLocalPlayer()==GetOwningPlayer(hero) then
+						BlzFrameSetVisible(PerkIsLock[16],false)
+					end
+				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова на лесопилке
 				local k=1

@@ -10,10 +10,12 @@ function AfterAttack(hero, delay)
 		local damage=BlzGetUnitBaseDamage(hero,0)
 		if not data.ReleaseLMB and data.ReleaseRMB then
 			data.Reflection=false
-			if data.HaveAFire then
+			if data.HaveAFire or data.Perk16 then
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
-				data.HaveAFire=false
-				UnitRemoveAbility(hero,FourCC('A006'))
+				if not data.Perk16 then
+					data.HaveAFire=false
+					UnitRemoveAbility(hero,FourCC('A006'))
+				end
 			end
 			if UnitDamageArea(hero,damage,x,y,70) then
 				data.RevoltSec=0

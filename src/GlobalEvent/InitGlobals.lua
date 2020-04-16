@@ -97,6 +97,9 @@ function InitGameCore()
 			Perk13=false, -- Кирка
 			Perk14=true, -- Щит 50
 			Perk14A=false, -- щит 100
+			Perk15=false, -- овечья болезнь
+			Perk16=false, -- Фаерболы
+			Perk17=false, --Рывок
 			----
 			MHoldSec=0, -- удержания мыши для подсказки
 			Reflection=false, --время на отражение снаряда
@@ -638,15 +641,15 @@ function InitGameCore()
 						if data.OnCharge then
 							--print("В процессе толкания")
 							local IsDamage,DamagingUnit=UnitDamageArea(hero,1,GetUnitX(hero),GetUnitY(hero),150)
-							local angle=AngleBetweenUnits(hero,DamagingUnit)
+							local angleU=AngleBetweenUnits(hero,DamagingUnit)
 							if  not DamagingUnit then
 								--print("толкаемый герой не определён")
 							end
 							if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
 								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
-								UnitAddVectorForce(DamagingUnit,angle,10,50,false)
+								UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
 							else
-								UnitAddForce(DamagingUnit,angle,10,50)
+								UnitAddForce(DamagingUnit,angleU,10,50)
 							end
 						end
 
@@ -734,7 +737,7 @@ function InitGameCore()
 			if RectContainsCoords(gg_rct_Winter,GetUnitXY(hero)) then --
 				newPos=newPos+Vector3:new(-5, 0, 0)
 
-				if not data.HaveAFire then
+				if not data.HaveAFire and not data.Perk16 then
 					data.FrozenTime=data.FrozenTime+TIMER_PERIOD
 					if not data.IsFrizzyDisabled then
 						if data.FrozenTime >=15 then --and not data.FrizzyEff then
