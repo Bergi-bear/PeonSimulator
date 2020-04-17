@@ -181,14 +181,16 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					end
 				end
 				--print("лечим")
-				local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
-				data.Repairs=data.Repairs+heal
-				data.RevoltSec=0
-				if not data.Perk6 then
-					if data.Repairs>=1000 then
-						data.Perk6=true
-						if GetLocalPlayer()==GetOwningPlayer(u) then
-							BlzFrameSetVisible(PerkIsLock[6],false)
+				if not data.OnCharge then-- нельзя чинить при рывке щита
+					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
+					data.Repairs=data.Repairs+heal
+					data.RevoltSec=0
+					if not data.Perk6 then
+						if data.Repairs>=1000 then
+							data.Perk6=true
+							if GetLocalPlayer()==GetOwningPlayer(u) then
+								BlzFrameSetVisible(PerkIsLock[6],false)
+							end
 						end
 					end
 				end

@@ -215,5 +215,5 @@ end
 
 function AngleBetweenUnits(caster,target)
 	local yb,ya,xb,xa=GetUnitY(target),GetUnitY(caster),GetUnitX(target),GetUnitX(caster)
-	return Atan2(yb - ya, xb - xa)
+	return Atan2BJ(yb - ya, xb - xa)
 end

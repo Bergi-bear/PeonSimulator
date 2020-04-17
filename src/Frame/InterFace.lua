@@ -96,6 +96,7 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
+
 		end
 	end)
 end
@@ -160,7 +161,7 @@ Name= { --Определяет количество талантов
 	"Каменный Щит",
 	"Овечья болезь",
 	"Сфера огра",
-	"Рывок",
+	"Рывок",--17
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -174,11 +175,11 @@ description={
 	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
 	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
-	"Пробудьте на холоте в течении 60 сек, чтобы заморозить щит",
+	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы укрепить каменный щит ",
 	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью. ",
-	"Найдите сферу, чтобы научиться метать файрболы. ",
+	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 
@@ -217,6 +218,7 @@ function PerkButtonLine()
 			local data=HERO[i]
 			if GetLocalPlayer()==Player(i) then
 				for k=1,#Name  do
+					--print(#Name)
 					if k==1 then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
 					elseif k==2  then
@@ -254,10 +256,22 @@ function PerkButtonLine()
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==11  then -- погром
+						--print(k)
 						if  data.Perk11 then
+							--print("0")
 							BlzFrameSetText(PerkToolTip[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
 						else
+							--print("2")
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/1|r" ) --|cffffff00AAAA|r
+							--print("3")
+						end
+						--print(k.."end")
+					elseif k==12  then -- ледяной щит
+						--print("жвенадцать")
+						if  data.Perk12 then
+							BlzFrameSetText(PerkToolTip[k],"При поглощении урона в щит враги замораживаются на ".."|cffffff00".."3 секунды|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.FrozenShield).."/60|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==13  then
 						if not data.Perk13 then
@@ -271,11 +285,23 @@ function PerkButtonLine()
 						else
 							BlzFrameSetText(PerkToolTip[k],"Поглощает ".."|cffffff00".."100%% |r".." урона " ) --|cffffff00AAAA|r
 						end
+					elseif k==15  then
+						if not data.Perk15 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/20|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
+						end
 					elseif k==16  then
 						if not data.Perk16 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".." Ищите за вулканом|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Ищите за вулканом|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
+						end
+					elseif k==17  then
+						if not data.Perk17 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..GTotalWood.."/50|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: ".."|cffffff00".."2 сек |r".."" ) --|cffffff00AAAA|r
 						end
 					end
 				end

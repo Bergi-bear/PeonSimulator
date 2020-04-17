@@ -852,6 +852,7 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
+
 		end
 	end)
 end
@@ -916,7 +917,7 @@ Name= { --Определяет количество талантов
 	"Каменный Щит",
 	"Овечья болезь",
 	"Сфера огра",
-	"Рывок",
+	"Рывок",--17
 }
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
@@ -930,11 +931,11 @@ description={
 	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
 	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
-	"Пробудьте на холоте в течении 60 сек, чтобы заморозить щит",
+	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы укрепить каменный щит ",
 	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью. ",
-	"Найдите сферу, чтобы научиться метать файрболы. ",
+	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 
@@ -973,6 +974,7 @@ function PerkButtonLine()
 			local data=HERO[i]
 			if GetLocalPlayer()==Player(i) then
 				for k=1,#Name  do
+					--print(#Name)
 					if k==1 then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
 					elseif k==2  then
@@ -1010,10 +1012,22 @@ function PerkButtonLine()
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==11  then -- погром
+						--print(k)
 						if  data.Perk11 then
+							--print("0")
 							BlzFrameSetText(PerkToolTip[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
 						else
+							--print("2")
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/1|r" ) --|cffffff00AAAA|r
+							--print("3")
+						end
+						--print(k.."end")
+					elseif k==12  then -- ледяной щит
+						--print("жвенадцать")
+						if  data.Perk12 then
+							BlzFrameSetText(PerkToolTip[k],"При поглощении урона в щит враги замораживаются на ".."|cffffff00".."3 секунды|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.FrozenShield).."/60|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==13  then
 						if not data.Perk13 then
@@ -1027,11 +1041,23 @@ function PerkButtonLine()
 						else
 							BlzFrameSetText(PerkToolTip[k],"Поглощает ".."|cffffff00".."100% |r".." урона " ) --|cffffff00AAAA|r
 						end
+					elseif k==15  then
+						if not data.Perk15 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/20|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
+						end
 					elseif k==16  then
 						if not data.Perk16 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".." Ищите за вулканом|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Ищите за вулканом|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
+						end
+					elseif k==17  then
+						if not data.Perk17 then
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..GTotalWood.."/50|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],"Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: ".."|cffffff00".."2 сек |r".."" ) --|cffffff00AAAA|r
 						end
 					end
 				end
@@ -1825,14 +1851,16 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					end
 				end
 				--print("лечим")
-				local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
-				data.Repairs=data.Repairs+heal
-				data.RevoltSec=0
-				if not data.Perk6 then
-					if data.Repairs>=1000 then
-						data.Perk6=true
-						if GetLocalPlayer()==GetOwningPlayer(u) then
-							BlzFrameSetVisible(PerkIsLock[6],false)
+				if not data.OnCharge then-- нельзя чинить при рывке щита
+					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
+					data.Repairs=data.Repairs+heal
+					data.RevoltSec=0
+					if not data.Perk6 then
+						if data.Repairs>=1000 then
+							data.Perk6=true
+							if GetLocalPlayer()==GetOwningPlayer(u) then
+								BlzFrameSetVisible(PerkIsLock[6],false)
+							end
 						end
 					end
 				end
@@ -2023,6 +2051,9 @@ function InitGameCore()
 			CartAngle=0,
 			WalkCart=false,
 			ChargeIsReady=true,
+			FrozenShield=0,
+			ReviveOnStay=false,
+			ReviveOnBase=true,
 			--ChargeEff=nil,
 			---накопление перков
 			SingleWoodCount=0,
@@ -2039,6 +2070,7 @@ function InitGameCore()
 			WolfCount=0,
 			WolfHelper=nil,
 			TreeCountOnTB=0,
+			SheepCount=0,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -2075,6 +2107,13 @@ function InitGameCore()
 			RegisterCollision(hero)
 			HealthBarAdd(hero)
 			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
+			SetUnitColor(hero,ConvertPlayerColor(i))
+
+			if i==1 then
+				elseif i==2 then
+				SetUnitColor(hero,PLAYER_COLOR_BLUE)
+			end
+
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
 			end
@@ -2245,7 +2284,7 @@ function InitGameCore()
 			if not data.ReleaseRMB then
 				data.ReleaseRMB=true
 			end
-			if data.ReleaseLMB and data.ChargeIsReady  and true then -- И талант на рывок
+			if data.ReleaseLMB and data.ChargeIsReady  and data.Perk17 then -- И талант на рывок
 				UnitAddVectorForce(data.UnitHero,data.LastTurn,30,300, false)
 				--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 				data.OnCharge=true
@@ -2533,61 +2572,64 @@ function InitGameCore()
 			end
 
 			--анимации
-			if IiMoving  then
-				if not data.IsFrizzyDisabled then
-					data.TotalWay=data.TotalWay+speed-- считаем бездействие
-					if not data.Perk4 then
-						if data.TotalWay>=400000 then
-							data.Perk4=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[4],false)
-							end
-							--print("Лесной болван")
-						end
-					end
-
-
-					if startwalk==false then
-						data.sec=1
-						startwalk=true
-					end
-					if data.isattack==false then
-						if walkattack then
-
-							if data.ReleaseRMB==false and not data.ReleaseLMB and UnitAlive(hero) then
-								--	print("reset in walk")
-								SetUnitAnimation(hero,"Stand")
+			if UnitAlive(hero) then
+				if IiMoving  then
+					if not data.IsFrizzyDisabled then
+						data.TotalWay=data.TotalWay+speed-- считаем бездействие
+						if not data.Perk4 then
+							if data.TotalWay>=400000 then
+								data.Perk4=true
+								if GetLocalPlayer()==GetOwningPlayer(hero) then
+									BlzFrameSetVisible(PerkIsLock[4],false)
+								end
+								--print("Лесной болван")
 							end
 						end
+
+
+						if startwalk==false then
+							data.sec=1
+							startwalk=true
+						end
+						if data.isattack==false then
+							if walkattack then
+
+								if data.ReleaseRMB==false and not data.ReleaseLMB and UnitAlive(hero) then
+									--	print("reset in walk")
+									SetUnitAnimation(hero,"Stand")
+								end
+							end
+						end
+
+
+						if walk and walkattack and UnitAlive(hero) then
+							BlzSetUnitFacingEx(data.legs,angle)
+							SetUnitAnimationByIndex(data.legs,16)
+							SetUnitTimeScale(data.legs,speed*.1)
+							walk=false
+
+							--print("перебирай ногами"..GetUnitName(data.legs))
+						end
+						------------------------------Движение
+
+
+						newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
+
 					end
+				else--не двигается
 
-
-					if walk and walkattack and UnitAlive(hero) then
-						BlzSetUnitFacingEx(data.legs,angle)
-						SetUnitAnimationByIndex(data.legs,16)
-						SetUnitTimeScale(data.legs,speed*.1)
-						walk=false
-
-						--print("перебирай ногами"..GetUnitName(data.legs))
+					if GetOwningPlayer(hero)==Player(0) then
+						--	print("не двигается")
 					end
-					------------------------------Движение
-
-
-					newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
-
+					if data.CartUnit then
+						SetUnitAnimationByIndex(data.CartUnit,0)
+					end
+					if standanim then
+						SetUnitAnimationByIndex(data.legs,11)
+					end
+					startwalk=false
+					BlzSetUnitFacingEx(data.legs,turn)
 				end
-			else--не двигается
-				if GetOwningPlayer(hero)==Player(0) then
-				--	print("не двигается")
-				end
-				if data.CartUnit then
-					SetUnitAnimationByIndex(data.CartUnit,0)
-				end
-				if standanim then
-					SetUnitAnimationByIndex(data.legs,11)
-				end
-				startwalk=false
-				BlzSetUnitFacingEx(data.legs,turn)
 			end
 
 			if  data.AfterMoving==false then-- вектор внешней силы
@@ -2600,6 +2642,7 @@ function InitGameCore()
 							--print("В процессе толкания")
 							local IsDamage,DamagingUnit=UnitDamageArea(hero,1,GetUnitX(hero),GetUnitY(hero),150)
 							local angleU=AngleBetweenUnits(hero,DamagingUnit)
+							--print(angleU)
 							if  not DamagingUnit then
 								--print("толкаемый герой не определён")
 							end
@@ -2697,6 +2740,15 @@ function InitGameCore()
 
 				if not data.HaveAFire and not data.Perk16 then
 					data.FrozenTime=data.FrozenTime+TIMER_PERIOD
+
+					data.FrozenShield=data.FrozenShield+TIMER_PERIOD
+					if data.FrozenShield>=60 and not data.Perk12 then
+						data.Perk12=true
+						if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[12],false)
+						end
+					end
+
 					if not data.IsFrizzyDisabled then
 						if data.FrozenTime >=15 then --and not data.FrizzyEff then
 							data.FrizzyEff=AddSpecialEffectTarget("ice cube",hero,"origin")
@@ -2731,10 +2783,12 @@ function InitGameCore()
 
 			end
 
-			SetUnitPositionSmooth(hero,newPos.x,newPos.y)
-			--Синхронизация ног
-			SetUnitX(data.legs,newPos.x)
-			SetUnitY(data.legs,newPos.y)
+			if UnitAlive(hero) then
+				SetUnitPositionSmooth(hero,newPos.x,newPos.y)
+				--Синхронизация ног
+				SetUnitX(data.legs,newPos.x)
+				SetUnitY(data.legs,newPos.y)
+			end
 			-- карт сзади юнита
 			if data.CartUnit then
 				if not data.ReleaseW and not data.ReleaseD and not data.ReleaseA and data.ReleaseA then
@@ -2776,7 +2830,11 @@ function InitGameCore()
 					data.CartUnit=nil
 				end
 			end
-			SetUnitFacing(hero,turn)
+			if UnitAlive(hero) then
+				SetUnitFacing(hero,turn)
+			else
+				ResetUnitAnimation(data.legs)
+			end
 		end
 	end)
 end
@@ -2879,10 +2937,11 @@ function InitUnitDeath()
 	local gg_trg_DEADGUI = CreateTrigger()
 	TriggerRegisterAnyUnitEventBJ(gg_trg_DEADGUI, EVENT_PLAYER_UNIT_DEATH)--меня полностью устраивает это событие
 	TriggerAddAction(gg_trg_DEADGUI, function()
-		local DeadUnit=GetTriggerUnit()--умерший
 		--print("EventDead")
+		local DeadUnit=GetTriggerUnit()--умерший
 		local Killer=GetKillingUnit()--убийца
-		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герои
+
+		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
 			local x,y=GetUnitXY(DeadUnit)
 			local PD=GetOwningPlayer(DeadUnit)
 			local pid=GetPlayerId(PD)
@@ -2891,7 +2950,11 @@ function InitUnitDeath()
 			--data.CartUnit=nil
 			--SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
 			--SetUnitAnimationByIndex(data.CartUnit,0)
-
+			if data.Perk15 then
+				SetUnitExploded(DeadUnit, true)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				UnitDamageArea(DeadUnit,200,x,y,250)
+			end
 			data.Dies=data.Dies+1
 			if data.Dies==15 then
 				if not data.Perk3 then
@@ -2905,11 +2968,21 @@ function InitUnitDeath()
 			if data.IsWood then
 				CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
 			end
-			TimerStart(CreateTimer(), 0.5, false, function()
+			TimerStart(CreateTimer(), 2.5, false, function()
 
 				--data.Alive=true
+				if data.Perk15 then
+					if data.ReviveOnBase then
+						ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
+						data.ReviveOnBase=false
+					else
+						ReviveHero(DeadUnit,x,y,true)
+						data.ReviveOnBase=true
+					end
 
-				ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
+				else
+					ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
+				end
 				SelectUnitForPlayerSingle(DeadUnit,PD)
 				data.IsWood=false
 				MakeUnitAllAlly(DeadUnit)
@@ -2918,11 +2991,20 @@ function InitUnitDeath()
 			end)
 		end
 
-		if IsUnitType(Killer,UNIT_TYPE_HERO) then --герои
+		if IsUnitType(Killer,UNIT_TYPE_HERO) then --герои убил кого-то
 			--print("герой убил")
 			local PD=GetOwningPlayer(Killer)
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
+
+			if data.Perk15 then
+				SetUnitExploded(DeadUnit, true)
+				local x,y=GetUnitXY(DeadUnit)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				UnitDamageArea(Killer,200,x,y,250)
+			end
+
+
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
 			if data.Kills==1 then
@@ -2942,6 +3024,15 @@ function InitUnitDeath()
 					data.Perk14A=true
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[14],false)
+					end
+				end
+			end
+			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
+				data.SheepCount=data.SheepCount+1
+				if data.SheepCount==20 then
+					data.Perk15=true
+					if GetLocalPlayer()==PD then
+						BlzFrameSetVisible(PerkIsLock[15],false)
 					end
 				end
 			end
@@ -3346,7 +3437,7 @@ end
 
 function AngleBetweenUnits(caster,target)
 	local yb,ya,xb,xa=GetUnitY(target),GetUnitY(caster),GetUnitX(target),GetUnitX(caster)
-	return Atan2(yb - ya, xb - xa)
+	return Atan2BJ(yb - ya, xb - xa)
 end
 
 ---@param text string
@@ -4584,6 +4675,17 @@ function RegisterCollision(hero)
 				if data.IsWood then
 					data.SingleWoodCount=data.SingleWoodCount+k
 					data.IsWood=false
+					if GTotalWood>=50 then
+						if not data.Perk17 then
+							HERO[0].Perk17=true
+							HERO[1].Perk17=true
+							HERO[2].Perk17=true
+							HERO[3].Perk17=true
+							--if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[17],false)
+							--end
+						end
+					end
 					if GetLosingHP(hero)<=5 then
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
@@ -4652,6 +4754,15 @@ function RegisterCollision(hero)
 
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
+					data.SheepCount=data.SheepCount+1
+					if data.SheepCount==20 then
+						data.Perk15=true
+						if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[15],false)
+						end
+					end
+
+
 				SetUnitExploded(CollisionUnit,true)
 				local nx,ny=GetUnitXY(CollisionUnit)
 				UnitDamageArea(CollisionUnit,100,nx,ny,150)

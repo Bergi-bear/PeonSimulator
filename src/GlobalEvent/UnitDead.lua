@@ -6,10 +6,11 @@ function InitUnitDeath()
 	local gg_trg_DEADGUI = CreateTrigger()
 	TriggerRegisterAnyUnitEventBJ(gg_trg_DEADGUI, EVENT_PLAYER_UNIT_DEATH)--меня полностью устраивает это событие
 	TriggerAddAction(gg_trg_DEADGUI, function()
-		local DeadUnit=GetTriggerUnit()--умерший
 		--print("EventDead")
+		local DeadUnit=GetTriggerUnit()--умерший
 		local Killer=GetKillingUnit()--убийца
-		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герои
+
+		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
 			local x,y=GetUnitXY(DeadUnit)
 			local PD=GetOwningPlayer(DeadUnit)
 			local pid=GetPlayerId(PD)
@@ -18,7 +19,11 @@ function InitUnitDeath()
 			--data.CartUnit=nil
 			--SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
 			--SetUnitAnimationByIndex(data.CartUnit,0)
-
+			if data.Perk15 then
+				SetUnitExploded(DeadUnit, true)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				UnitDamageArea(DeadUnit,200,x,y,250)
+			end
 			data.Dies=data.Dies+1
 			if data.Dies==15 then
 				if not data.Perk3 then
@@ -32,11 +37,21 @@ function InitUnitDeath()
 			if data.IsWood then
 				CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
 			end
-			TimerStart(CreateTimer(), 0.5, false, function()
+			TimerStart(CreateTimer(), 2.5, false, function()
 
 				--data.Alive=true
+				if data.Perk15 then
+					if data.ReviveOnBase then
+						ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
+						data.ReviveOnBase=false
+					else
+						ReviveHero(DeadUnit,x,y,true)
+						data.ReviveOnBase=true
+					end
 
-				ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
+				else
+					ReviveHero(DeadUnit,GetPlayerStartLocationX(PD),GetPlayerStartLocationY(PD),true)
+				end
 				SelectUnitForPlayerSingle(DeadUnit,PD)
 				data.IsWood=false
 				MakeUnitAllAlly(DeadUnit)
@@ -45,11 +60,20 @@ function InitUnitDeath()
 			end)
 		end
 
-		if IsUnitType(Killer,UNIT_TYPE_HERO) then --герои
+		if IsUnitType(Killer,UNIT_TYPE_HERO) then --герои убил кого-то
 			--print("герой убил")
 			local PD=GetOwningPlayer(Killer)
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
+
+			if data.Perk15 then
+				SetUnitExploded(DeadUnit, true)
+				local x,y=GetUnitXY(DeadUnit)
+				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+				UnitDamageArea(Killer,200,x,y,250)
+			end
+
+
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
 			if data.Kills==1 then
@@ -69,6 +93,15 @@ function InitUnitDeath()
 					data.Perk14A=true
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[14],false)
+					end
+				end
+			end
+			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
+				data.SheepCount=data.SheepCount+1
+				if data.SheepCount==20 then
+					data.Perk15=true
+					if GetLocalPlayer()==PD then
+						BlzFrameSetVisible(PerkIsLock[15],false)
 					end
 				end
 			end

@@ -43,6 +43,17 @@ function RegisterCollision(hero)
 				if data.IsWood then
 					data.SingleWoodCount=data.SingleWoodCount+k
 					data.IsWood=false
+					if GTotalWood>=50 then
+						if not data.Perk17 then
+							HERO[0].Perk17=true
+							HERO[1].Perk17=true
+							HERO[2].Perk17=true
+							HERO[3].Perk17=true
+							--if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[17],false)
+							--end
+						end
+					end
 					if GetLosingHP(hero)<=5 then
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
@@ -111,6 +122,15 @@ function RegisterCollision(hero)
 
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
+					data.SheepCount=data.SheepCount+1
+					if data.SheepCount==20 then
+						data.Perk15=true
+						if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[15],false)
+						end
+					end
+
+
 				SetUnitExploded(CollisionUnit,true)
 				local nx,ny=GetUnitXY(CollisionUnit)
 				UnitDamageArea(CollisionUnit,100,nx,ny,150)

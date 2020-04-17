@@ -65,6 +65,9 @@ function InitGameCore()
 			CartAngle=0,
 			WalkCart=false,
 			ChargeIsReady=true,
+			FrozenShield=0,
+			ReviveOnStay=false,
+			ReviveOnBase=true,
 			--ChargeEff=nil,
 			---накопление перков
 			SingleWoodCount=0,
@@ -81,6 +84,7 @@ function InitGameCore()
 			WolfCount=0,
 			WolfHelper=nil,
 			TreeCountOnTB=0,
+			SheepCount=0,
 			---открытие перков
 			Perk1=false, --Работник
 			Perk2=false, -- Бунт
@@ -117,6 +121,13 @@ function InitGameCore()
 			RegisterCollision(hero)
 			HealthBarAdd(hero)
 			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
+			SetUnitColor(hero,ConvertPlayerColor(i))
+
+			if i==1 then
+				elseif i==2 then
+				SetUnitColor(hero,PLAYER_COLOR_BLUE)
+			end
+
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
 			end
@@ -287,7 +298,7 @@ function InitGameCore()
 			if not data.ReleaseRMB then
 				data.ReleaseRMB=true
 			end
-			if data.ReleaseLMB and data.ChargeIsReady  and true then -- И талант на рывок
+			if data.ReleaseLMB and data.ChargeIsReady  and data.Perk17 then -- И талант на рывок
 				UnitAddVectorForce(data.UnitHero,data.LastTurn,30,300, false)
 				--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 				data.OnCharge=true
@@ -575,61 +586,64 @@ function InitGameCore()
 			end
 
 			--анимации
-			if IiMoving  then
-				if not data.IsFrizzyDisabled then
-					data.TotalWay=data.TotalWay+speed-- считаем бездействие
-					if not data.Perk4 then
-						if data.TotalWay>=400000 then
-							data.Perk4=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[4],false)
-							end
-							--print("Лесной болван")
-						end
-					end
-
-
-					if startwalk==false then
-						data.sec=1
-						startwalk=true
-					end
-					if data.isattack==false then
-						if walkattack then
-
-							if data.ReleaseRMB==false and not data.ReleaseLMB and UnitAlive(hero) then
-								--	print("reset in walk")
-								SetUnitAnimation(hero,"Stand")
+			if UnitAlive(hero) then
+				if IiMoving  then
+					if not data.IsFrizzyDisabled then
+						data.TotalWay=data.TotalWay+speed-- считаем бездействие
+						if not data.Perk4 then
+							if data.TotalWay>=400000 then
+								data.Perk4=true
+								if GetLocalPlayer()==GetOwningPlayer(hero) then
+									BlzFrameSetVisible(PerkIsLock[4],false)
+								end
+								--print("Лесной болван")
 							end
 						end
+
+
+						if startwalk==false then
+							data.sec=1
+							startwalk=true
+						end
+						if data.isattack==false then
+							if walkattack then
+
+								if data.ReleaseRMB==false and not data.ReleaseLMB and UnitAlive(hero) then
+									--	print("reset in walk")
+									SetUnitAnimation(hero,"Stand")
+								end
+							end
+						end
+
+
+						if walk and walkattack and UnitAlive(hero) then
+							BlzSetUnitFacingEx(data.legs,angle)
+							SetUnitAnimationByIndex(data.legs,16)
+							SetUnitTimeScale(data.legs,speed*.1)
+							walk=false
+
+							--print("перебирай ногами"..GetUnitName(data.legs))
+						end
+						------------------------------Движение
+
+
+						newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
+
 					end
+				else--не двигается
 
-
-					if walk and walkattack and UnitAlive(hero) then
-						BlzSetUnitFacingEx(data.legs,angle)
-						SetUnitAnimationByIndex(data.legs,16)
-						SetUnitTimeScale(data.legs,speed*.1)
-						walk=false
-
-						--print("перебирай ногами"..GetUnitName(data.legs))
+					if GetOwningPlayer(hero)==Player(0) then
+						--	print("не двигается")
 					end
-					------------------------------Движение
-
-
-					newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
-
+					if data.CartUnit then
+						SetUnitAnimationByIndex(data.CartUnit,0)
+					end
+					if standanim then
+						SetUnitAnimationByIndex(data.legs,11)
+					end
+					startwalk=false
+					BlzSetUnitFacingEx(data.legs,turn)
 				end
-			else--не двигается
-				if GetOwningPlayer(hero)==Player(0) then
-				--	print("не двигается")
-				end
-				if data.CartUnit then
-					SetUnitAnimationByIndex(data.CartUnit,0)
-				end
-				if standanim then
-					SetUnitAnimationByIndex(data.legs,11)
-				end
-				startwalk=false
-				BlzSetUnitFacingEx(data.legs,turn)
 			end
 
 			if  data.AfterMoving==false then-- вектор внешней силы
@@ -642,6 +656,7 @@ function InitGameCore()
 							--print("В процессе толкания")
 							local IsDamage,DamagingUnit=UnitDamageArea(hero,1,GetUnitX(hero),GetUnitY(hero),150)
 							local angleU=AngleBetweenUnits(hero,DamagingUnit)
+							--print(angleU)
 							if  not DamagingUnit then
 								--print("толкаемый герой не определён")
 							end
@@ -739,6 +754,15 @@ function InitGameCore()
 
 				if not data.HaveAFire and not data.Perk16 then
 					data.FrozenTime=data.FrozenTime+TIMER_PERIOD
+
+					data.FrozenShield=data.FrozenShield+TIMER_PERIOD
+					if data.FrozenShield>=60 and not data.Perk12 then
+						data.Perk12=true
+						if GetLocalPlayer()==GetOwningPlayer(hero) then
+							BlzFrameSetVisible(PerkIsLock[12],false)
+						end
+					end
+
 					if not data.IsFrizzyDisabled then
 						if data.FrozenTime >=15 then --and not data.FrizzyEff then
 							data.FrizzyEff=AddSpecialEffectTarget("ice cube",hero,"origin")
@@ -773,10 +797,12 @@ function InitGameCore()
 
 			end
 
-			SetUnitPositionSmooth(hero,newPos.x,newPos.y)
-			--Синхронизация ног
-			SetUnitX(data.legs,newPos.x)
-			SetUnitY(data.legs,newPos.y)
+			if UnitAlive(hero) then
+				SetUnitPositionSmooth(hero,newPos.x,newPos.y)
+				--Синхронизация ног
+				SetUnitX(data.legs,newPos.x)
+				SetUnitY(data.legs,newPos.y)
+			end
 			-- карт сзади юнита
 			if data.CartUnit then
 				if not data.ReleaseW and not data.ReleaseD and not data.ReleaseA and data.ReleaseA then
@@ -818,7 +844,11 @@ function InitGameCore()
 					data.CartUnit=nil
 				end
 			end
-			SetUnitFacing(hero,turn)
+			if UnitAlive(hero) then
+				SetUnitFacing(hero,turn)
+			else
+				ResetUnitAnimation(data.legs)
+			end
 		end
 	end)
 end
