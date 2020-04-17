@@ -827,7 +827,7 @@ function CreateWoodFrame ()
 end
 
 function MoveWoodAsFarm(hero,k)
-	AddHeroXP(hero,100*k,true)
+	AddHeroXP(hero,70*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetVisible(wood,false)
 	if GetLocalPlayer()==GetOwningPlayer(hero) then
@@ -852,7 +852,15 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
-
+			if GTotalWood==50 then
+				HERO[0].Perk17=true
+				HERO[1].Perk17=true
+				HERO[2].Perk17=true
+				HERO[3].Perk17=true
+				--if GetLocalPlayer()==GetOwningPlayer(hero) then
+				BlzFrameSetVisible(PerkIsLock[17],false)
+				--end
+			end
 		end
 	end)
 end
@@ -905,7 +913,7 @@ Name= { --Определяет количество талантов
 	"Бунтовщик",
 	"Поблажка",
 	"Лесной Болван",
-	"Блудливый",
+	"Вкус крови",
 	"Ученик Тора",
 	"Ожирение 0 степени",
 	"Толстокожий друг",
@@ -924,7 +932,7 @@ description={
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
 	"Умрите 15 раз, чтобы получить +100 ХП ",
 	"Пробегите расстояние в 400 000 метров, чтобы стать на 50% быстрее ",
-	"Убейте любого врага, чтобы увеличить свой урон в 2 раза ",
+	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 	"Приручите кодоя, чтобы получить 10 ед брони ",
@@ -984,7 +992,11 @@ function PerkButtonLine()
 					elseif k==4  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/400000|r" ) --|cffffff00AAAA|r
 					elseif k==5  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/1|r" ) --|cffffff00AAAA|r
+						if  data.Perk5 then
+							BlzFrameSetText(PerkToolTip[k],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/5|r" ) --|cffffff00AAAA|r
+						end
 					elseif k==6  then
 						if  data.Perk6 then
 							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов вобласти 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
@@ -1072,11 +1084,17 @@ function CreateMouseHelper(sec)
 	BlzFrameSetSize(wood, 0.15, 0.15)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую нопку мыши, чтобы рубить деревья и")
+	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую кнопку мыши, чтобы рубить деревья и")
+
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
 	BlzFrameSetText(new_FrameChargesText2, "Используйте кнопки WASD, для движения")
+
+	local new_FrameChargesText3 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetAbsPoint(new_FrameChargesText3, FRAMEPOINT_CENTER,0.1 , 0.29)
+	BlzFrameSetText(new_FrameChargesText3, "Удерживайте правую кнопку мыши, для активации щита")
+
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
@@ -1092,6 +1110,7 @@ function CreateMouseHelper(sec)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
 					BlzFrameSetVisible(new_FrameChargesText2,false)
+					BlzFrameSetVisible(new_FrameChargesText3,false)
 				end
 			end
 		end
@@ -1721,6 +1740,29 @@ function InitDamage()
 							BlzSetEventDamage(damage/2)
 						end
 					end
+					if data.Perk12 and dot>0 then--
+						if DistanceBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitXY(caster))<=200 then
+							local x,y=GetUnitXY(caster)
+							--print("замораживаем "..GetUnitName(caster))
+							local dummy=CreateUnit(GetOwningPlayer(target), DummyID, x, y, 0)--
+							UnitAddAbility(dummy,FourCC('A00H'))
+							UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+							if Cast(dummy,0,0,caster) then
+							--	print("успех")
+							else
+							--	print("провел")
+							end
+							SetUnitTimeScale(caster,0)
+							SetUnitVertexColor(caster,60,200,255,240)
+							BlzPauseUnitEx(caster, true)
+							TimerStart(CreateTimer(), 3, false, function()
+								SetUnitTimeScale(caster,1)
+								SetUnitVertexColor(caster,255,255,255,255)
+								BlzPauseUnitEx(caster, false)
+							end)
+						end
+					end
+
 				end
 			end
 
@@ -2083,9 +2125,9 @@ function InitGameCore()
 			Perk9=false, -- Кирка
 			Perk10=false, -- Кирка
 			Perk11=false, -- Кирка
-			Perk12=false, -- Кирка
+			Perk12=false, -- ледяной щит
 			Perk13=false, -- Кирка
-			Perk14=true, -- Щит 50
+			Perk14=true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A=false, -- щит 100
 			Perk15=false, -- овечья болезнь
 			Perk16=false, -- Фаерболы
@@ -2247,6 +2289,9 @@ function InitGameCore()
 			--local hero=data.UnitHero
 			if data.Perk14 then
 				UnitAddAbility(data.UnitHero,FourCC('A007'))
+				if data.Perk12 then
+					UnitAddAbility(data.UnitHero,FourCC('A00I'))--эффект мороза
+				end
 				if data.IsWood then
 					local x,y=GetUnitXY(data.UnitHero)
 					CreateFreeWood(MoveXY(x,y,-60,data.LastTurn))
@@ -2268,6 +2313,7 @@ function InitGameCore()
 			local data=HERO[pid]
 			data.ReleaseLMB=false
 			UnitRemoveAbility(data.UnitHero,FourCC('A007'))
+			UnitRemoveAbility(data.UnitHero,FourCC('A00I'))
 		end
 	end)
 	-----------------------------------------------------------------RMB swap LMB
@@ -2284,18 +2330,27 @@ function InitGameCore()
 			if not data.ReleaseRMB then
 				data.ReleaseRMB=true
 			end
-			if data.ReleaseLMB and data.ChargeIsReady  and data.Perk17 then -- И талант на рывок
+			if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then -- И талант на рывок
 				UnitAddVectorForce(data.UnitHero,data.LastTurn,30,300, false)
 				--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 				data.OnCharge=true
 				data.ChargeIsReady=false
-				UnitAddAbility(data.UnitHero,FourCC('A00E')) --красный
-				--UnitAddAbility(data.UnitHero,FourCC('A00А')) --Синий
+				if data.Perk12 then--ледяной щит
+					if not UnitAddAbility(data.UnitHero,FourCC('A00F')) then
+						--print("error")
+					end --Синий
+					--print("синий")
+				else
+					UnitAddAbility(data.UnitHero,FourCC('A00E')) --красный
+					--print("красный")
+				end
+
+				--
 
 				TimerStart(CreateTimer(), 2, false, function()
 					data.ChargeIsReady=true
 					UnitRemoveAbility(data.UnitHero,FourCC('A00E')) --красный
-					UnitRemoveAbility(data.UnitHero,FourCC('A00А')) --Синий
+					UnitRemoveAbility(data.UnitHero,FourCC('A00F')) --Синий
 				end)
 			end
 
@@ -2646,6 +2701,28 @@ function InitGameCore()
 							if  not DamagingUnit then
 								--print("толкаемый герой не определён")
 							end
+
+							if data.Perk12 then--
+									local x12,y12=GetUnitXY(DamagingUnit)
+									--print("замораживаем "..GetUnitName(caster))
+									local dummy=CreateUnit(GetOwningPlayer(hero), DummyID, x12, y12, 0)--
+									UnitAddAbility(dummy,FourCC('A00H'))
+									UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+									if Cast(dummy,0,0,DamagingUnit) then
+										--	print("успех")
+									else
+										--	print("провел")
+									end
+									SetUnitTimeScale(DamagingUnit,0)
+									SetUnitVertexColor(DamagingUnit,60,200,255,240)
+									BlzPauseUnitEx(DamagingUnit, true)
+									TimerStart(CreateTimer(), 3, false, function()
+										SetUnitTimeScale(DamagingUnit,1)
+										SetUnitVertexColor(DamagingUnit,255,255,255,255)
+										BlzPauseUnitEx(DamagingUnit, false)
+									end)
+							end
+
 							if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
 								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
 								UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
@@ -2673,7 +2750,7 @@ function InitGameCore()
 					if data.OnCharge then
 						data.OnCharge=false
 						UnitRemoveAbility(hero,FourCC('A00E')) --красный
-						UnitRemoveAbility(hero,FourCC('A00А')) --Синий
+						UnitRemoveAbility(hero,FourCC('A00F')) --Синий
 						UnitDamageArea(hero,100,GetUnitX(hero),GetUnitY(hero),150)
 						--DestroyEffect(data.ChargeEff)
 						--data.ChargeEff=nil
@@ -3007,7 +3084,7 @@ function InitUnitDeath()
 
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
-			if data.Kills==1 then
+			if data.Kills==5 then
 				if not data.Perk5 then
 					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
 				end
@@ -3031,6 +3108,7 @@ function InitUnitDeath()
 				data.SheepCount=data.SheepCount+1
 				if data.SheepCount==20 then
 					data.Perk15=true
+					UnitAddAbility(Killer,FourCC('A00J'))
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[15],false)
 					end
@@ -3124,7 +3202,7 @@ end
 TargetOrders={"innerfire","slow","heal","controlmagic","invisibility","magicleash","spellsteal","polymorph","repair","thunderbolt","banish","holybolt","load","unstableconcoctoin","spirintlink",
 "bloodlust","ensnare","devour","purge","lightingshield","healingwave","hex","chainlightning","antimagicshell","unholyfrenzy","possession","web","absorbmana","curse","restoration","cripple","frostarmor",
 "deathpact","sleep","darkritual","faeriefire","renew","autodispel","cyclone","entanglingroots","flamingarrows","manaburn","shadowstrike","creepthunderbolt","mindrot","deathcoil",
-"parasite","charm","creepdevour","forkedlighting","cripple","blackarrow","acidbomb","doom","soulburn","transmute","rejuvination"}
+"parasite","charm","creepdevour","forkedlighting","cripple","blackarrow","acidbomb","doom","soulburn","transmute","rejuvination","frostnova"}
 
 PointOrders={"flare","dispel","cloudoffog","flamestrike","blizzard","healingward","stasistrap","evileye","farsight","eathquake","ward","serpentward","shockwave","inferno","impale","deathanddecay","carrionswarm",
 "detonate","forceofnature","blink","selfdestruct","silence","rainoffire","breathofirre","volcano","stampede","healingspray","clusterrockets","summonfactory","drunkenhaze"}
@@ -4673,36 +4751,12 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-					data.SingleWoodCount=data.SingleWoodCount+k
+
 					data.IsWood=false
-					if GTotalWood>=50 then
-						if not data.Perk17 then
-							HERO[0].Perk17=true
-							HERO[1].Perk17=true
-							HERO[2].Perk17=true
-							HERO[3].Perk17=true
-							--if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[17],false)
-							--end
-						end
-					end
-					if GetLosingHP(hero)<=5 then
-						--print("Полное хп")
-						data.TreeCountOnTB=k+data.TreeCountOnTB
-						if data.TreeCountOnTB>=10 and not data.Perk10 then
-							data.Perk10=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[10],false)
-							end
-						end
-					end
+					--рывок перемещён в другое место в интерфейс
+
 					--print(data.SingleWoodCount)
-					if data.SingleWoodCount>=25 then
-						data.Perk1=true
-						if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[1],false)
-						end
-					end
+
 					HealUnit(hero,1000)
 					AddLumber(k,hero)
 					MoveWoodAsFarm(hero,k)
@@ -4757,6 +4811,7 @@ function RegisterCollision(hero)
 					data.SheepCount=data.SheepCount+1
 					if data.SheepCount==20 then
 						data.Perk15=true
+						UnitAddAbility(hero,FourCC('A00J'))
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
 							BlzFrameSetVisible(PerkIsLock[15],false)
 						end
@@ -4788,6 +4843,28 @@ end
 function AddLumber (ttk,caster)
 	local data=HERO[GetPlayerId(GetOwningPlayer(caster))]
 	local ownplayer=GetOwningPlayer(caster)
+
+	if GetLosingHP(caster)<=5 then-- Техника безопасности
+		--print("Полное хп")
+		data.TreeCountOnTB=k+data.TreeCountOnTB
+		if data.TreeCountOnTB>=10 and not data.Perk10 then
+			data.Perk10=true
+			if GetLocalPlayer()==ownplayer then
+				BlzFrameSetVisible(PerkIsLock[10],false)
+			end
+		end
+	end
+
+	
+
+	data.SingleWoodCount=data.SingleWoodCount+ttk
+	if data.SingleWoodCount>=25 then
+		data.Perk1=true
+		if GetLocalPlayer()==ownplayer then
+			BlzFrameSetVisible(PerkIsLock[1],false)
+		end
+	end
+
 	if ttk>0 and data.IsWood then
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)
 		AdjustPlayerStateBJ(ttk, ownplayer, PLAYER_STATE_RESOURCE_LUMBER )

@@ -41,36 +41,12 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-					data.SingleWoodCount=data.SingleWoodCount+k
+
 					data.IsWood=false
-					if GTotalWood>=50 then
-						if not data.Perk17 then
-							HERO[0].Perk17=true
-							HERO[1].Perk17=true
-							HERO[2].Perk17=true
-							HERO[3].Perk17=true
-							--if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[17],false)
-							--end
-						end
-					end
-					if GetLosingHP(hero)<=5 then
-						--print("Полное хп")
-						data.TreeCountOnTB=k+data.TreeCountOnTB
-						if data.TreeCountOnTB>=10 and not data.Perk10 then
-							data.Perk10=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[10],false)
-							end
-						end
-					end
+					--рывок перемещён в другое место в интерфейс
+
 					--print(data.SingleWoodCount)
-					if data.SingleWoodCount>=25 then
-						data.Perk1=true
-						if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[1],false)
-						end
-					end
+
 					HealUnit(hero,1000)
 					AddLumber(k,hero)
 					MoveWoodAsFarm(hero,k)
@@ -125,6 +101,7 @@ function RegisterCollision(hero)
 					data.SheepCount=data.SheepCount+1
 					if data.SheepCount==20 then
 						data.Perk15=true
+						UnitAddAbility(hero,FourCC('A00J'))
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
 							BlzFrameSetVisible(PerkIsLock[15],false)
 						end
@@ -156,6 +133,28 @@ end
 function AddLumber (ttk,caster)
 	local data=HERO[GetPlayerId(GetOwningPlayer(caster))]
 	local ownplayer=GetOwningPlayer(caster)
+
+	if GetLosingHP(caster)<=5 then-- Техника безопасности
+		--print("Полное хп")
+		data.TreeCountOnTB=k+data.TreeCountOnTB
+		if data.TreeCountOnTB>=10 and not data.Perk10 then
+			data.Perk10=true
+			if GetLocalPlayer()==ownplayer then
+				BlzFrameSetVisible(PerkIsLock[10],false)
+			end
+		end
+	end
+
+	
+
+	data.SingleWoodCount=data.SingleWoodCount+ttk
+	if data.SingleWoodCount>=25 then
+		data.Perk1=true
+		if GetLocalPlayer()==ownplayer then
+			BlzFrameSetVisible(PerkIsLock[1],false)
+		end
+	end
+
 	if ttk>0 and data.IsWood then
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)
 		AdjustPlayerStateBJ(ttk, ownplayer, PLAYER_STATE_RESOURCE_LUMBER )

@@ -124,12 +124,6 @@ STRING 23
 Ускорение от руны
 }
 
-STRING 25
-// Units: H000 (Пеон), Propernames (Proper Names)
-{
-Утёнок,ИглСонг,Вадик,Хейт,Миша,Феникс,Док,Сирен,Берги,Прог
-}
-
 STRING 26
 // Units: n003 (Источник питания), Name (Name)
 {
@@ -349,5 +343,23 @@ STRING 62
 // Abilities: A00G (Министан), Name (Name)
 {
 Министан
+}
+
+STRING 63
+// Abilities: A00H (Заморозка), Name (Name)
+{
+Заморозка
+}
+
+STRING 64
+// Abilities: A00I (Ледяной Щит в руке), Name (Name)
+{
+Ледяной Щит в руке
+}
+
+STRING 65
+// Units: H000 (Пеон), Propernames (Proper Names)
+{
+Икобот,Тоадкоп,Утёнок,ИглСонг,Вадик,Хейт,Миша,Феникс,Док,Сирен,Прог,Злая1000,Ханабиши
 }
 

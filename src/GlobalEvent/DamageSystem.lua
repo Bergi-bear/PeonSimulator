@@ -51,6 +51,29 @@ function InitDamage()
 							BlzSetEventDamage(damage/2)
 						end
 					end
+					if data.Perk12 and dot>0 then--
+						if DistanceBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitXY(caster))<=200 then
+							local x,y=GetUnitXY(caster)
+							--print("замораживаем "..GetUnitName(caster))
+							local dummy=CreateUnit(GetOwningPlayer(target), DummyID, x, y, 0)--
+							UnitAddAbility(dummy,FourCC('A00H'))
+							UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+							if Cast(dummy,0,0,caster) then
+							--	print("успех")
+							else
+							--	print("провел")
+							end
+							SetUnitTimeScale(caster,0)
+							SetUnitVertexColor(caster,60,200,255,240)
+							BlzPauseUnitEx(caster, true)
+							TimerStart(CreateTimer(), 3, false, function()
+								SetUnitTimeScale(caster,1)
+								SetUnitVertexColor(caster,255,255,255,255)
+								BlzPauseUnitEx(caster, false)
+							end)
+						end
+					end
+
 				end
 			end
 
@@ -144,6 +167,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if data.Perk6 then -- удар тора
 					--print("удар тора")
 					CastArea(u,FourCC('A003'),x,y)
+					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 					--print("ПОСТ удар тора")
 				end
 				if data.HaveAFire then

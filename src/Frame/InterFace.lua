@@ -71,7 +71,7 @@ function CreateWoodFrame ()
 end
 
 function MoveWoodAsFarm(hero,k)
-	AddHeroXP(hero,100*k,true)
+	AddHeroXP(hero,70*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetVisible(wood,false)
 	if GetLocalPlayer()==GetOwningPlayer(hero) then
@@ -96,7 +96,15 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
-
+			if GTotalWood==50 then
+				HERO[0].Perk17=true
+				HERO[1].Perk17=true
+				HERO[2].Perk17=true
+				HERO[3].Perk17=true
+				--if GetLocalPlayer()==GetOwningPlayer(hero) then
+				BlzFrameSetVisible(PerkIsLock[17],false)
+				--end
+			end
 		end
 	end)
 end
@@ -149,7 +157,7 @@ Name= { --Определяет количество талантов
 	"Бунтовщик",
 	"Поблажка",
 	"Лесной Болван",
-	"Блудливый",
+	"Вкус крови",
 	"Ученик Тора",
 	"Ожирение 0 степени",
 	"Толстокожий друг",
@@ -168,7 +176,7 @@ description={
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
 	"Умрите 15 раз, чтобы получить +100 ХП ",
 	"Пробегите расстояние в 400 000 метров, чтобы стать на 50%% быстрее ",
-	"Убейте любого врага, чтобы увеличить свой урон в 2 раза ",
+	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 	"Приручите кодоя, чтобы получить 10 ед брони ",
@@ -228,7 +236,11 @@ function PerkButtonLine()
 					elseif k==4  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/400000|r" ) --|cffffff00AAAA|r
 					elseif k==5  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/1|r" ) --|cffffff00AAAA|r
+						if  data.Perk5 then
+							BlzFrameSetText(PerkToolTip[k],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/5|r" ) --|cffffff00AAAA|r
+						end
 					elseif k==6  then
 						if  data.Perk6 then
 							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов вобласти 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
@@ -316,11 +328,17 @@ function CreateMouseHelper(sec)
 	BlzFrameSetSize(wood, 0.15, 0.15)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.3)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую нопку мыши, чтобы рубить деревья и")
+	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
+	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую кнопку мыши, чтобы рубить деревья и")
+
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
 	BlzFrameSetText(new_FrameChargesText2, "Используйте кнопки WASD, для движения")
+
+	local new_FrameChargesText3 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetAbsPoint(new_FrameChargesText3, FRAMEPOINT_CENTER,0.1 , 0.29)
+	BlzFrameSetText(new_FrameChargesText3, "Удерживайте правую кнопку мыши, для активации щита")
+
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
@@ -336,6 +354,7 @@ function CreateMouseHelper(sec)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
 					BlzFrameSetVisible(new_FrameChargesText2,false)
+					BlzFrameSetVisible(new_FrameChargesText3,false)
 				end
 			end
 		end

@@ -76,7 +76,7 @@ function InitUnitDeath()
 
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
-			if data.Kills==1 then
+			if data.Kills==5 then
 				if not data.Perk5 then
 					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
 				end
@@ -100,6 +100,7 @@ function InitUnitDeath()
 				data.SheepCount=data.SheepCount+1
 				if data.SheepCount==20 then
 					data.Perk15=true
+					UnitAddAbility(Killer,FourCC('A00J'))
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[15],false)
 					end
@@ -148,8 +149,13 @@ function InitUnitDeath()
 				CustomDefeatBJ(Player(3),"Вы проиграли")
 			end)
 		end
+		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--лесопилка орков
+			local x,y=GetUnitX(DeadUnit)
+			ShowUnit(DeadUnit,false)
+			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людец
+		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людей
 			for i=0,3 do
 				local data=HERO[i]
 				local hero=data.UnitHero

@@ -97,9 +97,9 @@ function InitGameCore()
 			Perk9=false, -- Кирка
 			Perk10=false, -- Кирка
 			Perk11=false, -- Кирка
-			Perk12=false, -- Кирка
+			Perk12=false, -- ледяной щит
 			Perk13=false, -- Кирка
-			Perk14=true, -- Щит 50
+			Perk14=true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A=false, -- щит 100
 			Perk15=false, -- овечья болезнь
 			Perk16=false, -- Фаерболы
@@ -261,6 +261,9 @@ function InitGameCore()
 			--local hero=data.UnitHero
 			if data.Perk14 then
 				UnitAddAbility(data.UnitHero,FourCC('A007'))
+				if data.Perk12 then
+					UnitAddAbility(data.UnitHero,FourCC('A00I'))--эффект мороза
+				end
 				if data.IsWood then
 					local x,y=GetUnitXY(data.UnitHero)
 					CreateFreeWood(MoveXY(x,y,-60,data.LastTurn))
@@ -282,6 +285,7 @@ function InitGameCore()
 			local data=HERO[pid]
 			data.ReleaseLMB=false
 			UnitRemoveAbility(data.UnitHero,FourCC('A007'))
+			UnitRemoveAbility(data.UnitHero,FourCC('A00I'))
 		end
 	end)
 	-----------------------------------------------------------------RMB swap LMB
@@ -298,18 +302,27 @@ function InitGameCore()
 			if not data.ReleaseRMB then
 				data.ReleaseRMB=true
 			end
-			if data.ReleaseLMB and data.ChargeIsReady  and data.Perk17 then -- И талант на рывок
+			if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then -- И талант на рывок
 				UnitAddVectorForce(data.UnitHero,data.LastTurn,30,300, false)
 				--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 				data.OnCharge=true
 				data.ChargeIsReady=false
-				UnitAddAbility(data.UnitHero,FourCC('A00E')) --красный
-				--UnitAddAbility(data.UnitHero,FourCC('A00А')) --Синий
+				if data.Perk12 then--ледяной щит
+					if not UnitAddAbility(data.UnitHero,FourCC('A00F')) then
+						--print("error")
+					end --Синий
+					--print("синий")
+				else
+					UnitAddAbility(data.UnitHero,FourCC('A00E')) --красный
+					--print("красный")
+				end
+
+				--
 
 				TimerStart(CreateTimer(), 2, false, function()
 					data.ChargeIsReady=true
 					UnitRemoveAbility(data.UnitHero,FourCC('A00E')) --красный
-					UnitRemoveAbility(data.UnitHero,FourCC('A00А')) --Синий
+					UnitRemoveAbility(data.UnitHero,FourCC('A00F')) --Синий
 				end)
 			end
 
@@ -660,6 +673,28 @@ function InitGameCore()
 							if  not DamagingUnit then
 								--print("толкаемый герой не определён")
 							end
+
+							if data.Perk12 then--
+									local x12,y12=GetUnitXY(DamagingUnit)
+									--print("замораживаем "..GetUnitName(caster))
+									local dummy=CreateUnit(GetOwningPlayer(hero), DummyID, x12, y12, 0)--
+									UnitAddAbility(dummy,FourCC('A00H'))
+									UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+									if Cast(dummy,0,0,DamagingUnit) then
+										--	print("успех")
+									else
+										--	print("провел")
+									end
+									SetUnitTimeScale(DamagingUnit,0)
+									SetUnitVertexColor(DamagingUnit,60,200,255,240)
+									BlzPauseUnitEx(DamagingUnit, true)
+									TimerStart(CreateTimer(), 3, false, function()
+										SetUnitTimeScale(DamagingUnit,1)
+										SetUnitVertexColor(DamagingUnit,255,255,255,255)
+										BlzPauseUnitEx(DamagingUnit, false)
+									end)
+							end
+
 							if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
 								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
 								UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
@@ -687,7 +722,7 @@ function InitGameCore()
 					if data.OnCharge then
 						data.OnCharge=false
 						UnitRemoveAbility(hero,FourCC('A00E')) --красный
-						UnitRemoveAbility(hero,FourCC('A00А')) --Синий
+						UnitRemoveAbility(hero,FourCC('A00F')) --Синий
 						UnitDamageArea(hero,100,GetUnitX(hero),GetUnitY(hero),150)
 						--DestroyEffect(data.ChargeEff)
 						--data.ChargeEff=nil
