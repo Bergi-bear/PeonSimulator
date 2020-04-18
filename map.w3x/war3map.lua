@@ -575,6 +575,7 @@ function CreateWeaponFrame()
 		BlzFrameSetSize(buttonsprite, 1., 1.)
 		BlzFrameSetScale(buttonsprite, 1.)
 		BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
+		BlzFrameSetVisible(buttonsprite,false)
 		FrameSelecter[i+1]=buttonsprite
 		VisualCharges[i+1]=new_FrameChargesText
 		--ТАЛАНТЫ
@@ -859,6 +860,7 @@ function MoveWoodAsFarm(hero,k)
 				HERO[3].Perk17=true
 				--if GetLocalPlayer()==GetOwningPlayer(hero) then
 				BlzFrameSetVisible(PerkIsLock[17],false)
+				BlzFrameSetVisible(FrameSelecter[17],true)
 				--end
 			end
 		end
@@ -947,32 +949,69 @@ description={
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 
+function TestFrame()
+	--print("isstart")
+end
+
+
+function VisualUnlock()
+	TimerStart(CreateTimer(),10,true, function()
+		for i=1,#Name do
+			BlzFrameSetVisible(FrameSelecter[i],false)
+		end
+	end)
+end
+
 function PerkButtonLine()
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next=0.039
 	for i=1,#Name do -- число талантов
-		local face = BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)--Create a new frame of Type BACKDROP
-		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
-		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)--Create the BoxedText Frame
-		local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
-		BlzFrameSetAllPoints(faceHover, face) --faceHover copies the size and position of face.
-		BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
-		BlzFrameSetSize(face, 0.04, 0.04)
+		local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.02)
-		--BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.03)
+		BlzFrameSetSize(face, 0.04, 0.04)
+		local  buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+		BlzFrameSetAllPoints(buttonIconFrame, face)
+		BlzFrameSetTexture(buttonIconFrame, texture[i],0, true)
+		local t = CreateTrigger()
+
+		BlzTriggerRegisterFrameEvent(t, face, FRAMEEVENT_CONTROL_CLICK)
+		BlzTriggerRegisterFrameEvent(t, face, FRAMEEVENT_MOUSE_ENTER)
+		--BlzTriggerRegisterFrameEvent(t, buttonIconFrame, FRAMEEVENT_CONTROL_CLICK)
+		--BlzTriggerRegisterFrameEvent(t, buttonIconFrame, FRAMEEVENT_MOUSE_ENTER)
+		TriggerAddAction(t,function()
+			BlzFrameSetEnable(face, false)
+			BlzFrameSetEnable(face,true)
+			print("click "..i) -- вот тут не работает
+		end)
+		-- прикручивание тултипа
+		-- и тут события клика и наведения ломаются
+		----[[
+		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0)
+		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
+		local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
+		BlzFrameSetAllPoints(faceHover, face)
+		BlzFrameSetTooltip(faceHover, tooltip)
 		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
 		BlzFrameSetSize(tooltip, 0.15, 0.08)
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 		BlzFrameSetText(UpDest, description[i])
-		BlzFrameSetTexture(face, texture[i],0, true)--face uses paladin blp as texture.
+
 		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)--замочек
 		BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0.,0.)
 		BlzFrameSetSize(lock, 0.04, 0.04)
 		BlzFrameSetTexture(lock, "close",0, true)
 
+		--выделение Хейтовские
+		local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
+		BlzFrameSetPoint(buttonsprite, FRAMEPOINT_BOTTOMLEFT, face, FRAMEPOINT_BOTTOMLEFT, 0.02, 0.02)
+		BlzFrameSetSize(buttonsprite, 1., 1.)
+		BlzFrameSetScale(buttonsprite, 1.)
+		BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
+		BlzFrameSetVisible(buttonsprite,false)
 		--глобалки
+		FrameSelecter[i]=buttonsprite
 		PerkIsLock[i]=lock --замочек
-		PerkToolTip[i]=UpDest -- тултип в описании
+		PerkToolTip[i]=UpDest -- тултип в описании]]
 	end
 
 
@@ -1085,7 +1124,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую кнопку мыши, чтобы рубить деревья и")
+	BlzFrameSetText(new_FrameChargesText, "Удержание ЛКМ - действие")
 
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
@@ -1093,7 +1132,7 @@ function CreateMouseHelper(sec)
 
 	local new_FrameChargesText3 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText3, FRAMEPOINT_CENTER,0.1 , 0.29)
-	BlzFrameSetText(new_FrameChargesText3, "Удерживайте правую кнопку мыши, для активации щита")
+	BlzFrameSetText(new_FrameChargesText3, "Удержание ПКМ - щит")
 
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
@@ -1783,6 +1822,7 @@ function InitDamage()
 							BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
 							if GetLocalPlayer()==casterOwner then
 								BlzFrameSetVisible(PerkIsLock[8],false)
+								BlzFrameSetVisible(FrameSelecter[8],true)
 							end
 							--print("Рабочий поднял бунт")
 							--Allian
@@ -1856,6 +1896,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if data.Perk6 then -- удар тора
 					--print("удар тора")
 					CastArea(u,FourCC('A003'),x,y)
+					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 					--print("ПОСТ удар тора")
 				end
 				if data.HaveAFire then
@@ -1884,6 +1925,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 							--print("разблокировка перка")
 							if GetLocalPlayer()==GetOwningPlayer(u) then
 								BlzFrameSetVisible(PerkIsLock[9],false)
+								BlzFrameSetVisible(FrameSelecter[9],true)
 							end
 						end
 					end
@@ -1902,6 +1944,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 							data.Perk6=true
 							if GetLocalPlayer()==GetOwningPlayer(u) then
 								BlzFrameSetVisible(PerkIsLock[6],false)
+								BlzFrameSetVisible(FrameSelecter[6],true)
 							end
 						end
 					end
@@ -1999,6 +2042,7 @@ function CreateFreeWood(x,y)
 	UnitAddAbility(new,FourCC('A000'))
 	IssueImmediateOrder(new,"WindWalk")
 end
+
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -2055,6 +2099,8 @@ function InitGameCore()
 	CreateWoodFrame()
 	HideEverything()
 	PerkButtonLine()-- табличка перков
+	TestFrame()
+	VisualUnlock()--убирание выделение каждые 10 сек
 	CreateMouseHelper(10)
 	--CreateStatusBar()
 	-----Настоящая инициализация
@@ -2500,6 +2546,7 @@ function InitGameCore()
 					data.Perk2=true
 					if GetLocalPlayer()==GetOwningPlayer(hero) then
 						BlzFrameSetVisible(PerkIsLock[2],false)
+						BlzFrameSetVisible(FrameSelecter[2],true)
 					end
 					print("Рабочий поднял бунт")
 					MakeUnitAllEnemy(hero)
@@ -2636,6 +2683,7 @@ function InitGameCore()
 								data.Perk4=true
 								if GetLocalPlayer()==GetOwningPlayer(hero) then
 									BlzFrameSetVisible(PerkIsLock[4],false)
+									BlzFrameSetVisible(FrameSelecter[4],true)
 								end
 								--print("Лесной болван")
 							end
@@ -2823,6 +2871,7 @@ function InitGameCore()
 						data.Perk12=true
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
 							BlzFrameSetVisible(PerkIsLock[12],false)
+							BlzFrameSetVisible(FrameSelecter[12],true)
 						end
 					end
 
@@ -3040,6 +3089,7 @@ function InitUnitDeath()
 				data.Perk3=true
 				if GetLocalPlayer()==PD then
 					BlzFrameSetVisible(PerkIsLock[3],false)
+					BlzFrameSetVisible(FrameSelecter[3],true)
 				end
 			end
 			if data.IsWood then
@@ -3091,6 +3141,7 @@ function InitUnitDeath()
 				data.Perk5=true
 				if GetLocalPlayer()==PD then
 					BlzFrameSetVisible(PerkIsLock[5],false)
+					BlzFrameSetVisible(FrameSelecter[5],true)
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
@@ -3101,6 +3152,7 @@ function InitUnitDeath()
 					data.Perk14A=true
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[14],false)
+						BlzFrameSetVisible(FrameSelecter[14],true)
 					end
 				end
 			end
@@ -3111,6 +3163,7 @@ function InitUnitDeath()
 					UnitAddAbility(Killer,FourCC('A00J'))
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[15],false)
+						BlzFrameSetVisible(FrameSelecter[15],true)
 					end
 				end
 			end
@@ -3122,7 +3175,14 @@ function InitUnitDeath()
 					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
 					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
 					UnitAddAbility(data.WolfHelper,FourCC('Aloc'))
-					data.Perk13=true
+
+					if not data.Perk13 then
+						data.Perk13=true
+						if GetLocalPlayer()==PD then
+							BlzFrameSetVisible(PerkIsLock[13],false)
+							BlzFrameSetVisible(FrameSelecter[13],true)
+						end
+					end
 
 					TimerStart(CreateTimer(), 1, true, function()
 						local x,y=GetUnitXY(Killer)
@@ -3157,8 +3217,13 @@ function InitUnitDeath()
 				CustomDefeatBJ(Player(3),"Вы проиграли")
 			end)
 		end
+		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--лесопилка орков
+			local x,y=GetUnitX(DeadUnit)
+			ShowUnit(DeadUnit,false)
+			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
+		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людец
+		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людей
 			for i=0,3 do
 				local data=HERO[i]
 				local hero=data.UnitHero
@@ -3187,6 +3252,7 @@ function InitUnitDeath()
 						data.Perk11=true
 						if GetLocalPlayer()==Player(i) then
 							BlzFrameSetVisible(PerkIsLock[11],false)
+							BlzFrameSetVisible(FrameSelecter[11],true)
 						end
 					end
 				end
@@ -3273,8 +3339,10 @@ function HealUnit(hero,amount,flag)
 			if data.Heals>=1000 then
 				data.Perk7=true
 				UnitAddAbility(hero,FourCC('A004'))
+				--TODO переделать на триггерное лечение
 				if GetLocalPlayer()==GetOwningPlayer(hero) then
 					BlzFrameSetVisible(PerkIsLock[7],false)
+					BlzFrameSetVisible(FrameSelecter[7],true)
 				end
 			end
 		end
@@ -4742,6 +4810,7 @@ function RegisterCollision(hero)
 					UnitAddAbility(hero,FourCC('A006'))--огонёк
 					if GetLocalPlayer()==GetOwningPlayer(hero) then
 						BlzFrameSetVisible(PerkIsLock[16],false)
+						BlzFrameSetVisible(FrameSelecter[16],true)
 					end
 				end
 			end
@@ -4814,6 +4883,7 @@ function RegisterCollision(hero)
 						UnitAddAbility(hero,FourCC('A00J'))
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
 							BlzFrameSetVisible(PerkIsLock[15],false)
+							BlzFrameSetVisible(FrameSelecter[15],true)
 						end
 					end
 
@@ -4846,22 +4916,24 @@ function AddLumber (ttk,caster)
 
 	if GetLosingHP(caster)<=5 then-- Техника безопасности
 		--print("Полное хп")
-		data.TreeCountOnTB=k+data.TreeCountOnTB
+		data.TreeCountOnTB=ttk+data.TreeCountOnTB
 		if data.TreeCountOnTB>=10 and not data.Perk10 then
 			data.Perk10=true
 			if GetLocalPlayer()==ownplayer then
 				BlzFrameSetVisible(PerkIsLock[10],false)
+				BlzFrameSetVisible(FrameSelecter[10],true)
 			end
 		end
 	end
 
-	
+
 
 	data.SingleWoodCount=data.SingleWoodCount+ttk
-	if data.SingleWoodCount>=25 then
+	if data.SingleWoodCount>=25  and not data.Perk1 then
 		data.Perk1=true
 		if GetLocalPlayer()==ownplayer then
 			BlzFrameSetVisible(PerkIsLock[1],false)
+			BlzFrameSetVisible(FrameSelecter[1],true)
 		end
 	end
 

@@ -27,6 +27,8 @@ function InitGameCore()
 	CreateWoodFrame()
 	HideEverything()
 	PerkButtonLine()-- табличка перков
+	TestFrame()
+	VisualUnlock()--убирание выделение каждые 10 сек
 	CreateMouseHelper(10)
 	--CreateStatusBar()
 	-----Настоящая инициализация
@@ -472,6 +474,7 @@ function InitGameCore()
 					data.Perk2=true
 					if GetLocalPlayer()==GetOwningPlayer(hero) then
 						BlzFrameSetVisible(PerkIsLock[2],false)
+						BlzFrameSetVisible(FrameSelecter[2],true)
 					end
 					print("Рабочий поднял бунт")
 					MakeUnitAllEnemy(hero)
@@ -604,10 +607,11 @@ function InitGameCore()
 					if not data.IsFrizzyDisabled then
 						data.TotalWay=data.TotalWay+speed-- считаем бездействие
 						if not data.Perk4 then
-							if data.TotalWay>=400000 then
+							if data.TotalWay>=200000 then
 								data.Perk4=true
 								if GetLocalPlayer()==GetOwningPlayer(hero) then
 									BlzFrameSetVisible(PerkIsLock[4],false)
+									BlzFrameSetVisible(FrameSelecter[4],true)
 								end
 								--print("Лесной болван")
 							end
@@ -795,6 +799,7 @@ function InitGameCore()
 						data.Perk12=true
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
 							BlzFrameSetVisible(PerkIsLock[12],false)
+							BlzFrameSetVisible(FrameSelecter[12],true)
 						end
 					end
 

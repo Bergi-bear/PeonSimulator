@@ -61,6 +61,9 @@ function CreateWoodFrame ()
 
 	TimerStart(CreateTimer(), 0.1, true, function()
 		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
+	end)
+	TimerStart(CreateTimer(), 5, true, function()
+		print("Победа, дерево собрано!")
 		if GTotalWood>=100 then
 			CustomVictoryDialogBJ(Player(0))
 			CustomVictoryDialogBJ(Player(1))
@@ -103,6 +106,7 @@ function MoveWoodAsFarm(hero,k)
 				HERO[3].Perk17=true
 				--if GetLocalPlayer()==GetOwningPlayer(hero) then
 				BlzFrameSetVisible(PerkIsLock[17],false)
+				BlzFrameSetVisible(FrameSelecter[17],true)
 				--end
 			end
 		end
@@ -175,7 +179,7 @@ description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
 	"Умрите 15 раз, чтобы получить +100 ХП ",
-	"Пробегите расстояние в 400 000 метров, чтобы стать на 50%% быстрее ",
+	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее ",
 	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
@@ -191,32 +195,69 @@ description={
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 
+function TestFrame()
+	--print("isstart")
+end
+
+
+function VisualUnlock()
+	TimerStart(CreateTimer(),10,true, function()
+		for i=1,#Name do
+			BlzFrameSetVisible(FrameSelecter[i],false)
+		end
+	end)
+end
+
 function PerkButtonLine()
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next=0.039
 	for i=1,#Name do -- число талантов
-		local face = BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)--Create a new frame of Type BACKDROP
-		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
-		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)--Create the BoxedText Frame
-		local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
-		BlzFrameSetAllPoints(faceHover, face) --faceHover copies the size and position of face.
-		BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
-		BlzFrameSetSize(face, 0.04, 0.04)
+		local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.02)
-		--BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.03)
+		BlzFrameSetSize(face, 0.04, 0.04)
+		local  buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+		BlzFrameSetAllPoints(buttonIconFrame, face)
+		BlzFrameSetTexture(buttonIconFrame, texture[i],0, true)
+		local t = CreateTrigger()
+
+		BlzTriggerRegisterFrameEvent(t, face, FRAMEEVENT_CONTROL_CLICK)
+		BlzTriggerRegisterFrameEvent(t, face, FRAMEEVENT_MOUSE_ENTER)
+		--BlzTriggerRegisterFrameEvent(t, buttonIconFrame, FRAMEEVENT_CONTROL_CLICK)
+		--BlzTriggerRegisterFrameEvent(t, buttonIconFrame, FRAMEEVENT_MOUSE_ENTER)
+		TriggerAddAction(t,function()
+			BlzFrameSetEnable(face, false)
+			BlzFrameSetEnable(face,true)
+			print("click "..i) -- вот тут не работает
+		end)
+		-- прикручивание тултипа
+		-- и тут события клика и наведения ломаются
+		----[[
+		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0)
+		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
+		local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
+		BlzFrameSetAllPoints(faceHover, face)
+		BlzFrameSetTooltip(faceHover, tooltip)
 		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
 		BlzFrameSetSize(tooltip, 0.15, 0.08)
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 		BlzFrameSetText(UpDest, description[i])
-		BlzFrameSetTexture(face, texture[i],0, true)--face uses paladin blp as texture.
+
 		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)--замочек
 		BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0.,0.)
 		BlzFrameSetSize(lock, 0.04, 0.04)
 		BlzFrameSetTexture(lock, "close",0, true)
 
+		--выделение Хейтовские
+		local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
+		BlzFrameSetPoint(buttonsprite, FRAMEPOINT_BOTTOMLEFT, face, FRAMEPOINT_BOTTOMLEFT, 0.02, 0.02)
+		BlzFrameSetSize(buttonsprite, 1., 1.)
+		BlzFrameSetScale(buttonsprite, 1.)
+		BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
+		BlzFrameSetVisible(buttonsprite,false)
 		--глобалки
+		FrameSelecter[i]=buttonsprite
 		PerkIsLock[i]=lock --замочек
-		PerkToolTip[i]=UpDest -- тултип в описании
+		PerkToolTip[i]=UpDest -- тултип в описании]]
 	end
 
 
@@ -234,7 +275,7 @@ function PerkButtonLine()
 					elseif k==3  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Dies.."/15|r" ) --|cffffff00AAAA|r
 					elseif k==4  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/400000|r" ) --|cffffff00AAAA|r
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/200000|r" ) --|cffffff00AAAA|r
 					elseif k==5  then
 						if  data.Perk5 then
 							BlzFrameSetText(PerkToolTip[k],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
@@ -329,7 +370,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
-	BlzFrameSetText(new_FrameChargesText, "Удерживайте левую кнопку мыши, чтобы рубить деревья и")
+	BlzFrameSetText(new_FrameChargesText, "Удержание ЛКМ - действие")
 
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
@@ -337,7 +378,7 @@ function CreateMouseHelper(sec)
 
 	local new_FrameChargesText3 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText3, FRAMEPOINT_CENTER,0.1 , 0.29)
-	BlzFrameSetText(new_FrameChargesText3, "Удерживайте правую кнопку мыши, для активации щита")
+	BlzFrameSetText(new_FrameChargesText3, "Удержание ПКМ - щит")
 
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)

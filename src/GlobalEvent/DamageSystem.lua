@@ -94,6 +94,7 @@ function InitDamage()
 							BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
 							if GetLocalPlayer()==casterOwner then
 								BlzFrameSetVisible(PerkIsLock[8],false)
+								BlzFrameSetVisible(FrameSelecter[8],true)
 							end
 							--print("Рабочий поднял бунт")
 							--Allian
@@ -196,6 +197,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 							--print("разблокировка перка")
 							if GetLocalPlayer()==GetOwningPlayer(u) then
 								BlzFrameSetVisible(PerkIsLock[9],false)
+								BlzFrameSetVisible(FrameSelecter[9],true)
 							end
 						end
 					end
@@ -214,6 +216,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 							data.Perk6=true
 							if GetLocalPlayer()==GetOwningPlayer(u) then
 								BlzFrameSetVisible(PerkIsLock[6],false)
+								BlzFrameSetVisible(FrameSelecter[6],true)
 							end
 						end
 					end

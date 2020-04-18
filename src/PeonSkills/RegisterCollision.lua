@@ -32,6 +32,7 @@ function RegisterCollision(hero)
 					UnitAddAbility(hero,FourCC('A006'))--огонёк
 					if GetLocalPlayer()==GetOwningPlayer(hero) then
 						BlzFrameSetVisible(PerkIsLock[16],false)
+						BlzFrameSetVisible(FrameSelecter[16],true)
 					end
 				end
 			end
@@ -41,7 +42,17 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-
+					if GetLosingHP(hero)<=5 then-- Техника безопасности
+						--print("Полное хп")
+						data.TreeCountOnTB=k+data.TreeCountOnTB
+						if data.TreeCountOnTB>=10 and not data.Perk10 then
+							data.Perk10=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[10],false)
+								BlzFrameSetVisible(FrameSelecter[10],true)
+							end
+						end
+					end
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 
@@ -104,6 +115,7 @@ function RegisterCollision(hero)
 						UnitAddAbility(hero,FourCC('A00J'))
 						if GetLocalPlayer()==GetOwningPlayer(hero) then
 							BlzFrameSetVisible(PerkIsLock[15],false)
+							BlzFrameSetVisible(FrameSelecter[15],true)
 						end
 					end
 
@@ -134,24 +146,12 @@ function AddLumber (ttk,caster)
 	local data=HERO[GetPlayerId(GetOwningPlayer(caster))]
 	local ownplayer=GetOwningPlayer(caster)
 
-	if GetLosingHP(caster)<=5 then-- Техника безопасности
-		--print("Полное хп")
-		data.TreeCountOnTB=k+data.TreeCountOnTB
-		if data.TreeCountOnTB>=10 and not data.Perk10 then
-			data.Perk10=true
-			if GetLocalPlayer()==ownplayer then
-				BlzFrameSetVisible(PerkIsLock[10],false)
-			end
-		end
-	end
-
-	
-
 	data.SingleWoodCount=data.SingleWoodCount+ttk
-	if data.SingleWoodCount>=25 then
+	if data.SingleWoodCount>=25  and not data.Perk1 then
 		data.Perk1=true
 		if GetLocalPlayer()==ownplayer then
 			BlzFrameSetVisible(PerkIsLock[1],false)
+			BlzFrameSetVisible(FrameSelecter[1],true)
 		end
 	end
 

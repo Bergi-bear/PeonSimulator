@@ -32,6 +32,7 @@ function InitUnitDeath()
 				data.Perk3=true
 				if GetLocalPlayer()==PD then
 					BlzFrameSetVisible(PerkIsLock[3],false)
+					BlzFrameSetVisible(FrameSelecter[3],true)
 				end
 			end
 			if data.IsWood then
@@ -83,6 +84,7 @@ function InitUnitDeath()
 				data.Perk5=true
 				if GetLocalPlayer()==PD then
 					BlzFrameSetVisible(PerkIsLock[5],false)
+					BlzFrameSetVisible(FrameSelecter[5],true)
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
@@ -93,6 +95,7 @@ function InitUnitDeath()
 					data.Perk14A=true
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[14],false)
+						BlzFrameSetVisible(FrameSelecter[14],true)
 					end
 				end
 			end
@@ -103,6 +106,7 @@ function InitUnitDeath()
 					UnitAddAbility(Killer,FourCC('A00J'))
 					if GetLocalPlayer()==PD then
 						BlzFrameSetVisible(PerkIsLock[15],false)
+						BlzFrameSetVisible(FrameSelecter[15],true)
 					end
 				end
 			end
@@ -114,7 +118,14 @@ function InitUnitDeath()
 					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
 					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
 					UnitAddAbility(data.WolfHelper,FourCC('Aloc'))
-					data.Perk13=true
+
+					if not data.Perk13 then
+						data.Perk13=true
+						if GetLocalPlayer()==PD then
+							BlzFrameSetVisible(PerkIsLock[13],false)
+							BlzFrameSetVisible(FrameSelecter[13],true)
+						end
+					end
 
 					TimerStart(CreateTimer(), 1, true, function()
 						local x,y=GetUnitXY(Killer)
@@ -184,6 +195,7 @@ function InitUnitDeath()
 						data.Perk11=true
 						if GetLocalPlayer()==Player(i) then
 							BlzFrameSetVisible(PerkIsLock[11],false)
+							BlzFrameSetVisible(FrameSelecter[11],true)
 						end
 					end
 				end

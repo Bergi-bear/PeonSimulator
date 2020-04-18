@@ -97,6 +97,7 @@ function CreateWeaponFrame()
 		BlzFrameSetSize(buttonsprite, 1., 1.)
 		BlzFrameSetScale(buttonsprite, 1.)
 		BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
+		BlzFrameSetVisible(buttonsprite,false)
 		FrameSelecter[i+1]=buttonsprite
 		VisualCharges[i+1]=new_FrameChargesText
 		--ТАЛАНТЫ
