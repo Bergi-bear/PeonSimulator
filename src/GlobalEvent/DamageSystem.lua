@@ -46,9 +46,12 @@ function InitDamage()
 						DestroyEffect(eff)
 						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
 						if data.Perk14A then
+							FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage),GetOwningPlayer(target))
 							BlzSetEventDamage(0)
 						else
+							FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage/2),GetOwningPlayer(target))
 							BlzSetEventDamage(damage/2)
+							--print("факт поглощения урона ™")
 						end
 					end
 					if data.Perk12 and dot>0 then--
@@ -166,9 +169,14 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 				if data.Perk6 then -- удар тора
+					data.Perk6=false
 					--print("удар тора")
 					CastArea(u,FourCC('A003'),x,y)
+					UnitDamageArea(u,90,x,y,150)
 					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+					TimerStart(CreateTimer(), 2, false, function()
+						data.Perk6=true
+					end)
 					--print("ПОСТ удар тора")
 				end
 				if data.HaveAFire then

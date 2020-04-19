@@ -17,6 +17,14 @@ function RegisterCollision(hero)
 		--print("any reg "..GetUnitName(CollisionUnit))
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
+			if GetUnitTypeId(CollisionUnit)==FourCC('n006')  then--тускарец с восклицательным знаком
+				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
+				UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
+					print("где-то винзу есть рычаг")
+				end
+			end
+
+
 			if GetUnitTypeId(CollisionUnit)==FourCC('o005')  and not data.CartUnit then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)

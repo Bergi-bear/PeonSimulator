@@ -1,3 +1,10 @@
+[CustomSkin]
+ChatFont=FRIZQT.TTF
+EscMenuTextFont=FRIZQT.TTF
+InfoPanelTextFont=FRIZQT.TTF
+MasterFont=FRIZQT.TTF
+TextTagFont=FRIZQT.TTF
+
 [FrameDef]
 SELECTTARGET=TRIGSTR_008
 

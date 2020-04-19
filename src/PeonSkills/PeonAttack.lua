@@ -8,7 +8,7 @@ function AfterAttack(hero, delay)
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 		local damage=BlzGetUnitBaseDamage(hero,0)
-		if not data.ReleaseLMB and data.ReleaseRMB then
+		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			data.Reflection=false
 			if data.HaveAFire or data.Perk16 then
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)

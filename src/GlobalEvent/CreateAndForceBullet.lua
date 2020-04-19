@@ -68,7 +68,9 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
 					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
 					--print(dot)
 					if 0 < dot then
+						--print("Отклонение снаряда щитом")
 						angleCurrent=GetUnitFacing(DamagingUnit)
+						BlzSetSpecialEffectPosition(bullet,MoveX(x,speed*2,angleCurrent),MoveY(y,speed*2,angleCurrent),z-2)
 					else
 						DestroyEffect(bullet)
 						DestroyTimer(GetExpiredTimer())

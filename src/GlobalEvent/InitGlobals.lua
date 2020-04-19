@@ -15,6 +15,7 @@ do
 		InitDamage()
 		InitUnitDeath()
 		InitAllZones()
+		LeavePlayer()
 		--BadChat() -- Функция для починки чата
 	end
 
@@ -269,6 +270,7 @@ function InitGameCore()
 				data.ReleaseLMB=true
 			end
 			--local hero=data.UnitHero
+			data.AttackTime=0.0
 			if data.Perk14 then
 				UnitAddAbility(data.UnitHero,FourCC('A007'))
 				if data.Perk12 then
@@ -342,7 +344,7 @@ function InitGameCore()
 				data.ReleaseRMB=true
 				data.Reflection=true
 			end
-			data.AttackTime=0.7
+
 		end
 	end)
 	local TrigDePressRMB=CreateTrigger()
@@ -433,7 +435,7 @@ function InitGameCore()
 				end
 
 
-			local aSpeed=0.7
+
 			local Vector3 = wGeometry.Vector3
 
 
@@ -493,7 +495,7 @@ function InitGameCore()
 				data.MHoldSec=data.MHoldSec+TIMER_PERIOD
 			end
 
-
+			local aSpeed=0.7
 			data.AttackTime=data.AttackTime+TIMER_PERIOD
 			if data.AttackTime>=aSpeed then
 				data.AttackTime=0

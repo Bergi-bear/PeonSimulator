@@ -126,7 +126,7 @@ function HealthBarAdd(u)
 	end
 	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
 	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
-	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u))
+	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u).." ™")--‡ Сердце ™ щит
 	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
 	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
 	local function on_timer()

@@ -363,3 +363,46 @@ STRING 65
 Икобот,Тоадкоп,Утёнок,ИглСонг,Вадик,Хейт,Миша,Феникс,Док,Сирен,Прог,Злая1000,Ханабиши
 }
 
+STRING 66
+{
+Мозгом игрока овладел ИИ
+}
+
+STRING 67
+// Units: h002 (Obelisk Nozdormu), Name (Name)
+{
+Obelisk Nozdormu
+}
+
+STRING 68
+// Units: h002 (Obelisk Nozdormu), Tip (Tooltip - Basic)
+{
+Obelisk Nozdormu
+}
+
+STRING 69
+// Units: h002 (Obelisk Nozdormu), Ubertip (Tooltip - Extended)
+{
+$	 время
+†	  магия
+°	 сапог
+®	 лук
+©	 меч
+™	 щит
+‡	  сердце
+‰	 катапульта
+¦	 крыло
+}
+
+STRING 70
+// Abilities: A00L (Восклицательный Знак), Name (Name)
+{
+Восклицательный Знак
+}
+
+STRING 71
+// Abilities: A00L (Восклицательный Знак), EditorSuffix (Editor Suffix)
+{
+ (красный)
+}
+
