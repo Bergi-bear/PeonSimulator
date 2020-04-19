@@ -5,7 +5,7 @@
 ---
 function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
 	local CollisionRange=100
-	if not damage then damage=100 end
+	if not damage then damage=200 end
 	local xhero,yhero=GetUnitX(hero),GetUnitY(hero)
 	local zhero=GetUnitZ(hero)+60
 	local bullet=AddSpecialEffect(effectmodel,xs,ys)

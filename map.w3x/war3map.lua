@@ -14,14 +14,17 @@ gg_rct_Region_012 = nil
 gg_rct_MiniWater = nil
 gg_rct_Morlok = nil
 gg_rct_Region_015 = nil
+gg_rct_Region_016 = nil
 gg_snd_Load = nil
 gg_trg_GuiInit = nil
+gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
 gg_unit_o001_0001 = nil
 gg_unit_hlum_0090 = nil
 gg_unit_hlum_0057 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
+gg_dest_DTlv_1234 = nil
 function InitGlobals()
 end
 
@@ -36,6 +39,7 @@ function CreateAllDestructables()
     local d
     local t
     local life
+    gg_dest_DTlv_1234 = BlzCreateDestructableZWithSkin(FourCC("DTlv"), 672.0, -3744.0, 135.3, 314.433, 1.005, 0, FourCC("DTlv"))
     gg_dest_LTlt_0364 = BlzCreateDestructableWithSkin(FourCC("LTlt"), -1248.0, -2144.0, 270.000, 1.177, 1, FourCC("LTlt"))
     gg_dest_LTlt_0097 = BlzCreateDestructableWithSkin(FourCC("LTlt"), -480.0, 864.0, 270.000, 0.895, 2, FourCC("LTlt"))
 end
@@ -49,7 +53,7 @@ function CreateBuildingsForPlayer5()
     gg_unit_o001_0001 = BlzCreateUnitWithSkin(p, FourCC("o001"), -32.0, 544.0, 270.000, FourCC("o001"))
     life = GetUnitState(gg_unit_o001_0001, UNIT_STATE_LIFE)
     SetUnitState(gg_unit_o001_0001, UNIT_STATE_LIFE, 0.70 * life)
-    u = BlzCreateUnitWithSkin(p, FourCC("otrb"), -32.0, -544.0, 270.000, FourCC("otrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("otrb"), 0.0, -512.0, 270.000, FourCC("otrb"))
     life = GetUnitState(u, UNIT_STATE_LIFE)
     SetUnitState(u, UNIT_STATE_LIFE, 0.60 * life)
     u = BlzCreateUnitWithSkin(p, FourCC("n003"), -32.0, -32.0, 270.000, FourCC("n003"))
@@ -185,6 +189,15 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 2410.0, -3177.6, 90.000, FourCC("e006"))
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 2645.5, -3183.0, 90.000, FourCC("e006"))
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 1151.8, -1692.3, 180.000, FourCC("e006"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nwwd"), 3640.2, 1224.5, 249.420, FourCC("nwwd"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 3850.8, 391.1, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2971.3, 1428.7, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2761.8, 213.4, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 1094.6, 402.1, 320.283, FourCC("n000"))
+    SetUnitAcquireRange(u, 200.0)
 end
 
 function CreateBuildingsForPlayer11()
@@ -226,6 +239,7 @@ function CreateUnitsForPlayer11()
     local unitID
     local t
     local life
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 2852.8, -3802.0, 10.031, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("e004"), -736.3, 1087.7, 0.000, FourCC("e004"))
     u = BlzCreateUnitWithSkin(p, FourCC("e004"), -1406.1, 2627.6, 0.000, FourCC("e004"))
     u = BlzCreateUnitWithSkin(p, FourCC("e004"), -2415.9, 3416.5, 303.180, FourCC("e004"))
@@ -258,6 +272,57 @@ function CreateUnitsForPlayer11()
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("ndqs"), -3851.3, 3043.6, 267.934, FourCC("ndqs"))
     SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 2333.0, -3895.9, 150.210, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 1830.5, -4010.1, 114.162, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 782.1, -3817.1, 244.970, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 1255.0, -3990.5, 339.246, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 2063.5, -3684.1, 272.359, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 2596.5, -3644.3, 193.805, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3224.9, -3889.5, 280.885, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3741.4, 1778.2, 283.467, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3744.8, 2281.8, 59.383, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3908.4, 1962.5, 250.035, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3882.3, 3675.0, 287.005, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3417.6, 4246.7, 253.352, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nscb"), 4010.7, -2813.4, 208.747, FourCC("nscb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nsc3"), 3856.9, -3222.4, 25.467, FourCC("nsc3"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nsc2"), 3433.4, -3761.4, 112.679, FourCC("nsc2"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 3966.9, 2463.8, 8.262, FourCC("nmsc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 3137.7, 4722.5, 351.738, FourCC("nmsc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 1859.7, 4589.0, 165.272, FourCC("nmsc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrv"), 2058.3, 4568.0, 93.178, FourCC("nmrv"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmsn"), 827.3, 4452.1, 134.455, FourCC("nmsn"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmtw"), 891.4, 4643.8, 162.031, FourCC("nmtw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmtw"), -41.9, 4392.6, 165.305, FourCC("nmtw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmtw"), -190.3, 4298.0, 165.789, FourCC("nmtw"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -1143.7, 4374.0, 278.171, FourCC("nmbg"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -1408.6, 4457.6, 289.301, FourCC("nmbg"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -2957.4, 4553.6, 215.987, FourCC("nmbg"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -2779.3, 4333.8, 137.333, FourCC("nmbg"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -2623.1, 4390.5, 336.961, FourCC("nmbg"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 3952.5, 1815.3, 297.827, FourCC("nhmc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 3756.8, 2635.2, 113.262, FourCC("nhmc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 4035.8, 3282.3, 131.587, FourCC("nhmc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 3857.0, 4067.0, 231.456, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 3112.7, 4331.5, 118.810, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 2439.6, 4679.5, 122.117, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 1520.8, 4669.4, 101.055, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 450.9, 4721.4, 215.339, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 37.6, 4766.6, 187.378, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), -825.2, 4495.4, 274.238, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), -881.4, 4444.3, 236.005, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), -3865.8, 4660.1, 108.460, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), -4505.3, 4342.2, 209.593, FourCC("ncrb"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 1247.3, -4112.5, 276.666, FourCC("nhmc"))
+end
+
+function CreateNeutralHostile()
+    local p = Player(PLAYER_NEUTRAL_AGGRESSIVE)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("n006"), 3501.9, -1845.6, -41.558, FourCC("n006"))
 end
 
 function CreateNeutralPassive()
@@ -286,6 +351,7 @@ end
 
 function CreateAllUnits()
     CreatePlayerBuildings()
+    CreateNeutralHostile()
     CreateNeutralPassive()
     CreatePlayerUnits()
 end
@@ -312,6 +378,7 @@ function CreateRegions()
     gg_rct_Region_015 = Rect(-3200.0, 1952.0, -2848.0, 2240.0)
     we = AddWeatherEffect(gg_rct_Region_015, FourCC("LRaa"))
     EnableWeatherEffect(we, true)
+    gg_rct_Region_016 = Rect(3456.0, -2400.0, 4064.0, -2080.0)
 end
 
 --CUSTOM_CODE
@@ -818,6 +885,13 @@ function CreateWoodFrame ()
 
 	TimerStart(CreateTimer(), 0.1, true, function()
 		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
+	end)
+
+	if GTotalWood>=100 then
+		print("Победа, дерево собрано!")
+	end
+
+	TimerStart(CreateTimer(), 5, true, function()
 		if GTotalWood>=100 then
 			CustomVictoryDialogBJ(Player(0))
 			CustomVictoryDialogBJ(Player(1))
@@ -933,7 +1007,7 @@ description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
 	"Умрите 15 раз, чтобы получить +100 ХП ",
-	"Пробегите расстояние в 400 000 метров, чтобы стать на 50% быстрее ",
+	"Пробегите расстояние в 200000 метров, чтобы стать на 50% быстрее ",
 	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
@@ -1029,7 +1103,7 @@ function PerkButtonLine()
 					elseif k==3  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Dies.."/15|r" ) --|cffffff00AAAA|r
 					elseif k==4  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/400000|r" ) --|cffffff00AAAA|r
+						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/200000|r" ) --|cffffff00AAAA|r
 					elseif k==5  then
 						if  data.Perk5 then
 							BlzFrameSetText(PerkToolTip[k],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
@@ -1038,7 +1112,7 @@ function PerkButtonLine()
 						end
 					elseif k==6  then
 						if  data.Perk6 then
-							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов вобласти 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов в области 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
 						end
@@ -1265,7 +1339,7 @@ end
 ---
 function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
 	local CollisionRange=100
-	if not damage then damage=100 end
+	if not damage then damage=200 end
 	local xhero,yhero=GetUnitX(hero),GetUnitY(hero)
 	local zhero=GetUnitZ(hero)+60
 	local bullet=AddSpecialEffect(effectmodel,xs,ys)
@@ -2018,7 +2092,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 				--блок голема
 				if GetDestructableTypeId(d)==FourCC('LTrc') then
 					KillDestructable(d)
-					local  new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
+					local  new=CreateUnit(Player(10), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
 
 					TimerStart(CreateTimer(),10,false, function()
 						KillUnit(new)
@@ -2215,6 +2289,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW,Player(i),OSKEY_W,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW,Player(i),OSKEY_UP,0,true)
 	end
 	TriggerAddAction(gg_trg_EventUpW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2231,6 +2306,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW,Player(i),OSKEY_W,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW,Player(i),OSKEY_UP,0,false)
 	end
 	TriggerAddAction(TrigDepressW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2242,6 +2318,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS,Player(i),OSKEY_S,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS,Player(i),OSKEY_DOWN,0,true)
 	end
 	TriggerAddAction(gg_trg_EventUpS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2258,6 +2335,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS,Player(i),OSKEY_S,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS,Player(i),OSKEY_DOWN,0,false)
 	end
 	TriggerAddAction(TrigDepressS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2269,6 +2347,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressD,Player(i),OSKEY_D,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(TrigPressD,Player(i),OSKEY_RIGHT,0,true)
 	end
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2285,6 +2364,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD,Player(i),OSKEY_D,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD,Player(i),OSKEY_RIGHT,0,false)
 	end
 	TriggerAddAction(TrigDePressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2296,6 +2376,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressA,Player(i),OSKEY_A,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(TrigPressA,Player(i),OSKEY_LEFT,0,true)
 	end
 	TriggerAddAction(TrigPressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2312,6 +2393,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA,Player(i),OSKEY_A,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA,Player(i),OSKEY_LEFT,0,false)
 	end
 	TriggerAddAction(TrigDePressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -2368,6 +2450,7 @@ function InitGameCore()
 		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigPressRMB, Player(i), EVENT_PLAYER_MOUSE_DOWN)
 	end
+
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then -- это правая кнопка
@@ -2548,7 +2631,7 @@ function InitGameCore()
 						BlzFrameSetVisible(PerkIsLock[2],false)
 						BlzFrameSetVisible(FrameSelecter[2],true)
 					end
-					print("Рабочий поднял бунт")
+					--print("Рабочий поднял бунт")
 					MakeUnitAllEnemy(hero)
 				end
 			end
@@ -2679,7 +2762,7 @@ function InitGameCore()
 					if not data.IsFrizzyDisabled then
 						data.TotalWay=data.TotalWay+speed-- считаем бездействие
 						if not data.Perk4 then
-							if data.TotalWay>=400000 then
+							if data.TotalWay>=200000 then
 								data.Perk4=true
 								if GetLocalPlayer()==GetOwningPlayer(hero) then
 									BlzFrameSetVisible(PerkIsLock[4],false)
@@ -4795,11 +4878,10 @@ function RegisterCollision(hero)
 		--print("any reg "..GetUnitName(CollisionUnit))
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
-			if GetUnitTypeId(CollisionUnit)==FourCC('o005') then--тележка
+			if GetUnitTypeId(CollisionUnit)==FourCC('o005')  and not data.CartUnit then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
 					data.CartUnit=CollisionUnit
-
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
@@ -4820,7 +4902,17 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-
+					if GetLosingHP(hero)<=5 then-- Техника безопасности
+						--print("Полное хп")
+						data.TreeCountOnTB=k+data.TreeCountOnTB
+						if data.TreeCountOnTB>=10 and not data.Perk10 then
+							data.Perk10=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[10],false)
+								BlzFrameSetVisible(FrameSelecter[10],true)
+							end
+						end
+					end
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 
@@ -4913,20 +5005,6 @@ end
 function AddLumber (ttk,caster)
 	local data=HERO[GetPlayerId(GetOwningPlayer(caster))]
 	local ownplayer=GetOwningPlayer(caster)
-
-	if GetLosingHP(caster)<=5 then-- Техника безопасности
-		--print("Полное хп")
-		data.TreeCountOnTB=ttk+data.TreeCountOnTB
-		if data.TreeCountOnTB>=10 and not data.Perk10 then
-			data.Perk10=true
-			if GetLocalPlayer()==ownplayer then
-				BlzFrameSetVisible(PerkIsLock[10],false)
-				BlzFrameSetVisible(FrameSelecter[10],true)
-			end
-		end
-	end
-
-
 
 	data.SingleWoodCount=data.SingleWoodCount+ttk
 	if data.SingleWoodCount>=25  and not data.Perk1 then
@@ -5375,6 +5453,20 @@ function InitTrig_GuiInit()
     TriggerAddAction(gg_trg_GuiInit, Trig_GuiInit_Actions)
 end
 
+function Trig_Open_Func001A()
+    KillDestructable(GetEnumDestructable())
+end
+
+function Trig_Open_Actions()
+    EnumDestructablesInRectAll(gg_rct_Region_016, Trig_Open_Func001A)
+end
+
+function InitTrig_Open()
+    gg_trg_Open = CreateTrigger()
+    TriggerRegisterDeathEvent(gg_trg_Open, gg_dest_DTlv_1234)
+    TriggerAddAction(gg_trg_Open, Trig_Open_Actions)
+end
+
 function Trig_DeadHumanLumber_Actions()
     KillDestructable(gg_dest_LTlt_0097)
 end
@@ -5387,6 +5479,7 @@ end
 
 function InitCustomTriggers()
     InitTrig_GuiInit()
+    InitTrig_Open()
     InitTrig_DeadHumanLumber()
 end
 

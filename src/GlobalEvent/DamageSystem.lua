@@ -290,7 +290,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 				--блок голема
 				if GetDestructableTypeId(d)==FourCC('LTrc') then
 					KillDestructable(d)
-					local  new=CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
+					local  new=CreateUnit(Player(10), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
 
 					TimerStart(CreateTimer(),10,false, function()
 						KillUnit(new)

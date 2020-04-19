@@ -143,6 +143,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW,Player(i),OSKEY_W,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW,Player(i),OSKEY_UP,0,true)
 	end
 	TriggerAddAction(gg_trg_EventUpW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -159,6 +160,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW,Player(i),OSKEY_W,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW,Player(i),OSKEY_UP,0,false)
 	end
 	TriggerAddAction(TrigDepressW, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -170,6 +172,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS,Player(i),OSKEY_S,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS,Player(i),OSKEY_DOWN,0,true)
 	end
 	TriggerAddAction(gg_trg_EventUpS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -186,6 +189,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS,Player(i),OSKEY_S,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS,Player(i),OSKEY_DOWN,0,false)
 	end
 	TriggerAddAction(TrigDepressS, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -197,6 +201,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressD,Player(i),OSKEY_D,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(TrigPressD,Player(i),OSKEY_RIGHT,0,true)
 	end
 	TriggerAddAction(TrigPressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -213,6 +218,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD,Player(i),OSKEY_D,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD,Player(i),OSKEY_RIGHT,0,false)
 	end
 	TriggerAddAction(TrigDePressD, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -224,6 +230,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressA,Player(i),OSKEY_A,0,true)
+		BlzTriggerRegisterPlayerKeyEvent(TrigPressA,Player(i),OSKEY_LEFT,0,true)
 	end
 	TriggerAddAction(TrigPressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -240,6 +247,7 @@ function InitGameCore()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA,Player(i),OSKEY_A,0,false)
+		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA,Player(i),OSKEY_LEFT,0,false)
 	end
 	TriggerAddAction(TrigDePressA, function()
 		local pid=GetPlayerId(GetTriggerPlayer())
@@ -296,6 +304,7 @@ function InitGameCore()
 		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigPressRMB, Player(i), EVENT_PLAYER_MOUSE_DOWN)
 	end
+
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then -- это правая кнопка
@@ -476,7 +485,7 @@ function InitGameCore()
 						BlzFrameSetVisible(PerkIsLock[2],false)
 						BlzFrameSetVisible(FrameSelecter[2],true)
 					end
-					print("Рабочий поднял бунт")
+					--print("Рабочий поднял бунт")
 					MakeUnitAllEnemy(hero)
 				end
 			end

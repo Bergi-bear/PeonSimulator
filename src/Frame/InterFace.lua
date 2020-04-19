@@ -62,8 +62,12 @@ function CreateWoodFrame ()
 	TimerStart(CreateTimer(), 0.1, true, function()
 		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
 	end)
-	TimerStart(CreateTimer(), 5, true, function()
+
+	if GTotalWood>=100 then
 		print("Победа, дерево собрано!")
+	end
+
+	TimerStart(CreateTimer(), 5, true, function()
 		if GTotalWood>=100 then
 			CustomVictoryDialogBJ(Player(0))
 			CustomVictoryDialogBJ(Player(1))
@@ -284,7 +288,7 @@ function PerkButtonLine()
 						end
 					elseif k==6  then
 						if  data.Perk6 then
-							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов вобласти 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов в области 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
 						end
