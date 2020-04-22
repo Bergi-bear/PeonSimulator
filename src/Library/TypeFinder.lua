@@ -37,10 +37,10 @@ function FindUnitOfType(id,flag,x,y)
 
 
 	if k>1 then
-		print("Ошибка получено "..k.." юнитов")
+	--	print("Ошибка получено "..k.." юнитов")
 	end
 	if unit==nil then
-		print("Не найдено живых юнитов данного типа")
+	--	print("Не найдено живых юнитов данного типа")
 	end
-	return unit
+	return unit,k
 end

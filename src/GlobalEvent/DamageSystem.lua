@@ -30,6 +30,17 @@ function InitDamage()
 			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+
+				if data.Reflection and data.Perk10 then -- парирование с талантом
+					--print("Урон парирован")
+					local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
+					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
+					BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
+					DestroyEffect(eff)
+					BlzSetEventDamage(0)
+				end
+
+
 				if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
 					local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
 					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))

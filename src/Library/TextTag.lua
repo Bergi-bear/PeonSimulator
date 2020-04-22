@@ -80,6 +80,6 @@ function FlyTextTagHealXY(x,y, text, player)
 	return FlyTextTag(text, 0.024, x, y, 150, 88, 250, 13, 255, 0, 0.03, 1, 3, player)
 end
 
-function FlyTextTagShieldXY(x,y, text, player)
-	return FlyTextTag("™"..text, 0.018, x, y, 150, 128, 128, 128, 255, 0, 0.03, 1, 3, player)
+function FlyTextTagShieldXY(x,y, text, player)--™
+	return FlyTextTag(""..text, 0.018, x, y, 150, 128, 128, 128, 255, 0, 0.03, 1, 3, player)
 end

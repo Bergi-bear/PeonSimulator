@@ -20,7 +20,9 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
 	DestroyEffect(cloud)
 	BlzSetSpecialEffectZ(bullet,zhero)
 	local angleCurrent=angle
+	local dist=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		dist=dist+speed
 		local x,y,z=BlzGetLocalSpecialEffectX(bullet),BlzGetLocalSpecialEffectY(bullet),BlzGetLocalSpecialEffectZ(bullet)
 		local zGround=GetTerrainZ(MoveX(x,speed*2,angleCurrent),MoveY(y,speed*2,angleCurrent))
 		BlzSetSpecialEffectPosition(bullet,MoveX(x,speed,angleCurrent),MoveY(y,speed,angleCurrent),z-2)
@@ -35,7 +37,7 @@ function CreateAndForceBullet(hero,angle,speed,effectmodel,xs,ys,damage)
 		CollisionEnemy,DamagingUnit=UnitDamageArea(hero,damage,x,y,CollisionRange,ZBullet)
 		CollisisonDestr=PointContentDestructable(x,y,100,false)
 		local PerepadZ=zGround-z
-		if  z<=147 or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit,UNIT_TYPE_STRUCTURE) or PerepadZ>50 then --or zGround+z>=-70+z
+		if  dist>1000 or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit,UNIT_TYPE_STRUCTURE) or PerepadZ>20 then --or zGround+z>=-70+z --z<=147
 			PointContentDestructable(x,y,100,true)
 			if z<=-90 then
 				--CreateTorrent(x,y)

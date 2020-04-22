@@ -17,13 +17,23 @@ function RegisterCollision(hero)
 		--print("any reg "..GetUnitName(CollisionUnit))
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
-			if GetUnitTypeId(CollisionUnit)==FourCC('n006')  then--тускарец с восклицательным знаком
+
+			if GetUnitTypeId(CollisionUnit)==FourCC('oshy')  then --ферфь
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
-				UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-					print("где-то винзу есть рычаг")
+				if GTotalWood>=100 then
+					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
+					print("Система: приступайте к строительсву корабля")
+				end
+				    print("Система: Добудьте 100 древисины чтобы построить корабль")
 				end
 			end
 
+			if GetUnitTypeId(CollisionUnit)==FourCC('n006')  then--тускарец с восклицательным знаком
+				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
+				UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
+					print("Тускарец: где-то винзу есть рычаг")
+				end
+			end
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('o005')  and not data.CartUnit then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
@@ -74,6 +84,20 @@ function RegisterCollision(hero)
 				if data.CartUnit  and GetUnitUserData(data.CartUnit)>0 then -- дрова из тележки на лесопилке
 					local wc=GetUnitUserData(data.CartUnit)
 					--k=wc*k
+
+					if GetLosingHP(hero)<=5 then-- Техника безопасности
+						--print("Полное хп")
+						data.TreeCountOnTB=k+data.TreeCountOnTB
+						if data.TreeCountOnTB>=10 and not data.Perk10 then
+							data.Perk10=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[10],false)
+								BlzFrameSetVisible(FrameSelecter[10],true)
+							end
+						end
+					end
+
+
 					HealUnit(hero,1000)
 					AddLumber(k,hero)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение

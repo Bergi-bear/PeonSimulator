@@ -16,6 +16,7 @@ do
 		InitUnitDeath()
 		InitAllZones()
 		LeavePlayer()
+		HeroEnterSaws()
 		--BadChat() -- Функция для починки чата
 	end
 
@@ -502,7 +503,7 @@ function InitGameCore()
 				if data.ReleaseRMB then
 					data.isattack=true
 					--print("time attack")
-					data.Reflection=true
+
 					if not data.ReleaseLMB then
 						AfterAttack(hero,0.4)
 					end

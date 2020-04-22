@@ -103,7 +103,7 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
-			if GTotalWood==50 then
+			if GTotalWood==50 or GTotalWood==51 then
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
 				HERO[2].Perk17=true
@@ -126,7 +126,7 @@ function HealthBarAdd(u)
 	end
 	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
 	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
-	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u).." ™")--‡ Сердце ™ щит
+	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u).." ‡")--‡ Сердце ™ щит
 	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
 	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
 	local function on_timer()
@@ -146,8 +146,8 @@ texture={
 	"ReplaceableTextures\\CommandButtons\\BTNChaosPeon",
 	"ReplaceableTextures\\CommandButtons\\BTNGoblinSapper",
 	"ReplaceableTextures\\CommandButtons\\BTNBoots",
-	"ReplaceableTextures\\CommandButtons\\BTNBandit",
-	"ReplaceableTextures\\CommandButtons\\BTNHeroMountainKing",
+	"ReplaceableTextures\\CommandButtons\\BTNBloodLust",
+	"ReplaceableTextures\\CommandButtons\\BTNStormBolt",
 	"ReplaceableTextures\\CommandButtons\\BTNAbomination", --пудж
 	"ReplaceableTextures\\CommandButtons\\BTNKotoBeast",
 	"ReplaceableTextures\\CommandButtons\\BTNGatherGold", -- кирка
