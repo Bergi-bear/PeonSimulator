@@ -47,7 +47,7 @@ function CreateWoodFrame ()
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
 	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-	BlzFrameSetText(UpDest, "Количество древисины, необходимое для победы. Потеря лесопилки приведёт к поражению всех игроков")
+	BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -63,18 +63,40 @@ function CreateWoodFrame ()
 		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
 	end)
 
-	if GTotalWood>=100 then
-		print("Победа, дерево собрано!")
-	end
+end
+function CreateShipFrame ()
+	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
+	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(wood, "ReplaceableTextures\\CommandButtons\\BTNJuggernaut", 0, true)
+	BlzFrameSetSize(wood, 0.04, 0.04)
+	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.8-0.02-0.04 , 0.6-0.02)--0.2
 
-	TimerStart(CreateTimer(), 5, true, function()
-		if GTotalWood>=100 then
-			CustomVictoryDialogBJ(Player(0))
-			CustomVictoryDialogBJ(Player(1))
-			CustomVictoryDialogBJ(Player(2))
-			CustomVictoryDialogBJ(Player(3))
-		end
+
+
+	local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", wood,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
+	local tooltip = BlzCreateFrame("BoxedText", wood, 0, 0)--Create the BoxedText Frame
+	local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
+	BlzFrameSetAllPoints(faceHover, wood) --faceHover copies the size and position of face.
+	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
+	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13-0.04, 0.6)
+	BlzFrameSetSize(tooltip, 0.18, 0.18)
+	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Хп корабля")
+	BlzFrameSetText(UpDest, "Корабль получился бракованным и нуждается в ремонте, отправляйтесь на запад и помогите своему Королю")
+
+	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
+
+	BlzFrameSetTexture(charges, "ChargesTexture.blp", 0, true)
+	BlzFrameSetSize(charges, 0.04, 0.012)
+	BlzFrameSetAbsPoint(charges, FRAMEPOINT_CENTER,0.8-0.02-0.04 , 0.6-0.04)
+	--BlzFrameSetPoint(charges, FRAMEPOINT_BOTTOM, wood, FRAMEPOINT_BOTTOM, 0,0)
+
+	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
+	local ship=FindUnitOfType(FourCC('o007'))
+	TimerStart(CreateTimer(), 0.1, true, function()
+		BlzFrameSetText(new_FrameChargesText, R2I(GetUnitLifePercent(ship)).."/100")
 	end)
+
 end
 
 function MoveWoodAsFarm(hero,k)
@@ -113,8 +135,35 @@ function MoveWoodAsFarm(hero,k)
 				BlzFrameSetVisible(FrameSelecter[17],true)
 				--end
 			end
+			--print(GTotalWood)
+			if GTotalWood==1 or GTotalWood==101 then
+				--print("Победа, дерево собрано!")
+				print("Система: Древисины достаточно, отправляйтесь строить корабль")
+				GTotalWood=GTotalWood-100
+				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
+				CreateShipFrame()
+				Normadia()
+				SetUnitLifePercentBJ(new,10)
+				TimerStart(CreateTimer(), 1, true, function()
+					--print("осталось хп"..GetLosingHP(new))
+					if GetLosingHP(new)<=5 then
+						if UnitAlive(new) then
+							CustomVictoryDialogBJ(Player(0))
+							CustomVictoryDialogBJ(Player(1))
+							CustomVictoryDialogBJ(Player(2))
+							CustomVictoryDialogBJ(Player(3))
+						else
+							CustomDefeatBJ(Player(0),"Вы проиграли")
+							CustomDefeatBJ(Player(1),"Вы проиграли")
+							CustomDefeatBJ(Player(2),"Вы проиграли")
+							CustomDefeatBJ(Player(3),"Вы проиграли")
+						end
+					end
+				end)
+			end
 		end
 	end)
+
 end
 
 function HealthBarAdd(u)

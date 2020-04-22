@@ -1,16 +1,16 @@
 ﻿STRING 1
 {
-Peon
+KillMyPeon
 }
 
 STRING 2
 {
-any
+18+
 }
 
 STRING 3
 {
-Nondescript
+Использя WASD  и мышь, управляйте своим пеоном, добывайте древесину для победы
 }
 
 STRING 4
@@ -404,5 +404,29 @@ STRING 71
 STRING 72
 {
 Дверь открыта
+}
+
+STRING 73
+// Units: O004 (Король пеонов), Name (Name)
+{
+Король пеонов
+}
+
+STRING 74
+// Abilities: A00M (Корона), Name (Name)
+{
+Корона
+}
+
+STRING 75
+// Abilities: A00M (Корона), EditorSuffix (Editor Suffix)
+{
+ (красный)
+}
+
+STRING 76
+// Units: o007 (Тот самый корабль), Name (Name)
+{
+Тот самый корабль
 }
 

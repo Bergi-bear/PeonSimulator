@@ -715,7 +715,9 @@ function InitGameCore()
 								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
 								UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
 							else
-								UnitAddForce(DamagingUnit,angleU,10,50)
+								if GetUnitTypeId(DamagingUnit)~=FourCC('o007') then
+									UnitAddForce(DamagingUnit,angleU,10,50)
+								end
 							end
 						end
 

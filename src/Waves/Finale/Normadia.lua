@@ -6,12 +6,13 @@
 ---
 function Normadia()
 	--print("Нормандия")
-	TimerStart(CreateTimer(), 120, true, function()
-		CreateTransportShip(-5000,-4900,-2600,-3500)-- зона людей ПРОВЕРЕНО
-		--CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
-		--CreateTransportShip(4800,-4800,4000,-1200)--Зона льда
-		--CreateTransportShip(-5300,5400,-4000,4500)-- лесопилки маньяка
-		--CreateTransportShip(5100,5400,3800,2000)-- каменоломни
+	TimerStart(CreateTimer(), 30, true, function()
+		CreateTransportShip(-5000,-5000,-2600,-3500)-- зона людей ПРОВЕРЕНО
+		CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
+		CreateTransportShip(4800,-4800,4000,-1200)--Зона льда
+		CreateTransportShip(-5300,5400,-4000,4500)-- лесопилки маньяка
+		CreateTransportShip(5100,5400,3800,2000)-- каменоломни
+		CreateTransportShip(-5000,-5000,-4000,-1000)-- Верфь орды
 	end)
 end
 
@@ -65,7 +66,7 @@ function CreateEnemy(ship,id,k)
 			local new=CreateUnit(Player(10), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
-			IssuePointOrder(new,"attack",0,0)
+			IssuePointOrder(new,"attack",-4935.0, 809.5)
 		end
 	else
 	--	print("Заспамлено больше 50 пехотинцев"..n)

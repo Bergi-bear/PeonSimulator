@@ -13,6 +13,6 @@ function InitAllZones()
 	StartWinter()
 	CreateVulkano(913,-2550)
 	StartAllTorch()
-	Normadia()
+	--Normadia()
 	--CreateTransportShip()
 end

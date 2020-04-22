@@ -13,12 +13,15 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"attack",0,0)
 	end)
 	TimerStart(CreateTimer(), 70+delay, true, function() --энты
-		loc =GetRandomLocInRect(gg_rct_TrentZone)
-
-		x,y=GetLocationX(loc),GetLocationY(loc)
-		--print("энт "..x)
-		new=CreateUnit(Player(10), FourCC('e001'), x, y, 0)
-		IssuePointOrder(new,"attack",0,0)
+		if not FindUnitOfType(FourCC('e003')) then
+			DestroyTimer(GetExpiredTimer())
+		else
+			loc =GetRandomLocInRect(gg_rct_TrentZone)
+			x,y=GetLocationX(loc),GetLocationY(loc)
+			--print("энт "..x)
+			new=CreateUnit(Player(10), FourCC('e001'), x, y, 0)
+			IssuePointOrder(new,"attack",0,0)
+		end
 	end)
 	TimerStart(CreateTimer(), 80+delay, true, function() -- камни големы
 		loc =GetRandomLocInRect(gg_rct_StoneZoneS)
@@ -33,10 +36,15 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"attack",0,0)
 	end)
 	TimerStart(CreateTimer(), 50+delay, true, function() --люди
-		loc =GetRandomLocInRect(gg_rct_Workers)
-		x,y=GetLocationX(loc),GetLocationY(loc)
-		new=CreateUnit(Player(10), FourCC('hpea'), x, y, 0)
-		IssuePointOrder(new,"attack",0,0)
+			loc =GetRandomLocInRect(gg_rct_Workers)
+			x,y=GetLocationX(loc),GetLocationY(loc)
+		if not FindUnitOfType(FourCC('hlum'),1000,x,y) then-- лесопилка
+			DestroyTimer(GetExpiredTimer())
+		else
+			new=CreateUnit(Player(10), FourCC('hpea'), x, y, 0)
+			IssuePointOrder(new,"attack",0,0)
+		end
+
 	end)
 	TimerStart(CreateTimer(), 60+delay, true, function() --овцы
 		loc =GetRandomLocInRect(gg_rct_SheepZone)
@@ -49,6 +57,7 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"move",0,0)
 	end)
 	TimerStart(CreateTimer(), 90+delay, true, function() --мурлоки
+
 		loc =GetRandomLocInRect(gg_rct_Morlok)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		for _=1,GetRandomInt(1,3) do

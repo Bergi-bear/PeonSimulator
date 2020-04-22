@@ -207,7 +207,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		--ремонт
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and e~=u then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and IsUnitType(e,UNIT_TYPE_STRUCTURE) then
+			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)  ) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
 					data.FireCount=data.FireCount+1
 					if not data.Perk9 then

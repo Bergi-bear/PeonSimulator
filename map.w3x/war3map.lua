@@ -74,7 +74,19 @@ function CreateBuildingsForPlayer5()
     life = GetUnitState(u, UNIT_STATE_LIFE)
     SetUnitState(u, UNIT_STATE_LIFE, 0.50 * life)
     u = BlzCreateUnitWithSkin(p, FourCC("nten"), -480.0, -672.0, 270.000, FourCC("nten"))
-    u = BlzCreateUnitWithSkin(p, FourCC("oshy"), -4672.0, 1024.0, 270.000, FourCC("oshy"))
+    u = BlzCreateUnitWithSkin(p, FourCC("oshy"), -4640.0, 1056.0, 270.000, FourCC("oshy"))
+end
+
+function CreateUnitsForPlayer5()
+    local p = Player(5)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("O004"), -4503.6, 837.2, 279.730, FourCC("O004"))
+    SetHeroLevel(u, 20, false)
+    SetUnitAcquireRange(u, 200.0)
+    IssueImmediateOrder(u, "repairon")
 end
 
 function CreateUnitsForPlayer7()
@@ -224,7 +236,6 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2154.6, -799.6, 171.590, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 1151.8, -1692.3, 180.000, FourCC("e006"))
     u = BlzCreateUnitWithSkin(p, FourCC("nwwd"), 3605.3, 1216.6, 249.420, FourCC("nwwd"))
-    SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 3850.8, 391.1, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2761.8, 213.4, 320.283, FourCC("n000"))
@@ -309,9 +320,9 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 2063.5, -3684.1, 272.359, FourCC("nmrl"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 2596.5, -3644.3, 193.805, FourCC("nmrl"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3224.9, -3889.5, 280.885, FourCC("nmrl"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3741.4, 1778.2, 283.467, FourCC("nmrl"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3745.1, 2131.8, 283.467, FourCC("nmrl"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3744.8, 2281.8, 59.383, FourCC("nmrm"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3908.4, 1962.5, 250.035, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3950.4, 2020.1, 250.035, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3882.3, 3675.0, 287.005, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3417.6, 4246.7, 253.352, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("nscb"), 4010.7, -2813.4, 208.747, FourCC("nscb"))
@@ -330,7 +341,6 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -2957.4, 4553.6, 215.987, FourCC("nmbg"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -2779.3, 4333.8, 137.333, FourCC("nmbg"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmbg"), -2623.1, 4390.5, 336.961, FourCC("nmbg"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 3952.5, 1815.3, 297.827, FourCC("nhmc"))
     u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 3756.8, 2635.2, 113.262, FourCC("nhmc"))
     u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 4035.8, 3282.3, 131.587, FourCC("nhmc"))
     u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), 3857.0, 4067.0, 231.456, FourCC("ncrb"))
@@ -367,6 +377,7 @@ function CreatePlayerBuildings()
 end
 
 function CreatePlayerUnits()
+    CreateUnitsForPlayer5()
     CreateUnitsForPlayer7()
     CreateUnitsForPlayer10()
     CreateUnitsForPlayer11()
@@ -893,7 +904,7 @@ function CreateWoodFrame ()
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
 	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-	BlzFrameSetText(UpDest, "Количество древисины, необходимое для победы. Потеря лесопилки приведёт к поражению всех игроков")
+	BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -909,18 +920,40 @@ function CreateWoodFrame ()
 		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
 	end)
 
-	if GTotalWood>=100 then
-		print("Победа, дерево собрано!")
-	end
+end
+function CreateShipFrame ()
+	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
+	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(wood, "ReplaceableTextures\\CommandButtons\\BTNJuggernaut", 0, true)
+	BlzFrameSetSize(wood, 0.04, 0.04)
+	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.8-0.02-0.04 , 0.6-0.02)--0.2
 
-	TimerStart(CreateTimer(), 5, true, function()
-		if GTotalWood>=100 then
-			CustomVictoryDialogBJ(Player(0))
-			CustomVictoryDialogBJ(Player(1))
-			CustomVictoryDialogBJ(Player(2))
-			CustomVictoryDialogBJ(Player(3))
-		end
+
+
+	local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", wood,"", 0) --face is a BACKDROP it can not have events nor a tooltip, thats why one creates an empty frame managing that.
+	local tooltip = BlzCreateFrame("BoxedText", wood, 0, 0)--Create the BoxedText Frame
+	local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
+	BlzFrameSetAllPoints(faceHover, wood) --faceHover copies the size and position of face.
+	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
+	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13-0.04, 0.6)
+	BlzFrameSetSize(tooltip, 0.18, 0.18)
+	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Хп корабля")
+	BlzFrameSetText(UpDest, "Корабль получился бракованным и нуждается в ремонте, отправляйтесь на запад и помогите своему Королю")
+
+	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
+
+	BlzFrameSetTexture(charges, "ChargesTexture.blp", 0, true)
+	BlzFrameSetSize(charges, 0.04, 0.012)
+	BlzFrameSetAbsPoint(charges, FRAMEPOINT_CENTER,0.8-0.02-0.04 , 0.6-0.04)
+	--BlzFrameSetPoint(charges, FRAMEPOINT_BOTTOM, wood, FRAMEPOINT_BOTTOM, 0,0)
+
+	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
+	local ship=FindUnitOfType(FourCC('o007'))
+	TimerStart(CreateTimer(), 0.1, true, function()
+		BlzFrameSetText(new_FrameChargesText, R2I(GetUnitLifePercent(ship)).."/100")
 	end)
+
 end
 
 function MoveWoodAsFarm(hero,k)
@@ -959,8 +992,28 @@ function MoveWoodAsFarm(hero,k)
 				BlzFrameSetVisible(FrameSelecter[17],true)
 				--end
 			end
+			--print(GTotalWood)
+			if GTotalWood==1 or GTotalWood==101 then
+				--print("Победа, дерево собрано!")
+				print("Система: Древисины достаточно, отправляйтесь строить корабль")
+				GTotalWood=GTotalWood-100
+				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
+				CreateShipFrame()
+				Normadia()
+				SetUnitLifePercentBJ(new,10)
+				TimerStart(CreateTimer(), 1, true, function()
+					--print("осталось хп"..GetLosingHP(new))
+					if GetLosingHP(new)<=5 then
+						CustomVictoryDialogBJ(Player(0))
+						CustomVictoryDialogBJ(Player(1))
+						CustomVictoryDialogBJ(Player(2))
+						CustomVictoryDialogBJ(Player(3))
+					end
+				end)
+			end
 		end
 	end)
+
 end
 
 function HealthBarAdd(u)
@@ -2035,7 +2088,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		--ремонт
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and e~=u then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and IsUnitType(e,UNIT_TYPE_STRUCTURE) then
+			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)  ) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
 					data.FireCount=data.FireCount+1
 					if not data.Perk9 then
@@ -5198,7 +5251,7 @@ function InitAllZones()
 	StartWinter()
 	CreateVulkano(913,-2550)
 	StartAllTorch()
-	Normadia()
+	--Normadia()
 	--CreateTransportShip()
 end
 ---
@@ -5254,12 +5307,13 @@ end
 ---
 function Normadia()
 	--print("Нормандия")
-	TimerStart(CreateTimer(), 120, true, function()
-		CreateTransportShip(-5000,-4900,-2600,-3500)-- зона людей ПРОВЕРЕНО
-		--CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
-		--CreateTransportShip(4800,-4800,4000,-1200)--Зона льда
-		--CreateTransportShip(-5300,5400,-4000,4500)-- лесопилки маньяка
-		--CreateTransportShip(5100,5400,3800,2000)-- каменоломни
+	TimerStart(CreateTimer(), 30, true, function()
+		CreateTransportShip(-5000,-5000,-2600,-3500)-- зона людей ПРОВЕРЕНО
+		CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
+		CreateTransportShip(4800,-4800,4000,-1200)--Зона льда
+		CreateTransportShip(-5300,5400,-4000,4500)-- лесопилки маньяка
+		CreateTransportShip(5100,5400,3800,2000)-- каменоломни
+		CreateTransportShip(-5000,-5000,-4000,-1000)-- Верфь орды
 	end)
 end
 
@@ -5313,7 +5367,7 @@ function CreateEnemy(ship,id,k)
 			local new=CreateUnit(Player(10), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
-			IssuePointOrder(new,"attack",0,0)
+			IssuePointOrder(new,"attack",-4935.0, 809.5)
 		end
 	else
 	--	print("Заспамлено больше 50 пехотинцев"..n)
@@ -5597,12 +5651,15 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"attack",0,0)
 	end)
 	TimerStart(CreateTimer(), 70+delay, true, function() --энты
-		loc =GetRandomLocInRect(gg_rct_TrentZone)
-
-		x,y=GetLocationX(loc),GetLocationY(loc)
-		--print("энт "..x)
-		new=CreateUnit(Player(10), FourCC('e001'), x, y, 0)
-		IssuePointOrder(new,"attack",0,0)
+		if not FindUnitOfType(FourCC('e003')) then
+			DestroyTimer(GetExpiredTimer())
+		else
+			loc =GetRandomLocInRect(gg_rct_TrentZone)
+			x,y=GetLocationX(loc),GetLocationY(loc)
+			--print("энт "..x)
+			new=CreateUnit(Player(10), FourCC('e001'), x, y, 0)
+			IssuePointOrder(new,"attack",0,0)
+		end
 	end)
 	TimerStart(CreateTimer(), 80+delay, true, function() -- камни големы
 		loc =GetRandomLocInRect(gg_rct_StoneZoneS)
@@ -5617,10 +5674,15 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"attack",0,0)
 	end)
 	TimerStart(CreateTimer(), 50+delay, true, function() --люди
-		loc =GetRandomLocInRect(gg_rct_Workers)
-		x,y=GetLocationX(loc),GetLocationY(loc)
-		new=CreateUnit(Player(10), FourCC('hpea'), x, y, 0)
-		IssuePointOrder(new,"attack",0,0)
+			loc =GetRandomLocInRect(gg_rct_Workers)
+			x,y=GetLocationX(loc),GetLocationY(loc)
+		if not FindUnitOfType(FourCC('hlum'),1000,x,y) then-- лесопилка
+			DestroyTimer(GetExpiredTimer())
+		else
+			new=CreateUnit(Player(10), FourCC('hpea'), x, y, 0)
+			IssuePointOrder(new,"attack",0,0)
+		end
+
 	end)
 	TimerStart(CreateTimer(), 60+delay, true, function() --овцы
 		loc =GetRandomLocInRect(gg_rct_SheepZone)
@@ -5633,6 +5695,7 @@ function WaveAttack(delay)
 		IssuePointOrder(new,"move",0,0)
 	end)
 	TimerStart(CreateTimer(), 90+delay, true, function() --мурлоки
+
 		loc =GetRandomLocInRect(gg_rct_Morlok)
 		x,y=GetLocationX(loc),GetLocationY(loc)
 		for _=1,GetRandomInt(1,3) do
