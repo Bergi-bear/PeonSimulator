@@ -9,4 +9,6 @@ function StartWinter()
 	UnitAddAbility(caster,FourCC('A005'))
 	--local nx,ny=MoveXY(x,y)
 	Cast(caster,x-100,y)
+	SetUnitX(caster,3400)
+	SetUnitY(caster,-1200)
 end

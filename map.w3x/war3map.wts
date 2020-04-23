@@ -430,3 +430,9 @@ STRING 76
 Тот самый корабль
 }
 
+STRING 77
+// Units: O004 (Король пеонов), Propernames (Proper Names)
+{
+Hodor,Ходор
+}
+

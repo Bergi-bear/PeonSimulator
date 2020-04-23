@@ -101,7 +101,7 @@ function InitUnitDeath()
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
 				data.SheepCount=data.SheepCount+1
-				if data.SheepCount==20 then
+				if data.SheepCount==40 then
 					data.Perk15=true
 					UnitAddAbility(Killer,FourCC('A00J'))
 					if GetLocalPlayer()==PD then
@@ -134,7 +134,8 @@ function InitUnitDeath()
 							local effmodel="Abilities\\Spells\\NightElf\\Blink\\BlinkCaster"
 							DestroyEffect(AddSpecialEffect(effmodel,GetUnitXY(data.WolfHelper)))
 							DestroyEffect(AddSpecialEffect(effmodel,x,y))
-							SetUnitPosition(data.WolfHelper,x,y)
+							local r=GetRandomInt(-50,50)
+							SetUnitPosition(data.WolfHelper,x+r,y+r)
 						else
 							if GetUnitCurrentOrder(data.WolfHelper)~=String2OrderIdBJ("Attack") then
 								local rx,ry=x+GetRandomInt(-500,500),y+GetRandomInt(-500,500)
@@ -150,8 +151,17 @@ function InitUnitDeath()
 				end
 			end
 		end
+		----------------- смерть простых типов юнитов
+		---FourCC('e003')
+		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево
+			local x,y=GetUnitXY(DeadUnit)
+			for _=1,7 do
+				local r=GetRandomInt(-100,100)
+				CreateFreeWood(x+r,y+r)
+			end
+		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('o001') then--лесопилка орков
+		if GetUnitTypeId(DeadUnit)==FourCC('o001') and not Ending then--лесопилка орков
 			print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
 			TimerStart(CreateTimer(), 5, false, function()
 				CustomDefeatBJ(Player(0),"Вы проиграли")

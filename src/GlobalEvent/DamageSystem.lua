@@ -268,19 +268,22 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 	local content=false
 	if range==nil then range=80 end
 	if iskill==nil then iskill=false end
+	--print(GetUnitName(hero))
 	SetRect(GlobalRect, x - range, y - range, x + range, y +range)
 	EnumDestructablesInRect(GlobalRect,nil,function ()
 		local d=GetEnumDestructable()
 		if GetDestructableLife(d)>0 then
 			content=true
 			local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-			if data.HaveAFire then
-				damage=damage*5
-				data.HaveAFire=false
-				if not data.Perk16 then
-					UnitRemoveAbility(hero,FourCC('A006'))
+			if IsUnitType(hero,UNIT_TYPE_HERO) then
+				if data.HaveAFire then
+					damage=damage*5
+					data.HaveAFire=false
+					if not data.Perk16 then
+						UnitRemoveAbility(hero,FourCC('A006'))
+					end
+					--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 				end
-				--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 			end
 
 

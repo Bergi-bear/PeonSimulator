@@ -196,16 +196,27 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2283.7, -1509.1, 185.477, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2123.9, -1706.9, 317.207, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1040.8, -2058.0, 232.720, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1164.7, -2141.5, 28.719, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1211.8, -2388.4, 124.061, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1177.2, -2585.0, 64.755, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1062.0, -2677.9, 279.061, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -797.1, -2653.1, 40.772, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -904.9, -2719.1, 233.346, FourCC("hpea"))
-    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -657.3, -2641.6, 82.345, FourCC("hpea"))
-    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -652.9, -2495.9, 45.133, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -648.8, -2667.5, 129.692, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -659.8, -2467.3, 45.133, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -691.2, -2196.4, 121.765, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.876, FourCC("hpea"))
+    IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2984.2, 796.5, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2519.4, 1437.1, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2264.9, 936.9, 196.738, FourCC("e001"))
@@ -887,6 +898,7 @@ function HideEverything()
 end
 
 GTotalWood=0
+Ending=false
 function CreateWoodFrame ()
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
@@ -993,21 +1005,29 @@ function MoveWoodAsFarm(hero,k)
 				--end
 			end
 			--print(GTotalWood)
-			if GTotalWood==1 or GTotalWood==101 then
+			if GTotalWood==100 or GTotalWood==101 then
 				--print("Победа, дерево собрано!")
 				print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				GTotalWood=GTotalWood-100
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
 				CreateShipFrame()
 				Normadia()
+				Ending=true
 				SetUnitLifePercentBJ(new,10)
 				TimerStart(CreateTimer(), 1, true, function()
 					--print("осталось хп"..GetLosingHP(new))
 					if GetLosingHP(new)<=5 then
-						CustomVictoryDialogBJ(Player(0))
-						CustomVictoryDialogBJ(Player(1))
-						CustomVictoryDialogBJ(Player(2))
-						CustomVictoryDialogBJ(Player(3))
+						if UnitAlive(new) then
+							CustomVictoryDialogBJ(Player(0))
+							CustomVictoryDialogBJ(Player(1))
+							CustomVictoryDialogBJ(Player(2))
+							CustomVictoryDialogBJ(Player(3))
+						else
+							CustomDefeatBJ(Player(0),"Вы проиграли")
+							CustomDefeatBJ(Player(1),"Вы проиграли")
+							CustomDefeatBJ(Player(2),"Вы проиграли")
+							CustomDefeatBJ(Player(3),"Вы проиграли")
+						end
 					end
 				end)
 			end
@@ -1088,12 +1108,12 @@ description={
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 	"Приручите кодоя, чтобы получить 10 ед брони ",
 	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
-	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
+	"Донесите деревья с полным здоровьем, чтобы обучиться парированию. ",
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы укрепить каменный щит ",
-	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью. ",
+	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
@@ -1243,7 +1263,7 @@ function PerkButtonLine()
 						end
 					elseif k==15  then
 						if not data.Perk15 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/20|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/40|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
 						end
@@ -2149,19 +2169,22 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 	local content=false
 	if range==nil then range=80 end
 	if iskill==nil then iskill=false end
+	--print(GetUnitName(hero))
 	SetRect(GlobalRect, x - range, y - range, x + range, y +range)
 	EnumDestructablesInRect(GlobalRect,nil,function ()
 		local d=GetEnumDestructable()
 		if GetDestructableLife(d)>0 then
 			content=true
 			local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-			if data.HaveAFire then
-				damage=damage*5
-				data.HaveAFire=false
-				if not data.Perk16 then
-					UnitRemoveAbility(hero,FourCC('A006'))
+			if IsUnitType(hero,UNIT_TYPE_HERO) then
+				if data.HaveAFire then
+					damage=damage*5
+					data.HaveAFire=false
+					if not data.Perk16 then
+						UnitRemoveAbility(hero,FourCC('A006'))
+					end
+					--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 				end
-				--FlyTextTagCriticalStrike(e,I2S(R2I(damage)),GetOwningPlayer(u))
 			end
 
 
@@ -2959,7 +2982,9 @@ function InitGameCore()
 								--print("попытка толкнуть"..GetUnitName(DamagingUnit))
 								UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
 							else
-								UnitAddForce(DamagingUnit,angleU,10,50)
+								if GetUnitTypeId(DamagingUnit)~=FourCC('o007') then
+									UnitAddForce(DamagingUnit,angleU,10,50)
+								end
 							end
 						end
 
@@ -3359,7 +3384,7 @@ function InitUnitDeath()
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
 				data.SheepCount=data.SheepCount+1
-				if data.SheepCount==20 then
+				if data.SheepCount==40 then
 					data.Perk15=true
 					UnitAddAbility(Killer,FourCC('A00J'))
 					if GetLocalPlayer()==PD then
@@ -3392,7 +3417,8 @@ function InitUnitDeath()
 							local effmodel="Abilities\\Spells\\NightElf\\Blink\\BlinkCaster"
 							DestroyEffect(AddSpecialEffect(effmodel,GetUnitXY(data.WolfHelper)))
 							DestroyEffect(AddSpecialEffect(effmodel,x,y))
-							SetUnitPosition(data.WolfHelper,x,y)
+							local r=GetRandomInt(-50,50)
+							SetUnitPosition(data.WolfHelper,x+r,y+r)
 						else
 							if GetUnitCurrentOrder(data.WolfHelper)~=String2OrderIdBJ("Attack") then
 								local rx,ry=x+GetRandomInt(-500,500),y+GetRandomInt(-500,500)
@@ -3408,8 +3434,17 @@ function InitUnitDeath()
 				end
 			end
 		end
+		----------------- смерть простых типов юнитов
+		---FourCC('e003')
+		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево
+			local x,y=GetUnitXY(DeadUnit)
+			for _=1,7 do
+				local r=GetRandomInt(-100,100)
+				CreateFreeWood(x+r,y+r)
+			end
+		end
 
-		if GetUnitTypeId(DeadUnit)==FourCC('o001') then--лесопилка орков
+		if GetUnitTypeId(DeadUnit)==FourCC('o001') and not Ending then--лесопилка орков
 			print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
 			TimerStart(CreateTimer(), 5, false, function()
 				CustomDefeatBJ(Player(0),"Вы проиграли")
@@ -5011,7 +5046,13 @@ function RegisterCollision(hero)
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					print("Система: приступайте к строительсву корабля")
 				end
-				    print("Система: Добудьте 100 древисины чтобы построить корабль")
+					if Ending then
+						UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
+						print("Система: Помогайте строить корабль")
+					else
+						print("Система: Добудьте 100 древисины чтобы построить корабль")
+					end
+
 				end
 			end
 
@@ -5432,6 +5473,8 @@ function StartWinter()
 	UnitAddAbility(caster,FourCC('A005'))
 	--local nx,ny=MoveXY(x,y)
 	Cast(caster,x-100,y)
+	SetUnitX(caster,3400)
+	SetUnitY(caster,-1200)
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

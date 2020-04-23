@@ -24,7 +24,13 @@ function RegisterCollision(hero)
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					print("Система: приступайте к строительсву корабля")
 				end
-				    print("Система: Добудьте 100 древисины чтобы построить корабль")
+					if Ending then
+						UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
+						print("Система: Помогайте строить корабль")
+					else
+						print("Система: Добудьте 100 древисины чтобы построить корабль")
+					end
+
 				end
 			end
 

@@ -30,6 +30,7 @@ function HideEverything()
 end
 
 GTotalWood=0
+Ending=false
 function CreateWoodFrame ()
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
@@ -136,13 +137,14 @@ function MoveWoodAsFarm(hero,k)
 				--end
 			end
 			--print(GTotalWood)
-			if GTotalWood==1 or GTotalWood==101 then
+			if GTotalWood==100 or GTotalWood==101 then
 				--print("Победа, дерево собрано!")
 				print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				GTotalWood=GTotalWood-100
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
 				CreateShipFrame()
 				Normadia()
+				Ending=true
 				SetUnitLifePercentBJ(new,10)
 				TimerStart(CreateTimer(), 1, true, function()
 					--print("осталось хп"..GetLosingHP(new))
@@ -238,12 +240,12 @@ description={
 	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
 	"Приручите кодоя, чтобы получить 10 ед брони ",
 	"Накалите кирку до краса, чтобы увеличить урон в 5 раз ",
-	"Донесите деревья с полным здоровьем, чтобы обучиться парированию ",
+	"Донесите деревья с полным здоровьем, чтобы обучиться парированию. ",
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убейте волков, чтобы получить шапку волка (друг волков). ",
 	"Убейте каменных големов, чтобы укрепить каменный щит ",
-	"Умрите или убейте 20 овец, чтобы заболеть взрывной болезнью. ",
+	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
@@ -393,7 +395,7 @@ function PerkButtonLine()
 						end
 					elseif k==15  then
 						if not data.Perk15 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/20|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/40|r" ) --|cffffff00AAAA|r
 						else
 							BlzFrameSetText(PerkToolTip[k],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
 						end
