@@ -27,6 +27,10 @@ function HealUnit(hero,amount,flag)
 				end
 			end
 		end
+		if not data.Perk7A and data.Heals>=5000 then
+			--print("7A")
+			data.Perk7A=true
+		end
 	end
 	--Блок перка обжоры
 	SetUnitState(hero,UNIT_STATE_LIFE,CurrentHP+TotalHeal)

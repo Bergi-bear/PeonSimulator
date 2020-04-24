@@ -37,14 +37,16 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		BlzSetSpecialEffectPosition(saw,nx,ny,z)
 		SetUnitX(DamageDealer,nx)
 		SetUnitY(DamageDealer,ny)
+		angle=angle+speed
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
+
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
 			if data.Reflection then
 				speed=speed*(-1)
 			end
 		end
-		angle=angle+speed
+
 		if UnitAlive(hero)==false then
 			DestroyTimer(GetExpiredTimer()) -- временно вечный таймер
 			DestroyEffect(saw)

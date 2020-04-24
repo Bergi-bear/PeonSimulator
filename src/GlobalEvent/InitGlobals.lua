@@ -17,7 +17,6 @@ do
 		InitAllZones()
 		LeavePlayer()
 		HeroEnterSaws()
-		--BadChat() -- Функция для починки чата
 	end
 
 end
@@ -32,7 +31,7 @@ function InitGameCore()
 	TestFrame()
 	VisualUnlock()--убирание выделение каждые 10 сек
 	CreateMouseHelper(10)
-	--CreateStatusBar()
+	--CreateStatusBar() --нанель статусов, ещё не готова
 	-----Настоящая инициализация
 	for i=0,3 do
 		HERO[i]={
@@ -97,6 +96,7 @@ function InitGameCore()
 			Perk5=false, -- Убийца
 			Perk6=false, -- Ученика кузнеца
 			Perk7=false, -- Ожирение
+			Perk7A=false, -- Ожирение 2 степени
 			Perk8=false, -- Кодой
 			Perk9=false, -- Кирка
 			Perk10=false, -- Кирка
@@ -126,7 +126,7 @@ function InitGameCore()
 			HealthBarAdd(hero)
 			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
 			SetUnitColor(hero,ConvertPlayerColor(i))
-
+			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
 			if i==1 then
 				elseif i==2 then
 				SetUnitColor(hero,PLAYER_COLOR_BLUE)

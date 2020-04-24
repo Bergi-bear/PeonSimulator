@@ -436,3 +436,9 @@ STRING 77
 Hodor,Ходор
 }
 
+STRING 78
+// Abilities: A00O (не триггерный урон), Name (Name)
+{
+не триггерный урон
+}
+

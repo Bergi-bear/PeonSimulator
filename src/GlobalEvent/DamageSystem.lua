@@ -26,7 +26,7 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-
+			--print(GetUnitName(caster).." атаковал "..GetUnitName(target))
 			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
@@ -64,6 +64,14 @@ function InitDamage()
 							BlzSetEventDamage(damage/2)
 							--print("факт поглощения урона ™")
 						end
+					else
+						DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Human\\HumanBlood\\HumanBloodFootman",GetUnitXY(target)))
+
+						--print("boold")
+						if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
+							DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+							DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+						end
 					end
 					if data.Perk12 and dot>0 then--
 						if DistanceBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitXY(caster))<=200 then
@@ -73,9 +81,9 @@ function InitDamage()
 							UnitAddAbility(dummy,FourCC('A00H'))
 							UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 							if Cast(dummy,0,0,caster) then
-							--	print("успех")
+								--	print("успех")
 							else
-							--	print("провел")
+								--	print("провел")
 							end
 							SetUnitTimeScale(caster,0)
 							SetUnitVertexColor(caster,60,200,255,240)
@@ -87,7 +95,12 @@ function InitDamage()
 							end)
 						end
 					end
-
+				else
+					--print("anydamage")
+					if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
+						DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+						DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+					end
 				end
 			end
 
@@ -157,39 +170,27 @@ end
 
 perebor=CreateGroup()
 function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
-	local OnlyCHK=false
 	local isdamage=false
 	local e=nil
 	local hero=nil
-	if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
-	if GetOwningPlayer(u)==Player(0) then
-	--	print("Выызов функции урона")
-	end
+	--if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
+
 	--print("Поиск целей в на высоте "..ZDamageSource)
 	GroupEnumUnitsInRange(perebor,x,y,range,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
-		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  and IsUnitZCollision(e,ZDamageSource) then -- момент урона
+		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
 			if EffectModel~=nil then
 				--print("эффеет")
 				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
-				BlzSetSpecialEffectZ(DE,ZDamageSource)
+				--BlzSetSpecialEffectZ(DE,ZDamageSource)
 				DestroyEffect(DE)
 			end
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-				if data.Perk6 then -- удар тора
-					data.Perk6=false
-					--print("удар тора")
-					CastArea(u,FourCC('A003'),x,y)
-					UnitDamageArea(u,90,x,y,150)
-					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
-					TimerStart(CreateTimer(), 2, false, function()
-						data.Perk6=true
-					end)
-					--print("ПОСТ удар тора")
-				end
+				--if data.
+
 				if data.HaveAFire then
 					damage=damage*5
 					data.HaveAFire=false
@@ -205,9 +206,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			hero=e
 		end
 		--ремонт
-		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and IsUnitZCollision(e,ZDamageSource) and e~=u then -- момент ремонта
+		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта and IsUnitZCollision(e,ZDamageSource)
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)  ) then
+			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
 					data.FireCount=data.FireCount+1
 					if not data.Perk9 then

@@ -344,7 +344,16 @@ function PerkButtonLine()
 							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
 						end
 					elseif k==7  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
+						if  data.Perk7 then
+							if data.Perk7A then
+								BlzFrameSetText(PerkToolTip[k],"Восстанавливает ".."|cffffff00".."3 %%|r".." от максимального ХП при убийстве врагов в ближнем бою" ) --|cffffff00AAAA|r
+							else
+								BlzFrameSetText(PerkToolTip[k],"Продолжайте правильно питаться и овладеете вампиризмом. ".."|cffffff00"..R2I(data.Heals).."/5000|r" ) --|cffffff00AAAA|r
+							end
+						else
+							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
+						end
+
 					elseif k==8  then
 						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
 					elseif k==9  then

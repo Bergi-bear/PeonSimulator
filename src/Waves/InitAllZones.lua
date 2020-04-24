@@ -5,14 +5,14 @@
 
 function InitAllZones()
 	EntInTrees()-- превращаем энтов в деревья
-	StartAllSaw()
+	StartAllSaw() -- зона пил
 	TimerStart(CreateTimer(), 120, false, function()
-		WaveAttack(60)
+		WaveAttack(60)-- волны
 	end)
-	SetSheepPoint()
-	StartWinter()
-	CreateVulkano(913,-2550)
-	StartAllTorch()
-	--Normadia()
-	--CreateTransportShip()
+	SetSheepPoint()-- овцы
+	StartWinter()--ветер
+	CreateVulkano(913,-2550)--вулкан
+	StartAllTorch()--фонарики
+	FarmOfPig()
+	--Normadia()--Высадка пехотинцев
 end

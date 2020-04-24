@@ -7,21 +7,33 @@ function AfterAttack(hero, delay)
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-		local damage=BlzGetUnitBaseDamage(hero,0)
+		local damage=BlzGetUnitBaseDamage(hero,0)*50
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
+			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
+			if OnAttack then
+				data.RevoltSec=0
+			end
 
-			if data.HaveAFire or data.Perk16 then
+			if (data.HaveAFire or data.Perk16 ) and not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit)) then
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
 				if not data.Perk16 then
 					data.HaveAFire=false
 					UnitRemoveAbility(hero,FourCC('A006'))
 				end
 			end
-			if UnitDamageArea(hero,damage,x,y,70) then
-				data.RevoltSec=0
-			end
 
+
+		end
+		if data.Perk6 and true then -- удар тора
+			data.Perk6=false
+			--print("удар тора")
+
+			if UnitDamageArea(hero,90,x,y,150)  then
+				CastArea(hero,FourCC('A003'),x,y)
+				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+			end
+			--print("ПОСТ удар тора")
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
 			data.Reflection=false

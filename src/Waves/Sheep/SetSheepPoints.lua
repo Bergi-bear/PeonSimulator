@@ -12,6 +12,7 @@ function SetSheepPoint(id,flag,x,y)
 
 			if e == nil then break end
 			if UnitAlive(e) and GetUnitTypeId(e)==id then
+				SetUnitExploded(e,true)
 				--print("set")
 				AnyData[GetHandleId(e)]={
 					x=GetUnitX(e),

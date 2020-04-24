@@ -47,6 +47,10 @@ function RegisterCollision(hero)
 					data.CartUnit=CollisionUnit
 				end
 			end
+			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка
+				HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
+				KillUnit(CollisionUnit)
+			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
 				--print("Подобрана сфера огня, учим героя метать фаер болы")
 				KillUnit(CollisionUnit)

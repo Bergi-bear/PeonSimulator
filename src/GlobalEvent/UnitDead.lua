@@ -61,11 +61,16 @@ function InitUnitDeath()
 			end)
 		end
 
-		if IsUnitType(Killer,UNIT_TYPE_HERO) then --герои убил кого-то
+		if IsUnitType(Killer,UNIT_TYPE_HERO)  and true then --герои убил кого-то
 			--print("герой убил")
 			local PD=GetOwningPlayer(Killer)
 			local pid=GetPlayerId(PD)
 			local data=HERO[pid]
+
+			if data.Perk7A and DistanceBetweenXY(GetUnitX(Killer),GetUnitY(Killer),GetUnitXY(DeadUnit))<=150 then
+				local amount=BlzGetUnitMaxHP(Killer)*0.03
+				HealUnit(Killer,amount)
+			end
 
 			if data.Perk15 then
 				SetUnitExploded(DeadUnit, true)
@@ -100,6 +105,7 @@ function InitUnitDeath()
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
+
 				data.SheepCount=data.SheepCount+1
 				if data.SheepCount==40 then
 					data.Perk15=true
@@ -153,6 +159,7 @@ function InitUnitDeath()
 		end
 		----------------- смерть простых типов юнитов
 		---FourCC('e003')
+		--break --[[
 		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево
 			local x,y=GetUnitXY(DeadUnit)
 			for _=1,7 do
