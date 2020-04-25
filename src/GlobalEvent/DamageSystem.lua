@@ -27,7 +27,7 @@ function InitDamage()
 
 		if isEventDamaged then
 			--print(GetUnitName(caster).." атаковал "..GetUnitName(target))
-			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus
+			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
@@ -92,6 +92,7 @@ function InitDamage()
 								SetUnitTimeScale(caster,1)
 								SetUnitVertexColor(caster,255,255,255,255)
 								BlzPauseUnitEx(caster, false)
+								DestroyTimer(GetExpiredTimer())
 							end)
 						end
 					end
@@ -158,6 +159,7 @@ function InitDamage()
 				end
 				TimerStart(CreateTimer(), 2, false, function()
 					IssueImmediateOrder(target,"stop")
+					DestroyTimer(GetExpiredTimer())
 				end)
 
 			end
@@ -206,7 +208,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			hero=e
 		end
 		--ремонт
-		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта and IsUnitZCollision(e,ZDamageSource)
+		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
@@ -227,7 +229,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					end
 				end
 				--print("лечим")
-				if not data.OnCharge then-- нельзя чинить при рывке щита
+				if not data.OnCharge and data.ShieldForce then-- нельзя чинить при рывке щита и при толчке щитом
 					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 					data.Repairs=data.Repairs+heal
 					data.RevoltSec=0
@@ -306,7 +308,10 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 							--print("Добавляем 1 дерева для "..GetUnitName(hero))
 						end
 					else
-						CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+						--print(GetDestructableName(d))
+						if GetDestructableTypeId(d)~=FourCC('LTrc') then
+							CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+						end
 					end
 
 				end
@@ -317,8 +322,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 
 					TimerStart(CreateTimer(),10,false, function()
 						KillUnit(new)
-						local xn,yn=GetUnitXY(new)
-						--CreateDestructable(FourCC('LTrc'),xn,yn,GetRandomReal(0,360),GetRandomReal(0.5,1.2),GetRandomInt(1,3))
+						DestroyTimer(GetExpiredTimer())
 					end)
 				end
 				--блок голема

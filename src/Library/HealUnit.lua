@@ -19,8 +19,7 @@ function HealUnit(hero,amount,flag)
 		if not data.Perk7 then
 			if data.Heals>=1000 then
 				data.Perk7=true
-				UnitAddAbility(hero,FourCC('A004'))
-				--TODO переделать на триггерное лечение
+				UnitAddAbility(hero,FourCC('A004'))-- переделать на триггерное лечение может быть когда нибудь.. не столь важное
 				if GetLocalPlayer()==GetOwningPlayer(hero) then
 					BlzFrameSetVisible(PerkIsLock[7],false)
 					BlzFrameSetVisible(FrameSelecter[7],true)

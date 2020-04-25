@@ -71,6 +71,7 @@ function InitGameCore()
 			FrozenShield=0,
 			ReviveOnStay=false,
 			ReviveOnBase=true,
+			ShieldForce=true, -- толчек щитом
 			--ChargeEff=nil,
 			---накопление перков
 			SingleWoodCount=0,
@@ -270,6 +271,30 @@ function InitGameCore()
 			if not data.ReleaseLMB then
 				data.ReleaseLMB=true
 			end
+			if data.ReleaseRMB and data.ShieldForce then -- толчек щитом
+				--print("mini force")
+				data.ShieldForce=false
+				local x,y=MoveXY(GetUnitX(data.UnitHero),GetUnitY(data.UnitHero),55,GetUnitFacing(data.UnitHero))
+				local IsDamage,DamagingUnit=UnitDamageArea(data.UnitHero,1,x,y,100)
+				local angleU=AngleBetweenUnits(data.UnitHero,DamagingUnit)
+				local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",x,y)
+				BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(data.UnitHero)))
+				DestroyEffect(eff)
+
+
+				if IsUnitType(DamagingUnit,UNIT_TYPE_HERO) then
+					UnitAddVectorForce(DamagingUnit,angleU,10,50,false)
+				else
+					if GetUnitTypeId(DamagingUnit)~=FourCC('o007') then
+						UnitAddForce(DamagingUnit,angleU,10,50)
+					end
+				end
+
+				TimerStart(CreateTimer(), 2, false, function()
+					data.ShieldForce=true
+					DestroyTimer(GetExpiredTimer())
+				end)
+			end
 			--local hero=data.UnitHero
 			data.AttackTime=0.0
 			if data.Perk14 then
@@ -337,6 +362,7 @@ function InitGameCore()
 					data.ChargeIsReady=true
 					UnitRemoveAbility(data.UnitHero,FourCC('A00E')) --красный
 					UnitRemoveAbility(data.UnitHero,FourCC('A00F')) --Синий
+					DestroyTimer(GetExpiredTimer())
 				end)
 			end
 
@@ -405,8 +431,11 @@ function InitGameCore()
 			local p=GetOwningPlayer(hero)
 			local angle=0
 			local mBonus=21
+			if data.ReleaseLMB then
+				mBonus=mBonus*1.5
+			end
 			if data.Perk4 then
-				mBonus=16
+				mBonus=mBonus*0.7--=15 и это быстрее
 			end
 			local speed=GetUnitMoveSpeed(hero)/mBonus--data.SpeedBase
 			local x,y=GetUnitXY(hero)
@@ -708,6 +737,7 @@ function InitGameCore()
 										SetUnitTimeScale(DamagingUnit,1)
 										SetUnitVertexColor(DamagingUnit,255,255,255,255)
 										BlzPauseUnitEx(DamagingUnit, false)
+										DestroyTimer(GetExpiredTimer())
 									end)
 							end
 

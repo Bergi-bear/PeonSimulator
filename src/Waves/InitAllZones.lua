@@ -8,6 +8,7 @@ function InitAllZones()
 	StartAllSaw() -- зона пил
 	TimerStart(CreateTimer(), 120, false, function()
 		WaveAttack(60)-- волны
+		DestroyTimer(GetExpiredTimer())
 	end)
 	SetSheepPoint()-- овцы
 	StartWinter()--ветер
@@ -15,4 +16,5 @@ function InitAllZones()
 	StartAllTorch()--фонарики
 	FarmOfPig()
 	--Normadia()--Высадка пехотинцев
+	StartWolfBossAI()
 end

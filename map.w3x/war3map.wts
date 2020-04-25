@@ -442,3 +442,9 @@ STRING 78
 не триггерный урон
 }
 
+STRING 79
+// Doodads: D000 (Rocks (летающие)), Name (Name)
+{
+Rocks (летающие)
+}
+

@@ -58,6 +58,7 @@ function InitUnitDeath()
 				MakeUnitAllAlly(DeadUnit)
 				data.RevoltSec=0
 				data.Perk2=false
+				DestroyTimer(GetExpiredTimer())
 			end)
 		end
 
@@ -169,12 +170,14 @@ function InitUnitDeath()
 		end
 
 		if GetUnitTypeId(DeadUnit)==FourCC('o001') and not Ending then--лесопилка орков
-			print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
+			--print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
+			print("|cff8080ffСистема: |r".."О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
 			TimerStart(CreateTimer(), 5, false, function()
 				CustomDefeatBJ(Player(0),"Вы проиграли")
 				CustomDefeatBJ(Player(1),"Вы проиграли")
 				CustomDefeatBJ(Player(2),"Вы проиграли")
 				CustomDefeatBJ(Player(3),"Вы проиграли")
+				DestroyTimer(GetExpiredTimer())
 			end)
 		end
 		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--лесопилка орков

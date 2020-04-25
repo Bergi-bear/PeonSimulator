@@ -26,7 +26,7 @@ function AfterAttack(hero, delay)
 
 		end
 		if data.Perk6 and true then -- удар тора
-			data.Perk6=false
+			--data.Perk6=false
 			--print("удар тора")
 
 			if UnitDamageArea(hero,90,x,y,150)  then
@@ -37,7 +37,9 @@ function AfterAttack(hero, delay)
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
 			data.Reflection=false
+			DestroyTimer(GetExpiredTimer())
 		end)
+		DestroyTimer(GetExpiredTimer())
 	end)
 end
 

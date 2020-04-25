@@ -58,7 +58,7 @@ function CreateEnemy(ship,id,k)
 
 
 	if footmans>=100*nextfootmans then
-		print("Число пехотинцев перевалило за "..100*nextfootmans)
+		--print("Число пехотинцев перевалило за "..100*nextfootmans)
 		nextfootmans=nextfootmans+1
 	end
 	if n<50 then

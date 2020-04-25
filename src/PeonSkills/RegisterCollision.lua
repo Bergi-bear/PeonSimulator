@@ -22,13 +22,16 @@ function RegisterCollision(hero)
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
 				if GTotalWood>=100 then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-					print("Система: приступайте к строительсву корабля")
+					print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")
+					--print("Система: Приступайте к строительсву корабля")
 				end
 					if Ending then
 						UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-						print("Система: Помогайте строить корабль")
+						--print("Система: Помогайте строить корабль")
+						print("|cff8080ffСистема: |r".."Помогайте строить корабль")
 					else
-						print("Система: Добудьте 100 древисины чтобы построить корабль")
+						--print("Система: Добудьте 100 древисины чтобы построить корабль")
+						print("|cff8080ffСистема: |r".."Добудьте 100 древисины чтобы построить корабль")
 					end
 
 				end
@@ -37,7 +40,9 @@ function RegisterCollision(hero)
 			if GetUnitTypeId(CollisionUnit)==FourCC('n006')  then--тускарец с восклицательным знаком
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
 				UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-					print("Тускарец: где-то винзу есть рычаг")
+					--print("Тускарец: где-то винзу есть рычаг")
+					print("|cff8080ffТускарец: |r".." Где-то внизу есть рычаг")
+
 				end
 			end
 
@@ -174,6 +179,7 @@ function RegisterCollision(hero)
 						x=x,
 						y=y,
 					}
+					DestroyTimer(GetExpiredTimer())
 				end)
 			end
 

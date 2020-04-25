@@ -30,10 +30,12 @@ function EntInTrees()
 								SetUnitAnimation(new,"birth")
 								TimerStart(CreateTimer(), 1, false, function()
 									RemoveDestructable(d)
+									DestroyTimer(GetExpiredTimer())
 								end)
 							end
 						end
 					end)
+					DestroyTimer(GetExpiredTimer())
 				end)
 			end
 			GroupRemoveUnit(perebor,e)
