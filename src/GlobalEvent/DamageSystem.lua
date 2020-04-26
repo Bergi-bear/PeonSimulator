@@ -302,7 +302,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					if DistanceBetweenXY(GetDestructableX(d), GetDestructableY(d),GetUnitXY(hero))<=200 then
 						if data.IsWood then
 							--print("Некуда класть звук")
-							CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+							if GetDestructableTypeId(d)~=FourCC('LTrc') then
+								CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+							end
 						else
 							data.IsWood=true
 							--print("Добавляем 1 дерева для "..GetUnitName(hero))

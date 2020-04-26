@@ -117,6 +117,9 @@ function InitUnitDeath()
 					end
 				end
 			end
+			if GetUnitTypeId(DeadUnit)==FourCC('e001') then-- убил энта
+				CreateFreeWood(GetUnitXY(DeadUnit))
+			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
 				data.WolfCount=data.WolfCount+1
 

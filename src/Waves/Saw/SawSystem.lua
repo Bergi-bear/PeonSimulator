@@ -24,6 +24,8 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	BlzSetSpecialEffectScale(saw,0.9)
 	local DamageDealer=CreateUnit(GetOwningPlayer(hero),DummyID,xs,ys,0)
 	ShowUnit(DamageDealer,false)
+	local SS=true
+
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
 		local OnDamage=false
@@ -38,8 +40,16 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		SetUnitX(DamageDealer,nx)
 		SetUnitY(DamageDealer,ny)
 		angle=angle+speed
+
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 
+		if OnDamage and ReflectorUnit then
+			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
+			UnitAddAbility(dummy,FourCC('Apsh'))
+			IssueImmediateOrder(dummy,"phaseshift")
+			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+		end
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
 			if data.Reflection then
@@ -69,6 +79,7 @@ function CreateGroundSaw(hero,angle,z)
 	local step=10
 	local i=0
 	local turn=false
+	UnitAddAbility(hero,FourCC('Aloc'))
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
 
@@ -100,6 +111,16 @@ function CreateGroundSaw(hero,angle,z)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
 		nx,ny=MoveXY(x,y,-60,angle)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
+
+		if OnDamage and ReflectorUnit then
+			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
+			UnitAddAbility(dummy,FourCC('Apsh'))
+			IssueImmediateOrder(dummy,"phaseshift")
+			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+			--ShowUnit(dummy,false)
+			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+		end
+
 
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
@@ -143,5 +164,4 @@ function StartAllSaw()
 		end
 		GroupRemoveUnit(perebor,e)
 	end
-	--print("Запущено пил: "..k)
 end

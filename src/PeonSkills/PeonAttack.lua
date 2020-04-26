@@ -7,7 +7,7 @@ function AfterAttack(hero, delay)
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-		local damage=BlzGetUnitBaseDamage(hero,0)*50
+		local damage=BlzGetUnitBaseDamage(hero,0)--*50
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
@@ -15,8 +15,12 @@ function AfterAttack(hero, delay)
 				data.RevoltSec=0
 			end
 
-			if (data.HaveAFire or data.Perk16 ) and not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit)) then
+			if (data.HaveAFire or data.Perk16 ) and ((not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit))) or GetUnitTypeId(CUnit)==FourCC('o005')) then
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				if (data.HaveAFire and data.Perk16)  then
+					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+					SingleCannon(hero,GetUnitFacing(hero)+15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				end
 				if not data.Perk16 then
 					data.HaveAFire=false
 					UnitRemoveAbility(hero,FourCC('A006'))

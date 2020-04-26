@@ -448,3 +448,21 @@ STRING 79
 Rocks (летающие)
 }
 
+STRING 80
+// Units: e008 (Дамми Ледяной кастер), Name (Name)
+{
+Дамми Ледяной кастер
+}
+
+STRING 81
+// Units: e008 (Дамми Ледяной кастер), Tip (Tooltip - Basic)
+{
+дамми
+}
+
+STRING 82
+// Units: e008 (Дамми Ледяной кастер), Ubertip (Tooltip - Extended)
+{
+Это даммми юнит
+}
+

@@ -53,8 +53,10 @@ function RegisterCollision(hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка
-				HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
-				KillUnit(CollisionUnit)
+				if GetLosingHP(hero)>1 then
+					HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
+					KillUnit(CollisionUnit)
+				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
 				--print("Подобрана сфера огня, учим героя метать фаер болы")
@@ -118,6 +120,15 @@ function RegisterCollision(hero)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение
 					TimerStart(CreateTimer(), 0.1, true, function()
 						MoveWoodAsFarm(hero,k)
+
+						data.SingleWoodCount=data.SingleWoodCount+k
+						if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
+							data.Perk1=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[1],false)
+								BlzFrameSetVisible(FrameSelecter[1],true)
+							end
+						end
 
 						data.RevoltSec=0
 						SetUnitUserData(data.CartUnit,GetUnitUserData(data.CartUnit)-1)
@@ -193,14 +204,7 @@ function AddLumber (ttk,caster)
 	local data=HERO[GetPlayerId(GetOwningPlayer(caster))]
 	local ownplayer=GetOwningPlayer(caster)
 
-	data.SingleWoodCount=data.SingleWoodCount+ttk
-	if data.SingleWoodCount>=25  and not data.Perk1 then
-		data.Perk1=true
-		if GetLocalPlayer()==ownplayer then
-			BlzFrameSetVisible(PerkIsLock[1],false)
-			BlzFrameSetVisible(FrameSelecter[1],true)
-		end
-	end
+
 
 	if ttk>0 and data.IsWood then
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)

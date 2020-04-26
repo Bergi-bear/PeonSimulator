@@ -14,6 +14,7 @@ function StartPeonAI(hero)
 	local k=1
 	local IMFree=0
 	local rdelay=GetRandomReal(0.8,1.2)
+
 	TimerStart(CreateTimer(), rdelay, true, function()
 		data.ReleaseW=false
 		data.ReleaseA=false
@@ -22,19 +23,32 @@ function StartPeonAI(hero)
 
 		ErrorTime2=ErrorTime2+rdelay
 		local d=GetNearbyDes(hero,500*k)
-		--print(GetDestructableName(d))
-		local  turn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetDestructableX(d),GetDestructableY(d))/bj_DEGTORAD
+		--print("Нашёл дерево, рублю"..GetDestructableName(d))
+		local dra=0
+		if DistanceBetweenXY(GetDestructableX(d),GetDestructableY(d),GetUnitXY(hero))>ErrorTime*30 and d then
+
+			dra=GetRandomReal(5*ErrorTime*(-1),5*ErrorTime)
+			--print("Декор далеко "..dra)
+		end
+		local  turn=dra+AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetDestructableX(d),GetDestructableY(d))/bj_DEGTORAD
 		data.LastTurn=turn--GetRandomReal(0,360)
 		local m=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetDestructableX(d),GetDestructableY(d))
 
 
-		if ErrorTime==15 then
+		if ErrorTime>=15 then
 			ErrorTime=0
 		end
 
-		if ErrorTime2==60 then
+		if ErrorTime2>=60 then
 			ErrorTime2=0
 			k=k+1
+			--print("радиус поиска увеличен "..k)
+		end
+
+		if IsUnitInRange(hero,Base,200) and ErrorTime>=3 and data.IsWood then --and GetLosingHP(Base)<=10
+			--print("Вернул дерево на базу, новый цикл")
+			ErrorTime=0
+			k=1
 		end
 
 
@@ -51,36 +65,23 @@ function StartPeonAI(hero)
 			if not ab then
 				local enemy=GetAnyEnemy(hero,500)
 				if not enemy then
-					data.LastTurn=GetRandomReal(0,360)
-					data.RangeDesMove=110
-					--[[local fr=GetRandomInt(1,8)
-					if fr==1 then
-						data.ReleaseW=true
-					elseif fr==2 then
-						data.ReleaseA=true
-					elseif fr==3 then
-						data.ReleaseS=true
-					elseif fr==4 then
-						data.ReleaseD=true
-					elseif fr==5 then
-						data.ReleaseW=true
-						data.ReleaseD=true
-					elseif fr==6 then
-						data.ReleaseD=true
-						data.ReleaseS=true
-					elseif fr==7 then
-						data.ReleaseS=true
-						data.ReleaseA=true
-					elseif fr==8 then
-						data.ReleaseA=true
-						data.ReleaseW=true
-					end]]
+					if not ab then
+						--print("Хаотично бегу "..ErrorTime)
+						data.LastTurn=GetRandomReal(0,360)
+						data.RangeDesMove=110
+						if ErrorTime>20 then
+							--print("Надоело хаотично бегать, сброс")
+							ErrorTime=0
+						end
+					end
 				else
+				--	print("Бью врага "..ErrorTime)
 					ErrorTime=ErrorTime+rdelay
 					data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(enemy),GetUnitY(enemy))/bj_DEGTORAD
 					data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(enemy),GetUnitY(enemy))
 				end
 			else
+			--	print("Чиню здание "..ErrorTime)
 				ErrorTime=ErrorTime+rdelay
 				data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))/bj_DEGTORAD
 				data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))
@@ -93,9 +94,11 @@ function StartPeonAI(hero)
 				data.RangeDesMove=m
 			end
 		else--есть дерево
-			--print("Есть дерево, возвращаюсь на базу "..ErrorTime)
+
 			ErrorTime=ErrorTime+rdelay
-			data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(Base),GetUnitY(Base))/bj_DEGTORAD
+			local anyrandom=GetRandomReal(6*ErrorTime*(-1),6*ErrorTime)
+			--print("Есть дерево, возвращаюсь на базу "..ErrorTime.." случайное время"..anyrandom)
+			data.LastTurn=anyrandom+(AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(Base),GetUnitY(Base))/bj_DEGTORAD)
 			data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(Base),GetUnitY(Base))
 			ErrorTime2=0
 			k=1
@@ -104,6 +107,10 @@ function StartPeonAI(hero)
 				--print("я застрял, пока нёс дерево")
 				data.LastTurn=GetRandomReal(0,360)
 				data.RangeDesMove=110
+				if ErrorTime>15 then
+					--print("Сброс ошибок при возврате дерева")
+					ErrorTime=0
+				end
 			end
 		end
 	end)

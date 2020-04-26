@@ -21,6 +21,19 @@ do
 
 end
 
+--[[do
+	local IssueImmediateOrder_Original = IssueImmediateOrder
+	function IssueImmediateOrder (whichUnit, order)
+		-- some actions
+		local success=IssueImmediateOrder_Original(whichUnit, order)
+		if not success then
+			print("Error "..GetUnitName(whichUnit))
+		end
+		return success
+	end
+end]]
+
+
 function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
@@ -31,9 +44,10 @@ function InitGameCore()
 	TestFrame()
 	VisualUnlock()--убирание выделение каждые 10 сек
 	CreateMouseHelper(10)
+	CreateAndStartClock()
 	--CreateStatusBar() --нанель статусов, ещё не готова
 	-----Настоящая инициализация
-	for i=0,3 do
+	for i=0,3 do -- Число игроков
 		HERO[i]={
 			ReleaseW=false,
 			ReleaseS=false,
@@ -128,10 +142,6 @@ function InitGameCore()
 			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
 			SetUnitColor(hero,ConvertPlayerColor(i))
 			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
-			if i==1 then
-				elseif i==2 then
-				SetUnitColor(hero,PLAYER_COLOR_BLUE)
-			end
 
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
@@ -290,7 +300,7 @@ function InitGameCore()
 					end
 				end
 
-				TimerStart(CreateTimer(), 2, false, function()
+				TimerStart(CreateTimer(), 0.3, false, function()
 					data.ShieldForce=true
 					DestroyTimer(GetExpiredTimer())
 				end)

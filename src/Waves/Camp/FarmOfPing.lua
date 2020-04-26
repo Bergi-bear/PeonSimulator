@@ -4,12 +4,12 @@
 --- DateTime: 24.04.2020 22:53
 
 function FarmOfPig()
-	local farm=FindUnitOfType(FourCC('npgf'))
+	local farm=FindUnitOfType(FourCC('npgf')) --свинья хрюшка
 	local x,y=GetUnitXY(farm)
 	local mf=0
-	TimerStart(CreateTimer(), 30, true, function()
+	TimerStart(CreateTimer(), 60, true, function()
 		local new=CreateUnit(Player(5),FourCC('n007'),x,y,180)
-		mf=mf+5
+		mf=mf+1
 		local hp=200+mf
 		BlzSetUnitMaxHP(new,hp)
 		HealUnit(new,hp)

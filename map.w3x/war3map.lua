@@ -17,6 +17,7 @@ gg_rct_Region_015 = nil
 gg_rct_Region_016 = nil
 gg_snd_Load = nil
 gg_snd_Reflect = nil
+gg_snd_Saw = nil
 gg_trg_GuiInit = nil
 gg_trg_EnterSaws = nil
 gg_trg_LeaveSaws = nil
@@ -29,6 +30,8 @@ gg_unit_n006_0217 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
 gg_dest_DTlv_1234 = nil
+gg_rct_EnterCave = nil
+gg_rct_EnterTown = nil
 function InitGlobals()
 end
 
@@ -43,6 +46,13 @@ function InitSounds()
     SetSoundChannel(gg_snd_Reflect, 13)
     SetSoundVolume(gg_snd_Reflect, 95)
     SetSoundDistances(gg_snd_Reflect, 600.0, 3000.0)
+    gg_snd_Saw = CreateSound("Buildings/Human/HumanLumberMill/HumanLumberMillWhat1.flac", false, true, true, 1, 1, "SpellsEAX")
+    SetSoundParamsFromLabel(gg_snd_Saw, "HumanLumberMillWhat")
+    SetSoundDuration(gg_snd_Saw, 2577)
+    SetSoundChannel(gg_snd_Saw, 13)
+    SetSoundVolume(gg_snd_Saw, 90)
+    SetSoundDistances(gg_snd_Saw, 750.0, 3000.0)
+    SetSoundDistanceCutoff(gg_snd_Saw, 3000.0)
 end
 
 function CreateAllDestructables()
@@ -102,6 +112,7 @@ function CreateUnitsForPlayer7()
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 2065.3, -3144.8, 90.000, FourCC("e006"))
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 2410.0, -3177.6, 90.000, FourCC("e006"))
     u = BlzCreateUnitWithSkin(p, FourCC("e006"), 2645.5, -3183.0, 90.000, FourCC("e006"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e006"), 1151.8, -1692.3, 180.000, FourCC("e006"))
 end
 
 function CreateBuildingsForPlayer10()
@@ -243,7 +254,6 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2677.1, -757.8, 171.590, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2233.8, -460.7, 171.590, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2154.6, -799.6, 171.590, FourCC("n001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("e006"), 1151.8, -1692.3, 180.000, FourCC("e006"))
     u = BlzCreateUnitWithSkin(p, FourCC("nwwd"), 3605.3, 1216.6, 249.420, FourCC("nwwd"))
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 3850.8, 391.1, 320.283, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
@@ -363,6 +373,15 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 1247.3, -4112.5, 276.666, FourCC("nhmc"))
 end
 
+function CreateNeutralPassiveBuildings()
+    local p = Player(PLAYER_NEUTRAL_PASSIVE)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("n008"), 2176.0, -1152.0, 270.000, FourCC("n008"))
+end
+
 function CreateNeutralPassive()
     local p = Player(PLAYER_NEUTRAL_PASSIVE)
     local u
@@ -370,6 +389,7 @@ function CreateNeutralPassive()
     local t
     local life
     u = BlzCreateUnitWithSkin(p, FourCC("e005"), 1563.7, -2290.8, 102.630, FourCC("e005"))
+    u = BlzCreateUnitWithSkin(p, FourCC("e009"), 177.5, 2181.5, -17.079, FourCC("e009"))
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), -3028.9, 2146.6, 359.290, FourCC("o005"))
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), -2592.1, -3389.6, 359.290, FourCC("o005"))
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), 996.7, -3800.0, 353.510, FourCC("o005"))
@@ -391,6 +411,7 @@ function CreatePlayerUnits()
 end
 
 function CreateAllUnits()
+    CreateNeutralPassiveBuildings()
     CreatePlayerBuildings()
     CreateNeutralPassive()
     CreatePlayerUnits()
@@ -414,11 +435,13 @@ function CreateRegions()
     gg_rct_Lava = Rect(1248.0, -2592.0, 1472.0, -2368.0)
     gg_rct_Region_012 = Rect(4256.0, 128.0, 4288.0, 160.0)
     gg_rct_MiniWater = Rect(-768.0, 0.0, -672.0, 96.0)
-    gg_rct_Morlok = Rect(-672.0, 416.0, -544.0, 544.0)
+    gg_rct_Morlok = Rect(-672.0, 448.0, -544.0, 576.0)
     gg_rct_Region_015 = Rect(-3200.0, 1952.0, -2848.0, 2240.0)
     we = AddWeatherEffect(gg_rct_Region_015, FourCC("LRaa"))
     EnableWeatherEffect(we, true)
     gg_rct_Region_016 = Rect(3456.0, -2400.0, 4064.0, -2080.0)
+    gg_rct_EnterCave = Rect(2912.0, 1312.0, 3072.0, 1440.0)
+    gg_rct_EnterTown = Rect(9248.0, 3936.0, 9440.0, 4128.0)
 end
 
 --CUSTOM_CODE
@@ -438,6 +461,7 @@ function StartPeonAI(hero)
 	local k=1
 	local IMFree=0
 	local rdelay=GetRandomReal(0.8,1.2)
+
 	TimerStart(CreateTimer(), rdelay, true, function()
 		data.ReleaseW=false
 		data.ReleaseA=false
@@ -446,19 +470,32 @@ function StartPeonAI(hero)
 
 		ErrorTime2=ErrorTime2+rdelay
 		local d=GetNearbyDes(hero,500*k)
-		--print(GetDestructableName(d))
-		local  turn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetDestructableX(d),GetDestructableY(d))/bj_DEGTORAD
+		--print("Нашёл дерево, рублю"..GetDestructableName(d))
+		local dra=0
+		if DistanceBetweenXY(GetDestructableX(d),GetDestructableY(d),GetUnitXY(hero))>ErrorTime*30 and d then
+
+			dra=GetRandomReal(5*ErrorTime*(-1),5*ErrorTime)
+			--print("Декор далеко "..dra)
+		end
+		local  turn=dra+AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetDestructableX(d),GetDestructableY(d))/bj_DEGTORAD
 		data.LastTurn=turn--GetRandomReal(0,360)
 		local m=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetDestructableX(d),GetDestructableY(d))
 
 
-		if ErrorTime==15 then
+		if ErrorTime>=15 then
 			ErrorTime=0
 		end
 
-		if ErrorTime2==60 then
+		if ErrorTime2>=60 then
 			ErrorTime2=0
 			k=k+1
+			--print("радиус поиска увеличен "..k)
+		end
+
+		if IsUnitInRange(hero,Base,200) and ErrorTime>=3 and data.IsWood then --and GetLosingHP(Base)<=10
+			--print("Вернул дерево на базу, новый цикл")
+			ErrorTime=0
+			k=1
 		end
 
 
@@ -475,36 +512,23 @@ function StartPeonAI(hero)
 			if not ab then
 				local enemy=GetAnyEnemy(hero,500)
 				if not enemy then
-					data.LastTurn=GetRandomReal(0,360)
-					data.RangeDesMove=110
-					--[[local fr=GetRandomInt(1,8)
-					if fr==1 then
-						data.ReleaseW=true
-					elseif fr==2 then
-						data.ReleaseA=true
-					elseif fr==3 then
-						data.ReleaseS=true
-					elseif fr==4 then
-						data.ReleaseD=true
-					elseif fr==5 then
-						data.ReleaseW=true
-						data.ReleaseD=true
-					elseif fr==6 then
-						data.ReleaseD=true
-						data.ReleaseS=true
-					elseif fr==7 then
-						data.ReleaseS=true
-						data.ReleaseA=true
-					elseif fr==8 then
-						data.ReleaseA=true
-						data.ReleaseW=true
-					end]]
+					if not ab then
+						--print("Хаотично бегу "..ErrorTime)
+						data.LastTurn=GetRandomReal(0,360)
+						data.RangeDesMove=110
+						if ErrorTime>20 then
+							--print("Надоело хаотично бегать, сброс")
+							ErrorTime=0
+						end
+					end
 				else
+				--	print("Бью врага "..ErrorTime)
 					ErrorTime=ErrorTime+rdelay
 					data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(enemy),GetUnitY(enemy))/bj_DEGTORAD
 					data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(enemy),GetUnitY(enemy))
 				end
 			else
+			--	print("Чиню здание "..ErrorTime)
 				ErrorTime=ErrorTime+rdelay
 				data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))/bj_DEGTORAD
 				data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(ab),GetUnitY(ab))
@@ -517,9 +541,11 @@ function StartPeonAI(hero)
 				data.RangeDesMove=m
 			end
 		else--есть дерево
-			--print("Есть дерево, возвращаюсь на базу "..ErrorTime)
+
 			ErrorTime=ErrorTime+rdelay
-			data.LastTurn=AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(Base),GetUnitY(Base))/bj_DEGTORAD
+			local anyrandom=GetRandomReal(6*ErrorTime*(-1),6*ErrorTime)
+			--print("Есть дерево, возвращаюсь на базу "..ErrorTime.." случайное время"..anyrandom)
+			data.LastTurn=anyrandom+(AngleBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(Base),GetUnitY(Base))/bj_DEGTORAD)
 			data.RangeDesMove=DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitX(Base),GetUnitY(Base))
 			ErrorTime2=0
 			k=1
@@ -528,6 +554,10 @@ function StartPeonAI(hero)
 				--print("я застрял, пока нёс дерево")
 				data.LastTurn=GetRandomReal(0,360)
 				data.RangeDesMove=110
+				if ErrorTime>15 then
+					--print("Сброс ошибок при возврате дерева")
+					ErrorTime=0
+				end
 			end
 		end
 	end)
@@ -613,7 +643,7 @@ local boss=FindUnitOfType(FourCC('nwwd'))--id босса
 			--print("Нападаем на "..GetUnitName(hero))
 			local angle= math.deg(AngleBetweenXY(GetUnitX(boss), GetUnitY(boss), GetUnitX(hero), GetUnitY(hero)))
 			BlzSetUnitFacingEx(boss,angle)
-			UnitAddForce(boss,angle,40,DistanceBetweenXY(GetUnitX(boss),GetUnitY(boss)),GetUnitXY(hero))
+			UnitAddForce(boss,angle,40,DistanceBetweenXY(GetUnitX(boss),GetUnitY(boss),GetUnitXY(hero)))
 		end
 		if not UnitAlive(boss) then
 			DestroyTimer(GetExpiredTimer())
@@ -902,6 +932,48 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 26.04.2020 2:44
+function CreateAndStartClock()
+
+	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
+
+	BlzFrameSetTexture(charges, "ChargesTexture.blp", 0, true)
+	BlzFrameSetSize(charges, 0.08, 0.02)
+	BlzFrameSetAbsPoint(charges, FRAMEPOINT_CENTER,0.4-0.02 , 0.6-0.02)
+	--BlzFrameSetPoint(charges, FRAMEPOINT_BOTTOM, wood, FRAMEPOINT_BOTTOM, 0,0)
+
+	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
+	local sec=0
+	local min=0
+	local h=0
+	TimerStart(CreateTimer(), 1, true, function()
+		sec=sec+1
+		if sec==60 then
+			sec=0
+			min=min+1
+		end
+		if min==60 then
+			min=0
+			h=h+1
+		end
+
+		BlzFrameSetText(new_FrameChargesText, Zero(h)..":"..Zero(min)..":"..Zero(sec))
+	end)
+end
+
+function Zero(s)
+	local ns=""
+	if string.len(s)==1 then
+		ns="0"..s
+	else
+		ns=s
+	end
+	return ns
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 03.04.2020 2:31
 function HideEverything()
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
@@ -1027,6 +1099,9 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
+
+
+
 			if GTotalWood==50 or GTotalWood==51 then
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
@@ -1042,7 +1117,7 @@ function MoveWoodAsFarm(hero,k)
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				print("|cff8080ffСистема: |r".."Древисины достаточно, отправляйтесь строить корабль")
-				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, "")
+				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, " ")
 				GTotalWood=GTotalWood-100
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
 				CreateShipFrame()
@@ -2247,7 +2322,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					if DistanceBetweenXY(GetDestructableX(d), GetDestructableY(d),GetUnitXY(hero))<=200 then
 						if data.IsWood then
 							--print("Некуда класть звук")
-							CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+							if GetDestructableTypeId(d)~=FourCC('LTrc') then
+								CreateFreeWood(GetDestructableX(d), GetDestructableY(d))
+							end
 						else
 							data.IsWood=true
 							--print("Добавляем 1 дерева для "..GetUnitName(hero))
@@ -2335,6 +2412,19 @@ do
 
 end
 
+--[[do
+	local IssueImmediateOrder_Original = IssueImmediateOrder
+	function IssueImmediateOrder (whichUnit, order)
+		-- some actions
+		local success=IssueImmediateOrder_Original(whichUnit, order)
+		if not success then
+			print("Error "..GetUnitName(whichUnit))
+		end
+		return success
+	end
+end]]
+
+
 function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
@@ -2345,9 +2435,10 @@ function InitGameCore()
 	TestFrame()
 	VisualUnlock()--убирание выделение каждые 10 сек
 	CreateMouseHelper(10)
+	CreateAndStartClock()
 	--CreateStatusBar() --нанель статусов, ещё не готова
 	-----Настоящая инициализация
-	for i=0,3 do
+	for i=0,3 do -- Число игроков
 		HERO[i]={
 			ReleaseW=false,
 			ReleaseS=false,
@@ -2442,10 +2533,6 @@ function InitGameCore()
 			AddSpecialEffectTarget("GeneralHeroGlow",hero,"origin")
 			SetUnitColor(hero,ConvertPlayerColor(i))
 			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
-			if i==1 then
-				elseif i==2 then
-				SetUnitColor(hero,PLAYER_COLOR_BLUE)
-			end
 
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
@@ -2604,7 +2691,7 @@ function InitGameCore()
 					end
 				end
 
-				TimerStart(CreateTimer(), 2, false, function()
+				TimerStart(CreateTimer(), 0.3, false, function()
 					data.ShieldForce=true
 					DestroyTimer(GetExpiredTimer())
 				end)
@@ -3477,6 +3564,9 @@ function InitUnitDeath()
 					end
 				end
 			end
+			if GetUnitTypeId(DeadUnit)==FourCC('e001') then-- убил энта
+				CreateFreeWood(GetUnitXY(DeadUnit))
+			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
 				data.WolfCount=data.WolfCount+1
 
@@ -3599,7 +3689,7 @@ PointOrders={"flare","dispel","cloudoffog","flamestrike","blizzard","healingward
 ImmediateOrders={"defend","magicdefense","militia","townbellon","avatar","divineshield","resurrection","massteleport","waterelemental","thunderclap","summonphoenix","etherealform","berserk",
 "battlestations","corporealform","whirlwind","stomp","spiritwolf","locustswarm","mirrorimage","voodoo","windwalk","raisedead","recharge","replenish","borrow","stoneform","cannibalize","sphinksform","replenishlife",
 "replenishmana","carrionscarabs","animatedead","coupletarget","manaflareon","vengeance","ravenform","bearform","taunt","roar","ambush", "fanofknives","starfall","metamorphosis","immolation",
-"tranquility","monsoon","frenzy","howlofterror","manashield","battleroar","elementalfury","wateryminion","slimemonster","robogoblin","tornado","chemicalrage"}
+"tranquility","monsoon","frenzy","howlofterror","manashield","battleroar","elementalfury","wateryminion","slimemonster","robogoblin","tornado","chemicalrage","phaseshift"}
 ---@param u unit
 ---@param x real
 ---@param y real
@@ -5057,7 +5147,7 @@ function AfterAttack(hero, delay)
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-		local damage=BlzGetUnitBaseDamage(hero,0)*50
+		local damage=BlzGetUnitBaseDamage(hero,0)--*50
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
@@ -5065,8 +5155,12 @@ function AfterAttack(hero, delay)
 				data.RevoltSec=0
 			end
 
-			if (data.HaveAFire or data.Perk16 ) and not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit)) then
+			if (data.HaveAFire or data.Perk16 ) and ((not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit))) or GetUnitTypeId(CUnit)==FourCC('o005')) then
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				if (data.HaveAFire and data.Perk16)  then
+					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+					SingleCannon(hero,GetUnitFacing(hero)+15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				end
 				if not data.Perk16 then
 					data.HaveAFire=false
 					UnitRemoveAbility(hero,FourCC('A006'))
@@ -5179,8 +5273,10 @@ function RegisterCollision(hero)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка
-				HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
-				KillUnit(CollisionUnit)
+				if GetLosingHP(hero)>1 then
+					HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
+					KillUnit(CollisionUnit)
+				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('e007') then--Сфрера огня
 				--print("Подобрана сфера огня, учим героя метать фаер болы")
@@ -5244,6 +5340,15 @@ function RegisterCollision(hero)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение
 					TimerStart(CreateTimer(), 0.1, true, function()
 						MoveWoodAsFarm(hero,k)
+
+						data.SingleWoodCount=data.SingleWoodCount+k
+						if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
+							data.Perk1=true
+							if GetLocalPlayer()==GetOwningPlayer(hero) then
+								BlzFrameSetVisible(PerkIsLock[1],false)
+								BlzFrameSetVisible(FrameSelecter[1],true)
+							end
+						end
 
 						data.RevoltSec=0
 						SetUnitUserData(data.CartUnit,GetUnitUserData(data.CartUnit)-1)
@@ -5319,14 +5424,7 @@ function AddLumber (ttk,caster)
 	local data=HERO[GetPlayerId(GetOwningPlayer(caster))]
 	local ownplayer=GetOwningPlayer(caster)
 
-	data.SingleWoodCount=data.SingleWoodCount+ttk
-	if data.SingleWoodCount>=25  and not data.Perk1 then
-		data.Perk1=true
-		if GetLocalPlayer()==ownplayer then
-			BlzFrameSetVisible(PerkIsLock[1],false)
-			BlzFrameSetVisible(FrameSelecter[1],true)
-		end
-	end
+
 
 	if ttk>0 and data.IsWood then
 		FlyTextTagLumberBounty(caster,"+"..ttk,ownplayer)
@@ -5417,12 +5515,12 @@ end
 --- DateTime: 24.04.2020 22:53
 
 function FarmOfPig()
-	local farm=FindUnitOfType(FourCC('npgf'))
+	local farm=FindUnitOfType(FourCC('npgf')) --свинья хрюшка
 	local x,y=GetUnitXY(farm)
 	local mf=0
-	TimerStart(CreateTimer(), 30, true, function()
+	TimerStart(CreateTimer(), 60, true, function()
 		local new=CreateUnit(Player(5),FourCC('n007'),x,y,180)
-		mf=mf+5
+		mf=mf+1
 		local hp=200+mf
 		BlzSetUnitMaxHP(new,hp)
 		HealUnit(new,hp)
@@ -5604,7 +5702,7 @@ end
 ---
 function StartWinter()
 	local x,y=2236,-1112--0,0--
-	local caster=CreateUnit(Player(10),DummyID,x,y,180)
+	local caster=CreateUnit(Player(10),FourCC('e008'),x,y,180) --дамми ветерок
 	UnitAddAbility(caster,FourCC('A005'))
 	--local nx,ny=MoveXY(x,y)
 	Cast(caster,x-100,y)
@@ -5642,6 +5740,8 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	BlzSetSpecialEffectScale(saw,0.9)
 	local DamageDealer=CreateUnit(GetOwningPlayer(hero),DummyID,xs,ys,0)
 	ShowUnit(DamageDealer,false)
+	local SS=true
+
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
 		local OnDamage=false
@@ -5656,8 +5756,16 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		SetUnitX(DamageDealer,nx)
 		SetUnitY(DamageDealer,ny)
 		angle=angle+speed
+
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 
+		if OnDamage and ReflectorUnit then
+			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
+			UnitAddAbility(dummy,FourCC('Apsh'))
+			IssueImmediateOrder(dummy,"phaseshift")
+			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+		end
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
 			if data.Reflection then
@@ -5687,6 +5795,7 @@ function CreateGroundSaw(hero,angle,z)
 	local step=10
 	local i=0
 	local turn=false
+	UnitAddAbility(hero,FourCC('Aloc'))
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
 
@@ -5718,6 +5827,16 @@ function CreateGroundSaw(hero,angle,z)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
 		nx,ny=MoveXY(x,y,-60,angle)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
+
+		if OnDamage and ReflectorUnit then
+			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
+			UnitAddAbility(dummy,FourCC('Apsh'))
+			IssueImmediateOrder(dummy,"phaseshift")
+			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+			--ShowUnit(dummy,false)
+			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+		end
+
 
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
@@ -5761,7 +5880,6 @@ function StartAllSaw()
 		end
 		GroupRemoveUnit(perebor,e)
 	end
-	--print("Запущено пил: "..k)
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -5816,6 +5934,20 @@ function SetSheepPoint(id,flag,x,y)
 			end
 			GroupRemoveUnit(perebor,e)
 		end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 25.04.2020 15:24
+
+function CreateStoneCircle(x,y)
+	local distance=400
+	local id=FourCC('LTlt')-- id камня
+	for i=0,11 do
+		local angle=30*i
+		local xn,yn=MoveXY(x,y,distance,angle)
+		CreateDestructable(id,xn,yn,angle,1,1)
+	end
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

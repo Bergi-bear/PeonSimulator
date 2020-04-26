@@ -5,7 +5,7 @@
 ---
 function StartWinter()
 	local x,y=2236,-1112--0,0--
-	local caster=CreateUnit(Player(10),DummyID,x,y,180)
+	local caster=CreateUnit(Player(10),FourCC('e008'),x,y,180) --дамми ветерок
 	UnitAddAbility(caster,FourCC('A005'))
 	--local nx,ny=MoveXY(x,y)
 	Cast(caster,x-100,y)

@@ -126,6 +126,9 @@ function MoveWoodAsFarm(hero,k)
 			DestroyTimer(GetExpiredTimer())
 			PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			GTotalWood=GTotalWood+k
+
+
+
 			if GTotalWood==50 or GTotalWood==51 then
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
