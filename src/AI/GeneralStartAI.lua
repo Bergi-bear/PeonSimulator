@@ -6,6 +6,12 @@
 function StartPeonAI(hero)
 	--print("Запущен ИИ для "..GetUnitName(hero))
 	local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+	data.ReleaseW=false
+	data.ReleaseA=false
+	data.ReleaseS=false
+	data.ReleaseD=false
+	data.ReleaseLMB=false
+	data.ReleaseRMB=false
 	data.ReleaseRMB=true
 	local LastM=0
 	local ErrorTime=0

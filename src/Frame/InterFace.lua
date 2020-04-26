@@ -135,8 +135,10 @@ function MoveWoodAsFarm(hero,k)
 				HERO[2].Perk17=true
 				HERO[3].Perk17=true
 				--if GetLocalPlayer()==GetOwningPlayer(hero) then
-				BlzFrameSetVisible(PerkIsLock[17],false)
-				BlzFrameSetVisible(FrameSelecter[17],true)
+				PerkUnlocker(HERO[0],17)
+				PerkUnlocker(HERO[1],17)
+				PerkUnlocker(HERO[2],17)
+				PerkUnlocker(HERO[3],17)
 				--end
 			end
 			--print(GTotalWood)
@@ -194,76 +196,25 @@ function HealthBarAdd(u)
 	BlzFrameSetAbsPoint(bar, FRAMEPOINT_LEFT, 0.04, 0.58)
 end
 
-PerkIsLock={}
-PerkToolTip={}
 
-texture={
-	"ReplaceableTextures\\CommandButtons\\BTNPeasant",
-	"ReplaceableTextures\\CommandButtons\\BTNChaosPeon",
-	"ReplaceableTextures\\CommandButtons\\BTNGoblinSapper",
-	"ReplaceableTextures\\CommandButtons\\BTNBoots",
-	"ReplaceableTextures\\CommandButtons\\BTNBloodLust",
-	"ReplaceableTextures\\CommandButtons\\BTNStormBolt",
-	"ReplaceableTextures\\CommandButtons\\BTNAbomination", --пудж
-	"ReplaceableTextures\\CommandButtons\\BTNKotoBeast",
-	"ReplaceableTextures\\CommandButtons\\BTNGatherGold", -- кирка
-	"ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade",-- техника безопасности
-	"ReplaceableTextures\\PassiveButtons\\PASBTNDemolish",
-	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
-	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
-	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
-	"ReplaceableTextures\\CommandButtons\\BTNPlagueCloud",
-	"ReplaceableTextures\\CommandButtons\\BTNOrbOfFire",
-	"ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpThree",
-}
-Name= { --Определяет количество талантов
-	"Работник месяца",
-	"Бунтовщик",
-	"Поблажка",
-	"Лесной Болван",
-	"Вкус крови",
-	"Ученик Тора",
-	"Ожирение 0 степени",
-	"Толстокожий друг",
-	"Калёная кирка",--9
-	"Правила ТБ",
-	"Технологии людей",
-	"Ледяной щит",
-	"Шапка волка",
-	"Каменный Щит",
-	"Овечья болезь",
-	"Сфера огра",
-	"Рывок",--17
-}
-description={
-	"Принесите 25 дерева, чтобы удвоить его добычу ",
-	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
-	"Умрите 15 раз, чтобы получить +100 ХП ",
-	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее ",
-	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
-	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
-	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
-	"Приручите кодоя, чтобы получить 10 ед брони ",
-	"Накалите кирку до красна, чтобы увеличить урон в 5 раз ",
-	"Донесите дерево с полным здоровьем, чтобы обучиться парированию. ",
-	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
-	"Пробудьте на холоде, чтобы заморозить щит. ",
-	"Убейте волков, чтобы получить шапку волка. ",
-	"Убейте каменных големов, чтобы укрепить свой щит ",
-	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
-	"Найдите сферу, чтобы научиться метать огненные шары. ",
-	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
-}
+
+
 
 function TestFrame()
 	--print("isstart")
 end
 
-
+FrameSelecter={}
 function VisualUnlock()
 	TimerStart(CreateTimer(),10,true, function()
-		for i=1,#Name do
-			BlzFrameSetVisible(FrameSelecter[i],false)
+		for k=0,3 do
+			for i=1,#Name do
+				local data=HERO[k]
+				if BlzFrameIsVisible(data.VisualSelectorFrame[i]) then
+					--BlzFrameSetVisible(FrameSelecter[i],false)
+					BlzFrameSetVisible(data.VisualSelectorFrame[i],false)
+				end
+			end
 		end
 	end)
 end
@@ -278,20 +229,6 @@ function PerkButtonLine()
 		local  buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
 		BlzFrameSetAllPoints(buttonIconFrame, face)
 		BlzFrameSetTexture(buttonIconFrame, texture[i],0, true)
-		local t = CreateTrigger()
-
-		BlzTriggerRegisterFrameEvent(t, face, FRAMEEVENT_CONTROL_CLICK)
-		BlzTriggerRegisterFrameEvent(t, face, FRAMEEVENT_MOUSE_ENTER)
-		--BlzTriggerRegisterFrameEvent(t, buttonIconFrame, FRAMEEVENT_CONTROL_CLICK)
-		--BlzTriggerRegisterFrameEvent(t, buttonIconFrame, FRAMEEVENT_MOUSE_ENTER)
-		TriggerAddAction(t,function()
-			BlzFrameSetEnable(face, false)
-			BlzFrameSetEnable(face,true)
-			print("click "..i) -- вот тут не работает
-		end)
-		-- прикручивание тултипа
-		-- и тут события клика и наведения ломаются
-		----[[
 		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0)
 		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
 		local UpDest=BlzGetFrameByName("BoxedTextValue", 0)

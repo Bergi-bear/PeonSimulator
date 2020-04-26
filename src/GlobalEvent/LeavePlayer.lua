@@ -10,8 +10,10 @@ function LeavePlayer()
 	TriggerRegisterPlayerEventLeave(this, Player(3))
 
 	TriggerAddAction(this, function()
+		print("Разумом игрока овладел ИИ")
 		local p=GetTriggerPlayer()
 		local data=HERO[GetPlayerId(p)]
+		data.PlayerIsLeave=true
 		StartPeonAI(data.UnitHero)
 	end)
 end

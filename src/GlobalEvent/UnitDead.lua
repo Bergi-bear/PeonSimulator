@@ -30,10 +30,7 @@ function InitUnitDeath()
 					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+100)
 				end
 				data.Perk3=true
-				if GetLocalPlayer()==PD then
-					BlzFrameSetVisible(PerkIsLock[3],false)
-					BlzFrameSetVisible(FrameSelecter[3],true)
-				end
+				PerkUnlocker(data,3)
 			end
 			if data.IsWood then
 				CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
@@ -88,10 +85,7 @@ function InitUnitDeath()
 					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
 				end
 				data.Perk5=true
-				if GetLocalPlayer()==PD then
-					BlzFrameSetVisible(PerkIsLock[5],false)
-					BlzFrameSetVisible(FrameSelecter[5],true)
-				end
+				PerkUnlocker(data,5)
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
 				data.StoneCount=data.StoneCount+1
@@ -99,10 +93,7 @@ function InitUnitDeath()
 				if data.StoneCount==1 then
 					--UnitAddAbility(Killer,FourCC('A007'))
 					data.Perk14A=true
-					if GetLocalPlayer()==PD then
-						BlzFrameSetVisible(PerkIsLock[14],false)
-						BlzFrameSetVisible(FrameSelecter[14],true)
-					end
+					PerkUnlocker(data,14)
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
@@ -111,10 +102,7 @@ function InitUnitDeath()
 				if data.SheepCount==40 then
 					data.Perk15=true
 					UnitAddAbility(Killer,FourCC('A00J'))
-					if GetLocalPlayer()==PD then
-						BlzFrameSetVisible(PerkIsLock[15],false)
-						BlzFrameSetVisible(FrameSelecter[15],true)
-					end
+					PerkUnlocker(data,15)
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('e001') then-- убил энта
@@ -131,10 +119,7 @@ function InitUnitDeath()
 
 					if not data.Perk13 then
 						data.Perk13=true
-						if GetLocalPlayer()==PD then
-							BlzFrameSetVisible(PerkIsLock[13],false)
-							BlzFrameSetVisible(FrameSelecter[13],true)
-						end
+						PerkUnlocker(data,13)
 					end
 
 					TimerStart(CreateTimer(), 1, true, function()
@@ -216,10 +201,7 @@ function InitUnitDeath()
 						end)
 
 						data.Perk11=true
-						if GetLocalPlayer()==Player(i) then
-							BlzFrameSetVisible(PerkIsLock[11],false)
-							BlzFrameSetVisible(FrameSelecter[11],true)
-						end
+						PerkUnlocker(data,11)
 					end
 				end
 			end

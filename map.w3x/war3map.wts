@@ -1,6 +1,6 @@
 ﻿STRING 1
 {
-KillMyPeon
+PeonRPG
 }
 
 STRING 2
@@ -10,7 +10,7 @@ STRING 2
 
 STRING 3
 {
-Использя WASD  и мышь, управляйте своим пеоном, добывайте древесину для победы
+Using WASD and mouse, control your peon, get wood for victory
 }
 
 STRING 4
@@ -464,5 +464,17 @@ STRING 82
 // Units: e008 (Дамми Ледяной кастер), Ubertip (Tooltip - Extended)
 {
 Это даммми юнит
+}
+
+STRING 83
+// Doodads: D001 (Ice Claws(up)), Name (Name)
+{
+Ice Claws(up)
+}
+
+STRING 84
+// Doodads: D002 (Ice Claws(up)2), Name (Name)
+{
+Ice Claws(up)2
 }
 

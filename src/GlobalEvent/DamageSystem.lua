@@ -120,10 +120,7 @@ function InitDamage()
 						if data.KodoCount>=1 then
 							data.Perk8=true
 							BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
-							if GetLocalPlayer()==casterOwner then
-								BlzFrameSetVisible(PerkIsLock[8],false)
-								BlzFrameSetVisible(FrameSelecter[8],true)
-							end
+							PerkUnlocker(data,8)
 							--print("Рабочий поднял бунт")
 							--Allian
 						end
@@ -217,10 +214,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 						if data.FireCount>=5 then
 							data.Perk9=true
 							--print("разблокировка перка")
-							if GetLocalPlayer()==GetOwningPlayer(u) then
-								BlzFrameSetVisible(PerkIsLock[9],false)
-								BlzFrameSetVisible(FrameSelecter[9],true)
-							end
+							PerkUnlocker(data,9)
 						end
 					end
 					if data.Perk9 then
@@ -236,10 +230,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					if not data.Perk6 then
 						if data.Repairs>=1000 then
 							data.Perk6=true
-							if GetLocalPlayer()==GetOwningPlayer(u) then
-								BlzFrameSetVisible(PerkIsLock[6],false)
-								BlzFrameSetVisible(FrameSelecter[6],true)
-							end
+							PerkUnlocker(data,6)
 						end
 					end
 				end

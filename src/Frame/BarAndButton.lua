@@ -6,21 +6,9 @@
 ---
 ---
 ---
---BlzLoadTOCFile("Main.toc")
---HealthPlayer1 = HealthBarAdd(udg_Pala)
---BlzFrameSetAbsPoint(HealthPlayer1, FRAMEPOINT_TOPRIGHT, 0.8, 0.57)
 
 
-
-
-
-
-
-
-FrameSelecter={}
-VisualCharges={}
 MiniMap={}
-
 
 function CreateWeaponFrame()
 	local texture={

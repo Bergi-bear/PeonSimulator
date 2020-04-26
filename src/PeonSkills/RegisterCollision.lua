@@ -64,10 +64,7 @@ function RegisterCollision(hero)
 				if not data.Perk16 then
 					data.Perk16=true
 					UnitAddAbility(hero,FourCC('A006'))--огонёк
-					if GetLocalPlayer()==GetOwningPlayer(hero) then
-						BlzFrameSetVisible(PerkIsLock[16],false)
-						BlzFrameSetVisible(FrameSelecter[16],true)
-					end
+					PerkUnlocker(data,16)
 				end
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('o001') then--дрова на лесопилке
@@ -81,15 +78,17 @@ function RegisterCollision(hero)
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[10],false)
-								BlzFrameSetVisible(FrameSelecter[10],true)
-							end
+							PerkUnlocker(data,10)
 						end
 					end
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
-
+					data.SingleWoodCount=data.SingleWoodCount+k
+					--print("дерево в личном зачете "..data.SingleWoodCount)
+					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
+						data.Perk1=true
+						PerkUnlocker(data,1)
+					end
 					--print(data.SingleWoodCount)
 
 					HealUnit(hero,1000)
@@ -107,10 +106,7 @@ function RegisterCollision(hero)
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[10],false)
-								BlzFrameSetVisible(FrameSelecter[10],true)
-							end
+							PerkUnlocker(data,10)
 						end
 					end
 
@@ -120,16 +116,16 @@ function RegisterCollision(hero)
 					UnitAddItemById(hero,FourCC('I000'))-- ускорение
 					TimerStart(CreateTimer(), 0.1, true, function()
 						MoveWoodAsFarm(hero,k)
-
 						data.SingleWoodCount=data.SingleWoodCount+k
+						--print("дерево в личном зачете "..data.SingleWoodCount)
 						if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 							data.Perk1=true
-							if GetLocalPlayer()==GetOwningPlayer(hero) then
-								BlzFrameSetVisible(PerkIsLock[1],false)
-								BlzFrameSetVisible(FrameSelecter[1],true)
-							end
+							BlzFrameSetVisible(data.LockFrame[1],false)
+							BlzFrameSetVisible(data.VisualSelectorFrame[1],true)
+							TimerStart(CreateTimer(), 10, true, function()
+								BlzFrameSetVisible(data.VisualSelectorFrame[1],false)
+							end)
 						end
-
 						data.RevoltSec=0
 						SetUnitUserData(data.CartUnit,GetUnitUserData(data.CartUnit)-1)
 						SetVisualWood(data.CartUnit,GetUnitUserData(data.CartUnit))
@@ -170,10 +166,7 @@ function RegisterCollision(hero)
 					if data.SheepCount==20 then
 						data.Perk15=true
 						UnitAddAbility(hero,FourCC('A00J'))
-						if GetLocalPlayer()==GetOwningPlayer(hero) then
-							BlzFrameSetVisible(PerkIsLock[15],false)
-							BlzFrameSetVisible(FrameSelecter[15],true)
-						end
+						PerkUnlocker(data,15)
 					end
 
 
