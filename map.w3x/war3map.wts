@@ -478,3 +478,18 @@ STRING 84
 Ice Claws(up)2
 }
 
+STRING 85
+{
+Русский
+}
+
+STRING 86
+{
+English
+}
+
+STRING 88
+{
+Language?
+}
+

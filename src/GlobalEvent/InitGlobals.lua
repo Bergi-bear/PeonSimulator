@@ -17,6 +17,8 @@ do
 		InitAllZones()
 		LeavePlayer()
 		HeroEnterSaws()
+
+
 	end
 
 end
@@ -40,6 +42,10 @@ function InitGameCore()
 	EnableDragSelect(false, false)
 	CreateWoodFrame()
 	HideEverything()
+	TimerStart(CreateTimer(), 0.5, false, function()
+		ButtonPress()
+		CreateLanguageDialog()
+	end)
 	TimerStart(CreateTimer(), 1, false, function()
 		PerkButtonLineNonLocal()-- табличка перков новая
 	end)
@@ -52,6 +58,7 @@ function InitGameCore()
 	for i = 0, 3 do
 		-- Число игроков
 		HERO[i] = {
+			Lang=0, --0 русский , 1 английский
 			ReleaseW = false,
 			ReleaseS = false,
 			ReleaseA = false,

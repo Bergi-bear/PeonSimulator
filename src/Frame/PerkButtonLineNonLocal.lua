@@ -40,6 +40,25 @@ Name= { --Определяет количество талантов
 	"Сфера огра",
 	"Рывок",--17
 }
+NameENG= { --Определяет количество талантов
+	"Best Employee",
+	"Insurgent",
+	"law of death",
+	"Forest Gump",
+	"Firs Blood",
+	"Thor's apprentice",
+	"Obesity 0 degree",
+	"Thick-skinned",
+	"Hot pickaxe",--9
+	"Safe work",
+	"Technology people",
+	"Ice Shield",
+	"Wolf cap",
+	"Stone Shield",
+	"Sheep disease",
+	"Ogre Orb",
+	"Dash",--17
+}
 description={
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
@@ -59,23 +78,25 @@ description={
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
-
---[[={
-	player=0,
-	position=0,
-	frame=nil
+descriptionENG={
+	"Принесите 25 дерева, чтобы удвоить его добычу ",
+	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
+	"Умрите 15 раз, чтобы получить +100 ХП ",
+	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее ",
+	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
+	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
+	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
+	"Приручите кодоя, чтобы получить 10 ед брони ",
+	"Накалите кирку до красна, чтобы увеличить урон в 5 раз ",
+	"Донесите дерево с полным здоровьем, чтобы обучиться парированию. ",
+	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
+	"Пробудьте на холоде, чтобы заморозить щит. ",
+	"Убейте волков, чтобы получить шапку волка. ",
+	"Убейте каменных големов, чтобы укрепить свой щит ",
+	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
+	"Найдите сферу, чтобы научиться метать огненные шары. ",
+	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
-
-PerkIsLock={
-	player=0,
-	position=0,
-	frame=nil
-}
-PerkToolTip={
-	player=0,
-	position=0,
-	frame=nil,
-}]]
 
 
 function PerkButtonLineNonLocal()
@@ -83,6 +104,7 @@ function PerkButtonLineNonLocal()
 	local next=0.039
 	--print("start")
 	for k=0,3 do
+		local data=HERO[k]
 			for i=1,#Name do -- число талантов
 			--print(i.." "..k.."создаём фрейм")
 			local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
@@ -100,6 +122,9 @@ function PerkButtonLineNonLocal()
 			BlzFrameSetSize(tooltip, 0.15, 0.08)
 			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 			BlzFrameSetText(UpDest, description[i])
+				if data.Lang==1 then
+					BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), NameENG[i])
+				end
 
 			local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)--замочек
 			BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0.,0.)
@@ -132,108 +157,108 @@ function PerkButtonLineNonLocal()
 
 	--обновление текста
 	TimerStart(CreateTimer(), 1, true, function()
-		for i=0,3 do
-			local data=HERO[i]
+		for k=0,3 do
+			local data=HERO[k]
 			--if GetLocalPlayer()==Player(i) then
-				for k=1,#Name  do
+				for i=1,#Name  do
 					--print(#Name)
-					if k==1 then
+					if i==1 then
 						--print("смена текста")
-						BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
-					elseif k==2  then
-						BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..R2I(data.RevoltSec).."/300|r" ) --|cffffff00AAAA|r
-					elseif k==3  then
-						BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.Dies.."/15|r" ) --|cffffff00AAAA|r
-					elseif k==4  then
-						BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/200000|r" ) --|cffffff00AAAA|r
-					elseif k==5  then
+						BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
+					elseif i==2  then
+						BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..R2I(data.RevoltSec).."/300|r" ) --|cffffff00AAAA|r
+					elseif i==3  then
+						BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.Dies.."/15|r" ) --|cffffff00AAAA|r
+					elseif i==4  then
+						BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..R2I(data.TotalWay).."/200000|r" ) --|cffffff00AAAA|r
+					elseif i==5  then
 						if  data.Perk5 then
-							BlzFrameSetText(data.PekFrame[k],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.Kills.."/5|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.Kills.."/5|r" ) --|cffffff00AAAA|r
 						end
-					elseif k==6  then
+					elseif i==6  then
 						if  data.Perk6 then
-							BlzFrameSetText(data.PekFrame[k],"Наносит дополнительный и замедляет врагов в области 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Наносит дополнительный и замедляет врагов в области 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
 						end
-					elseif k==7  then
+					elseif i==7  then
 						if  data.Perk7 then
 							if data.Perk7A then
-								BlzFrameSetText(data.PekFrame[k],"Восстанавливает ".."|cffffff00".."3 %%|r".." от максимального ХП при убийстве врагов в ближнем бою" ) --|cffffff00AAAA|r
+								BlzFrameSetText(data.PekFrame[i],"Восстанавливает ".."|cffffff00".."3 %%|r".." от максимального ХП при убийстве врагов в ближнем бою" ) --|cffffff00AAAA|r
 							else
-								BlzFrameSetText(data.PekFrame[k],"Продолжайте правильно питаться и овладеете вампиризмом. ".."|cffffff00"..R2I(data.Heals).."/5000|r" ) --|cffffff00AAAA|r
+								BlzFrameSetText(data.PekFrame[i],"Продолжайте правильно питаться и овладеете вампиризмом. ".."|cffffff00"..R2I(data.Heals).."/5000|r" ) --|cffffff00AAAA|r
 							end
 						else
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
 						end
 
-					elseif k==8  then
-						BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
-					elseif k==9  then
+					elseif i==8  then
+						BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
+					elseif i==9  then
 						if not data.Perk9 then
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.FireCount.."/5|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.FireCount.."/5|r" ) --|cffffff00AAAA|r
 						else
 							if not data.HaveAFire then
-								BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00".."Обычная|r" ) --|cffffff00AAAA|r
+								BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00".."Обычная|r" ) --|cffffff00AAAA|r
 							else
-								BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00".."Калёная|r" ) --|cffffff00AAAA|r
+								BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00".."Калёная|r" ) --|cffffff00AAAA|r
 							end
 						end
-					elseif k==10  then --техника безопусноти
+					elseif i==10  then --техника безопусноти
 						if  data.Perk10 then
-							BlzFrameSetText(data.PekFrame[k],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
 						end
-					elseif k==11  then -- погром
+					elseif i==11  then -- погром
 						--print(k)
 						if  data.Perk11 then
 							--print("0")
-							BlzFrameSetText(data.PekFrame[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
 						else
 							--print("2")
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00".."0/1|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00".."0/1|r" ) --|cffffff00AAAA|r
 							--print("3")
 						end
 						--print(k.."end")
-					elseif k==12  then -- ледяной щит
+					elseif i==12  then -- ледяной щит
 						--print("жвенадцать")
 						if  data.Perk12 then
-							BlzFrameSetText(data.PekFrame[k],"При поглощении урона в щит враги замораживаются на ".."|cffffff00".."3 секунды|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"При поглощении урона в щит враги замораживаются на ".."|cffffff00".."3 секунды|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..R2I(data.FrozenShield).."/60|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..R2I(data.FrozenShield).."/60|r" ) --|cffffff00AAAA|r
 						end
-					elseif k==13  then
+					elseif i==13  then
 						if not data.Perk13 then
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.WolfCount.."/5|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.WolfCount.."/5|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],"Призывает волка, который будет вам помогать. ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Призывает волка, который будет вам помогать. ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
 						end
-					elseif k==14  then
+					elseif i==14  then
 						if not data.Perk14A then
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],"Поглощает ".."|cffffff00".."100%% |r".." урона " ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Поглощает ".."|cffffff00".."100%% |r".." урона " ) --|cffffff00AAAA|r
 						end
-					elseif k==15  then
+					elseif i==15  then
 						if not data.Perk15 then
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..data.SheepCount.."/40|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..data.SheepCount.."/40|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
 						end
-					elseif k==16  then
+					elseif i==16  then
 						if not data.Perk16 then
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00".."Ищите за вулканом|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00".."Ищите за вулканом|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
 						end
-					elseif k==17  then
+					elseif i==17  then
 						if not data.Perk17 then
-							BlzFrameSetText(data.PekFrame[k],description[k].."|cffffff00"..GTotalWood.."/50|r" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],description[i].."|cffffff00"..GTotalWood.."/50|r" ) --|cffffff00AAAA|r
 						else
-							BlzFrameSetText(data.PekFrame[k],"Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: ".."|cffffff00".."2 сек |r".."" ) --|cffffff00AAAA|r
+							BlzFrameSetText(data.PekFrame[i],"Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: ".."|cffffff00".."2 сек |r".."" ) --|cffffff00AAAA|r
 						end
 					end
 				end
@@ -241,6 +266,7 @@ function PerkButtonLineNonLocal()
 		end
 	end)
 end
+
 
 function PerkUnlocker(data,index)
 	BlzFrameSetVisible(data.LockFrame[index],false)
