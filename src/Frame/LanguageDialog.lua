@@ -5,52 +5,34 @@
 
 
 
-function Trig_Dialog_Actions()
-	DialogAddButtonBJ(udg_Lang, "TRIGSTR_085")
-	udg_ru[0] = GetLastCreatedButtonBJ()
-	DialogAddButtonBJ(udg_Lang, "TRIGSTR_086")
-	DialogSetMessageBJ(udg_Lang, "TRIGSTR_088")
-	DialogDisplayBJ(true, udg_Lang, Player(0))
-end
-
-function InitTrig_Dialog()
-	gg_trg_Dialog = CreateTrigger()
-	TriggerRegisterTimerEventSingle(gg_trg_Dialog, 1.00)
-	TriggerAddAction(gg_trg_Dialog, Trig_Dialog_Actions)
-end
-
-function Trig_ButtonPress_Conditions()
-	if (not (GetClickedButtonBJ() == udg_ru[GetConvertedPlayerId(GetTriggerPlayer())])) then
-		return false
-	end
-	return true
-end
-
-function Trig_ButtonPress_Actions()
-end
 
 function ButtonPress()
 	local this = CreateTrigger()
-	TriggerRegisterDialogEventBJ(this, LangDialog)
-	--TriggerAddCondition(this, Condition(Trig_ButtonPress_Conditions))
+
+	for i = 1, 4 do
+		TriggerRegisterDialogEventBJ(this, LangDialog[i])
+	end
 
 	TriggerAddAction(this, function()
 		--print("нажата кнопка диалога")
 		local pid=GetPlayerId(GetTriggerPlayer())
 		if GetClickedButton()==ButtonRU[pid] then
 			--print("11111")
-			print(GetPlayerName(GetTriggerPlayer()).."Выбрал русский")
+			print(GetPlayerName(GetTriggerPlayer()).."Выбрал русский "..BlzGetLocale())
+			PerkButtonLineNonLocal(pid,0)
 
 		end
 		if GetClickedButton()==ButtonENG[pid] then
 			--print("22222")
-			print(GetPlayerName(GetTriggerPlayer()).." Chose english")
+			print(GetPlayerName(GetTriggerPlayer()).." Chose english "..BlzGetLocale())
 			HERO[pid].Lang=1
+			PerkButtonLineNonLocal(pid,1)
 		end
+		--CreateMouseHelperNEW(pid)
 	end)
 end
 
-LangDialog = DialogCreate()
+LangDialog ={DialogCreate(),DialogCreate(),DialogCreate(),DialogCreate()}
 
 ButtonRU={}
 ButtonENG={}
@@ -58,10 +40,10 @@ ButtonENG={}
 function CreateLanguageDialog()
 	--print("init")
 	for i=0,3 do
-		ButtonRU[i]=DialogAddButtonBJ(LangDialog, "Русский")
-		ButtonENG[i]=DialogAddButtonBJ(LangDialog, "English")
-		DialogSetMessageBJ(LangDialog, "Language?")
-		DialogDisplayBJ(true, LangDialog, Player(i))
+		ButtonRU[i]=DialogAddButtonBJ(LangDialog[i+1], "Русский")
+		ButtonENG[i]=DialogAddButtonBJ(LangDialog[i+1], "English")
+		DialogSetMessageBJ(LangDialog[i+1], "Language?")
+		DialogDisplayBJ(true, LangDialog[i+1], Player(i))
 		--print("i="..i)
 	end
 end

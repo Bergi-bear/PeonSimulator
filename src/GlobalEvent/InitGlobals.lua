@@ -47,11 +47,13 @@ function InitGameCore()
 		CreateLanguageDialog()
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
-		PerkButtonLineNonLocal()-- табличка перков новая
+		CreateMouseHelper()
+
+		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
 	TestFrame()
 	--VisualUnlock()--убирание выделение каждые 10 сек
-	CreateMouseHelper(10)
+
 	CreateAndStartClock()
 	--CreateStatusBar() --нанель статусов, ещё не готова
 	-----Настоящая инициализация

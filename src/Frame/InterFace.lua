@@ -149,6 +149,10 @@ function MoveWoodAsFarm(hero,k)
 				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, " ")
 				GTotalWood=GTotalWood-100
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
+				AddQuest(true,HERO[0].UnitHero,-4935.0,809.5)
+				AddQuest(true,HERO[1].UnitHero,-4935.0,809.5)
+				AddQuest(true,HERO[2].UnitHero,-4935.0,809.5)
+				AddQuest(true,HERO[3].UnitHero,-4935.0,809.5)
 				CreateShipFrame()
 				Normadia()
 				Ending=true
@@ -376,15 +380,15 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
-	BlzFrameSetText(new_FrameChargesText, "Удержание ЛКМ - действие")
+	BlzFrameSetText(new_FrameChargesText, "Hold LMB - actions")
 
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
-	BlzFrameSetText(new_FrameChargesText2, "Используйте кнопки WASD, для движения")
+	BlzFrameSetText(new_FrameChargesText2, "Use WASD for moving")
 
 	local new_FrameChargesText3 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText3, FRAMEPOINT_CENTER,0.1 , 0.29)
-	BlzFrameSetText(new_FrameChargesText3, "Удержание ПКМ - щит")
+	BlzFrameSetText(new_FrameChargesText3, "Hold RMB - Shield")
 
 	local wasd=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wasd, "WASD", 0, true)
@@ -395,7 +399,7 @@ function CreateMouseHelper(sec)
 	TimerStart(CreateTimer(), 1, true, function()
 		for i=0,3 do
 			local data=HERO[i]
-			if data.MHoldSec >=3  and data.MHoldSec <=5  then
+			if data.MHoldSec >=5  and data.MHoldSec <=9  then
 				if GetLocalPlayer()==Player(i) then
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)

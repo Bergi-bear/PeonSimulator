@@ -47,7 +47,7 @@ function StartPeonAI(hero)
 
 		if ErrorTime2>=60 then
 			ErrorTime2=0
-			k=k+1
+			--k=k+1-- временно убрал
 			--print("радиус поиска увеличен "..k)
 		end
 
