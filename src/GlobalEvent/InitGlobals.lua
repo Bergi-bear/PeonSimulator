@@ -35,6 +35,14 @@ end
 	end
 end]]
 
+--DestroyTimer
+do
+	local DestroyTimer_Original = DestroyTimer
+	function DestroyTimer(whichTimer)
+		PauseTimer(whichTimer)
+		DestroyTimer_Original(whichTimer)
+	end
+end
 
 function InitGameCore()
 	--создаём героев

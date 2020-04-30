@@ -10,7 +10,7 @@ STRING 2
 
 STRING 3
 {
-Using WASD and mouse, control your peon, get wood for victory
+Using WASD and mouse, to control your peon, cut wood for victory
 }
 
 STRING 4
@@ -403,7 +403,7 @@ STRING 71
 
 STRING 72
 {
-Дверь открыта
+ 
 }
 
 STRING 73
@@ -476,20 +476,5 @@ STRING 84
 // Doodads: D002 (Ice Claws(up)2), Name (Name)
 {
 Ice Claws(up)2
-}
-
-STRING 85
-{
-Русский
-}
-
-STRING 86
-{
-English
-}
-
-STRING 88
-{
-Language?
 }
 

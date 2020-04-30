@@ -4,7 +4,7 @@
 --- DateTime: 21.02.2020 23:45
 ---
 
-SawDiskModel="Chakram_03"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
+SawDiskModel="Chakram_04"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
 SawChainModel="abilities\\weapons\\wyvernspear\\wyvernspearmissile.mdl"
 CollisionEffect="Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl"
 function CreateRoundSawZ(hero,ChainCount,angle,z)
@@ -103,8 +103,14 @@ function CreateGroundSaw(hero,angle,z)
 		end
 		--print(i)
 		x,y=MoveXY(xs,ys,step*i,angle)
-		SetUnitX(hero,x)
-		SetUnitY(hero,y)
+		if InMapXY(x,y) then
+			SetUnitX(hero,x)
+			SetUnitY(hero,y)
+		else
+		--	print("ERROR - NOTINMAP"..x.." "..y)
+			DestroyTimer(GetExpiredTimer())
+			KillUnit(hero)
+		end
 		BlzSetSpecialEffectPosition(saw,x,y,z)
 		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
 		local nx,ny=MoveXY(x,y,60,angle)

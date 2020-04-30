@@ -19,7 +19,7 @@ function InitUnitDeath()
 			--data.CartUnit=nil
 			--SetUnitOwner(data.CartUnit,Player(PLAYER_NEUTRAL_PASSIVE),true)
 			--SetUnitAnimationByIndex(data.CartUnit,0)
-			if data.Perk15 then
+			if data.Perk15 then -- взрыв от смерти
 				SetUnitExploded(DeadUnit, true)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 				UnitDamageArea(DeadUnit,200,x,y,250)
@@ -74,7 +74,7 @@ function InitUnitDeath()
 				SetUnitExploded(DeadUnit, true)
 				local x,y=GetUnitXY(DeadUnit)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
-				UnitDamageArea(Killer,200,x,y,250)
+				--UnitDamageArea(Killer,200,x,y,250)
 			end
 
 
@@ -149,17 +149,38 @@ function InitUnitDeath()
 		----------------- смерть простых типов юнитов
 		---FourCC('e003')
 		--break --[[
+		Humans=CreateGroup()
+		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин
+		--	print("Погиб крестьянин")
+			local x,y=GetUnitXY(DeadUnit)
+			local lum=FindUnitOfType(FourCC('hlum'),600,x,y)
+			if lum then
+				TimerStart(CreateTimer(), 5, false, function()
+				--	print("создан новый рабочий")
+					local xlim,ylum=GetUnitXY(lum)
+					local new=CreateUnit(Player(10), FourCC('hpea'),xlim, ylum, 0)
+					IssueImmediateOrder(new,"autoharvestlumber")
+					DestroyTimer(GetExpiredTimer())
+				end)
+			end
+
+		end
 		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево
 			local x,y=GetUnitXY(DeadUnit)
 			for _=1,7 do
 				local r=GetRandomInt(-100,100)
-				CreateFreeWood(x+r,y+r)
+				local r2=GetRandomInt(-100,100)
+				CreateFreeWood(x+r,y+r2)
 			end
 		end
 
 		if GetUnitTypeId(DeadUnit)==FourCC('o001') and not Ending then--лесопилка орков
 			--print("О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
-			print("|cff8080ffСистема: |r".."О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
+			if BlzGetLocale()=="ruRU" then
+				print("|cff8080ffСистема: |r".."О нет, лесопилка разрушена, теперь пеонам никогда не выбраться с острова")
+			else
+				print("|cff8080ffSystem: |r".."Oh no, the sawmill is destroyed, now the peons never get out of the island")
+			end
 			TimerStart(CreateTimer(), 5, false, function()
 				CustomDefeatBJ(Player(0),"Вы проиграли")
 				CustomDefeatBJ(Player(1),"Вы проиграли")
