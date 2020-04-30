@@ -22,16 +22,26 @@ function RegisterCollision(hero)
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
 				if GTotalWood>=100 then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-					print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")
-					--print("Система: Приступайте к строительсву корабля")
+					if BlzGetLocale()=="ruRU" then
+						print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")
+					else
+						print("|cff8080ffSystem: |r".."Repair the ship")
+					end
+
 				end
 					if Ending then
 						UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-						--print("Система: Помогайте строить корабль")
-						print("|cff8080ffСистема: |r".."Помогайте строить корабль")
+						if BlzGetLocale()=="ruRU" then
+							print("|cff8080ffСистема: |r".."Помогайте строить корабль, чего стоите")
+						else
+
+						end
 					else
-						--print("Система: Добудьте 100 древисины чтобы построить корабль")
-						print("|cff8080ffСистема: |r".."Добудьте 100 древисины чтобы построить корабль")
+						if BlzGetLocale()=="ruRU" then
+							print("|cff8080ffСистема: |r".."Добудьте 100 древисины чтобы построить корабль")
+						else
+							print("|cff8080ffСистема: |r".."You need 100 timber to build a ship")
+						end
 					end
 
 				end
@@ -41,7 +51,11 @@ function RegisterCollision(hero)
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
 				UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					--print("Тускарец: где-то винзу есть рычаг")
-					print("|cff8080ffТускарец: |r".." Где-то внизу есть рычаг")
+					if BlzGetLocale()=="ruRU" then
+						print("|cff8080ffТускарец: |r".." Где-то внизу есть рычаг")
+					else
+						print("|cff8080ffWalrus: |r".." Below there is a lever from this gate")
+					end
 
 				end
 			end
@@ -163,7 +177,7 @@ function RegisterCollision(hero)
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
 					data.SheepCount=data.SheepCount+1
-					if data.SheepCount==20 then
+					if data.SheepCount==40 then
 						data.Perk15=true
 						UnitAddAbility(hero,FourCC('A00J'))
 						PerkUnlocker(data,15)

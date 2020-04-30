@@ -35,7 +35,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 				end
 				DestroyTimer(GetExpiredTimer())
 				DestroyEffect(QuestPointer)
-				print("квест выполнен, даём награду")
+				--print("квест выполнен, даём награду")
 			end
 		end)
 	end

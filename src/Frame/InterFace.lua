@@ -47,8 +47,13 @@ function CreateWoodFrame ()
 	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
-	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-	BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
+	if BlzGetLocale()=="ruRU" then
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
+		BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
+	else
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
+		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
+	end
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -145,7 +150,11 @@ function MoveWoodAsFarm(hero,k)
 			if GTotalWood==100 or GTotalWood==101 then
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
-				print("|cff8080ffСистема: |r".."Древисины достаточно, отправляйтесь строить корабль")
+				if BlzGetLocale()=="ruRU" then
+					print("|cff8080ffКороль пеонов: |r".."Древисины достаточно, отправляйтесь ремонтировать корабль")
+				else
+					print("|cff8080ffPeon King: |r".."Wood is enough, go repair ship")
+				end
 				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, " ")
 				GTotalWood=GTotalWood-100
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
@@ -380,7 +389,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
-	BlzFrameSetText(new_FrameChargesText, "Hold LMB - actions")
+	BlzFrameSetText(new_FrameChargesText, "Hold LMB - Actions")
 
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)

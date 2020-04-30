@@ -43,8 +43,13 @@ function InitGameCore()
 	CreateWoodFrame()
 	HideEverything()
 	TimerStart(CreateTimer(), 0.5, false, function()
-		ButtonPress()
-		CreateLanguageDialog()
+		--ButtonPress()
+		--CreateLanguageDialog()
+		for i=0,3 do
+			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
+				PerkButtonLineNonLocal(i,0)
+			end
+		end
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
@@ -294,6 +299,7 @@ function InitGameCore()
 		--print("any")
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			--это леваый клик всё внутри LMB
+
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
 			if not data.ReleaseLMB then
@@ -363,7 +369,12 @@ function InitGameCore()
 
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
+		if GetLocalPlayer() == GetTriggerPlayer() then
+			EnableUserControl(true)
+			--print("клик левой")
+		end
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+
 			-- это правая кнопка
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]

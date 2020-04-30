@@ -7,14 +7,14 @@ DummyID=FourCC('e000')
 function CastArea(caster,id,x,y,range, xPoz,yPoz)
 	local dx,dy=x,y
 	if xPoz~=nil then
-		print("позиция")
+		--print("позиция")
 		dx,dy=xPoz,yPoz
 	end
 	local dummy=CreateUnit(GetOwningPlayer(caster), DummyID, dx, dy, 0)--
 	UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 	if UnitAddAbility(dummy,id) then
 	else
-		print("ошибка добавления способности")
+		--print("ошибка добавления способности")
 	end
 	---для одиночек
 

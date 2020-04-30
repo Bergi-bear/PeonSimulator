@@ -1019,8 +1019,13 @@ function CreateWoodFrame ()
 	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
-	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-	BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
+	if BlzGetLocale()=="ruRU" then
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
+		BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
+	else
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
+		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
+	end
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -1117,7 +1122,11 @@ function MoveWoodAsFarm(hero,k)
 			if GTotalWood==100 or GTotalWood==101 then
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
-				print("|cff8080ffСистема: |r".."Древисины достаточно, отправляйтесь строить корабль")
+				if BlzGetLocale()=="ruRU" then
+					print("|cff8080ffКороль пеонов: |r".."Древисины достаточно, отправляйтесь ремонтировать корабль")
+				else
+					print("|cff8080ffPeon King: |r".."Wood is enough, go repair ship")
+				end
 				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, " ")
 				GTotalWood=GTotalWood-100
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
@@ -1352,7 +1361,7 @@ function CreateMouseHelper(sec)
 	BlzFrameSetAbsPoint(wood, FRAMEPOINT_CENTER,0.1 , 0.4)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText, FRAMEPOINT_CENTER,0.1 , 0.31)
-	BlzFrameSetText(new_FrameChargesText, "Hold LMB - actions")
+	BlzFrameSetText(new_FrameChargesText, "Hold LMB - Actions")
 
 	local new_FrameChargesText2 = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetAbsPoint(new_FrameChargesText2, FRAMEPOINT_CENTER,0.1 , 0.17)
@@ -1592,6 +1601,11 @@ descriptionENG = {
 }
 
 function PerkButtonLineNonLocal(k,lang)
+	if BlzGetLocale()~="ruRU" then
+		lang=1
+	else
+		lang=0
+	end
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -1857,7 +1871,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 				end
 				DestroyTimer(GetExpiredTimer())
 				DestroyEffect(QuestPointer)
-				print("квест выполнен, даём награду")
+				--print("квест выполнен, даём награду")
 			end
 		end)
 	end
@@ -1911,14 +1925,14 @@ DummyID=FourCC('e000')
 function CastArea(caster,id,x,y,range, xPoz,yPoz)
 	local dx,dy=x,y
 	if xPoz~=nil then
-		print("позиция")
+		--print("позиция")
 		dx,dy=xPoz,yPoz
 	end
 	local dummy=CreateUnit(GetOwningPlayer(caster), DummyID, dx, dy, 0)--
 	UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 	if UnitAddAbility(dummy,id) then
 	else
-		print("ошибка добавления способности")
+		--print("ошибка добавления способности")
 	end
 	---для одиночек
 
@@ -2823,8 +2837,13 @@ function InitGameCore()
 	CreateWoodFrame()
 	HideEverything()
 	TimerStart(CreateTimer(), 0.5, false, function()
-		ButtonPress()
-		CreateLanguageDialog()
+		--ButtonPress()
+		--CreateLanguageDialog()
+		for i=0,3 do
+			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
+				PerkButtonLineNonLocal(i,0)
+			end
+		end
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
@@ -3074,6 +3093,7 @@ function InitGameCore()
 		--print("any")
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
 			--это леваый клик всё внутри LMB
+
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
 			if not data.ReleaseLMB then
@@ -3143,7 +3163,12 @@ function InitGameCore()
 
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
+		if GetLocalPlayer() == GetTriggerPlayer() then
+			EnableUserControl(true)
+			--print("клик левой")
+		end
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+
 			-- это правая кнопка
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
@@ -3941,7 +3966,7 @@ function InitUnitDeath()
 					PerkUnlocker(data,14)
 				end
 			end
-			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
+			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы овца
 
 				data.SheepCount=data.SheepCount+1
 				if data.SheepCount==40 then
@@ -5616,16 +5641,26 @@ function RegisterCollision(hero)
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
 				if GTotalWood>=100 then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-					print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")
-					--print("Система: Приступайте к строительсву корабля")
+					if BlzGetLocale()=="ruRU" then
+						print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")
+					else
+						print("|cff8080ffSystem: |r".."Repair the ship")
+					end
+
 				end
 					if Ending then
 						UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-						--print("Система: Помогайте строить корабль")
-						print("|cff8080ffСистема: |r".."Помогайте строить корабль")
+						if BlzGetLocale()=="ruRU" then
+							print("|cff8080ffСистема: |r".."Помогайте строить корабль, чего стоите")
+						else
+
+						end
 					else
-						--print("Система: Добудьте 100 древисины чтобы построить корабль")
-						print("|cff8080ffСистема: |r".."Добудьте 100 древисины чтобы построить корабль")
+						if BlzGetLocale()=="ruRU" then
+							print("|cff8080ffСистема: |r".."Добудьте 100 древисины чтобы построить корабль")
+						else
+							print("|cff8080ffСистема: |r".."You need 100 timber to build a ship")
+						end
 					end
 
 				end
@@ -5635,7 +5670,11 @@ function RegisterCollision(hero)
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
 				UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					--print("Тускарец: где-то винзу есть рычаг")
-					print("|cff8080ffТускарец: |r".." Где-то внизу есть рычаг")
+					if BlzGetLocale()=="ruRU" then
+						print("|cff8080ffТускарец: |r".." Где-то внизу есть рычаг")
+					else
+						print("|cff8080ffWalrus: |r".." Below there is a lever from this gate")
+					end
 
 				end
 			end
@@ -5757,7 +5796,7 @@ function RegisterCollision(hero)
 			end
 			if GetUnitTypeId(CollisionUnit)==FourCC('n001') then -- овца
 					data.SheepCount=data.SheepCount+1
-					if data.SheepCount==20 then
+					if data.SheepCount==40 then
 						data.Perk15=true
 						UnitAddAbility(hero,FourCC('A00J'))
 						PerkUnlocker(data,15)

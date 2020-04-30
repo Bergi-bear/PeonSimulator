@@ -96,7 +96,7 @@ function InitUnitDeath()
 					PerkUnlocker(data,14)
 				end
 			end
-			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы
+			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы овца
 
 				data.SheepCount=data.SheepCount+1
 				if data.SheepCount==40 then
