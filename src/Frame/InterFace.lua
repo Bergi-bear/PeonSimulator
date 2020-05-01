@@ -421,23 +421,32 @@ function CreateMouseHelper(sec)
 	end)
 end
 
-function CreateStatusBar()
-	local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-	BlzFrameSetTexture(status, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
-	BlzFrameSetSize(status, 0.019, 0.019)
-	BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.04 , 0.6-0.04)
+StatusTexture={
+	"ReplaceableTextures\\CommandButtons\\BTNGatherGold",
 
-	--обновление текста
-	TimerStart(CreateTimer(), 1, true, function()
-		for i=0,3 do
-			local data=HERO[i]
-			if GetLocalPlayer()==Player(i) then
-				for k=1,7 do
-					if k==1 then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
-					end
-				end
-			end
+}
+
+function CreateStatusBar(pid)
+	local data=HERO[pid]
+	--for i=0,3 do
+		local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+		BlzFrameSetTexture(status, StatusTexture[i], 0, true)
+		BlzFrameSetSize(status, 0.019, 0.019)
+		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.04 , 0.6-0.04)
+		local statustxt = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+		BlzFrameSetPoint(statustxt, FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
+		if GetLocalPlayer() ~= Player(pid) then
+			BlzFrameSetVisible(status, false)
+			BlzFrameSetVisible(statustxt, false)
 		end
+
+	--end
+
+	TimerStart(CreateTimer(), 1, true, function()
+		local d=R2I(BlzGetUnitBaseDamage(data.UnitHero,0))
+		BlzFrameSetText(statustxt, d)
 	end)
+
+	--обновление текстаз
+
 end

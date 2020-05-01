@@ -10,8 +10,13 @@ function LeavePlayer()
 	TriggerRegisterPlayerEventLeave(this, Player(3))
 
 	TriggerAddAction(this, function()
-		print("Разумом игрока овладел ИИ")
 		local p=GetTriggerPlayer()
+		print("Разумом "..GetPlayerName(p).." овладел ИИ")
+		if BlzGetLocale()=="ruRU" then
+			print("|cff8080ffСистема: |r".."Разумом "..GetPlayerName(p).." овладел ИИ")
+		else
+			print("|cff8080ffSystem: |r"..GetPlayerName(p).." Lose control")
+		end
 		local data=HERO[GetPlayerId(p)]
 		data.PlayerIsLeave=true
 		StartPeonAI(data.UnitHero)

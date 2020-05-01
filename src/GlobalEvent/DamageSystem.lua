@@ -33,7 +33,7 @@ function InitDamage()
 
 				if data.Reflection and data.Perk10 then -- парирование с талантом
 					--print("Урон парирован")
-					local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
+					local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
 					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
 					BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
 					DestroyEffect(eff)
@@ -52,7 +52,7 @@ function InitDamage()
 					local dist=damage
 					if dist >=25 then dist=25 end
 					if 0 < dot then
-						local eff=AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster",GetUnitXY(target))
+						local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
 						BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 						DestroyEffect(eff)
 						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
@@ -207,6 +207,10 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		--ремонт
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
+			if GetUnitTypeId(e)==FourCC('n007') then-- попытка ударить свинку лечилку
+				local x,y=GetUnitXY(u)
+				FlyTextTagHealXY(x,y,"Hp is full",GetOwningPlayer(u))
+			end
 			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
 					data.FireCount=data.FireCount+1
@@ -308,9 +312,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					end
 
 				end
-				--блок голема
-				if GetDestructableTypeId(d)==FourCC('LTrc') then
+				if GetDestructableTypeId(d)==FourCC('LTrc') then --блок голема, камень
 					KillDestructable(d)
+					TotalStones=TotalStones+1
 					local  new=CreateUnit(Player(10), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
 
 					TimerStart(CreateTimer(),10,false, function()
@@ -318,7 +322,20 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 						DestroyTimer(GetExpiredTimer())
 					end)
 				end
-				--блок голема
+
+				if GetDestructableTypeId(d)==FourCC('LOcg') then -- клетка с мурлоками
+					KillDestructable(d)
+					local mid={
+						FourCC('nmrr'),
+						FourCC('nmrm'),
+						FourCC('nmrl'),
+						FourCC('nmtw')
+					}
+					local  new=CreateUnit(Player(10), mid[GetRandomInt(1,#mid)], GetDestructableX(d), GetDestructableY(d), 0)
+					print("СОзданный мурлок идёт атаковать базу")
+
+				end
+
 			end
 		else
 			local data=HERO(UnitGetPid(hero))

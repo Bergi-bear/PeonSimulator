@@ -3,6 +3,7 @@
 --- Created by Bergi.
 --- DateTime: 28.03.2020 1:00
 ---
+TotalStones=0 --подсчет камней для тиника
 function RegisterCollision(hero)
 	local ThisTrigger = CreateTrigger()
 	local IsWork=false
@@ -17,6 +18,19 @@ function RegisterCollision(hero)
 		--print("any reg "..GetUnitName(CollisionUnit))
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
+			if GetUnitTypeId(CollisionUnit)==FourCC('e009')  and GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then --Тини
+				if BlzGetLocale()=="ruRU" then
+					print("|cff8080ffТиник: |r".."Уничтожьте 30 камней для нашей битвы")
+				else
+					print("|cff8080ffTinyc: |r".."Destroy stones for battle")
+				end
+				FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
+				if TotalStones>=30 then
+					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
+					print("тут должна быть эпичная битва но её ещё нет")
+				end
+			end
+
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('oshy')  then --ферфь
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then

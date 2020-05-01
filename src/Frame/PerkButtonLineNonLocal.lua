@@ -62,7 +62,7 @@ NameENG = { --Определяет количество талантов
 description = {
 	"Принесите 25 дерева, чтобы удвоить его добычу ",
 	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
-	"Умрите 15 раз, чтобы получить +100 ХП ",
+	"Умрите 15 раз, чтобы получить +100 к здоровью ",
 	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее ",
 	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
@@ -104,7 +104,7 @@ function PerkButtonLineNonLocal(k,lang)
 	else
 		--lang=0
 	end
-	lang=1
+	lang=0
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -168,9 +168,19 @@ function PerkButtonLineNonLocal(k,lang)
 				--print(#Name)
 				if i == 1 then
 					--print("смена текста")
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.SingleWoodCount .. "/25|r") --|cffffff00AAAA|r
+
+					if data.Perk1 then
+						BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r")
+					else
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.SingleWoodCount .. "/25|r") --|cffffff00AAAA|r
+					end
 				elseif i == 2 then
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r") --|cffffff00AAAA|r
+					if data.Perk2 then
+						BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти" .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r")
+					else
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r") --|cffffff00AAAA|r
+					end
+
 				elseif i == 3 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.Dies .. "/15|r") --|cffffff00AAAA|r
 				elseif i == 4 then
@@ -184,7 +194,7 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 6 then
 					if data.Perk6 then
-						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный и замедляет врагов в области 150. " .. "|cffffff00" .. "90 доп. урона|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00" .. "90 доп. урона|r") --|cffffff00AAAA|r
 						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. "90 damage|r") end
 					else
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
@@ -319,6 +329,12 @@ end
 function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
+	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
+	if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) then
+		--print("звук!")
+		PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
+		--print("БЫл?")
+	end
 	TimerStart(CreateTimer(), 10, true, function()
 		BlzFrameSetVisible(data.VisualSelectorFrame[index], false)
 	end)

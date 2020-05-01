@@ -56,6 +56,7 @@ function InitGameCore()
 		for i=0,3 do
 			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
 				PerkButtonLineNonLocal(i,0)
+				CreateStatusBar(i)
 			end
 		end
 	end)
@@ -320,7 +321,7 @@ function InitGameCore()
 				local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
 				local IsDamage, DamagingUnit = UnitDamageArea(data.UnitHero, 1, x, y, 100)
 				local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
-				local eff = AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster", x, y)
+				local eff = AddSpecialEffect("DefendCaster", x, y)
 				BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
 				DestroyEffect(eff)
 
