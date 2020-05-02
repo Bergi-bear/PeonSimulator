@@ -26,7 +26,7 @@ function InitSpellTrigger()
 			local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 			if data.ReleaseLMB then
 				data.StoneCount=data.StoneCount+1
-				if data.StoneCount==20 then
+				if data.StoneCount==5 then
 					data.Perk14A=true
 					PerkUnlocker(data,14)
 				end

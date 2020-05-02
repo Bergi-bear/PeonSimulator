@@ -108,11 +108,14 @@ function InitDamage()
 			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 				--local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
-				local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
-				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
-				DestroyEffect(eff)
-				PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
+				if damage>10 then
+					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+					local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+					BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+					DestroyEffect(eff)
+					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
+				end
+
 
 
 			end
@@ -217,7 +220,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		--ремонт
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-			if GetUnitTypeId(e)==FourCC('n007') then-- попытка ударить свинку лечилку
+			if GetUnitTypeId(e)==FourCC('n007') and damage>6 then-- попытка ударить свинку лечилку
 				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=150 then
 					local x,y=GetUnitXY(u)
 					local mes=""

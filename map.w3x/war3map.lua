@@ -706,6 +706,12 @@ function StartTinyAI(xs, ys)
 			end
 			DestroyTimer(GetExpiredTimer())
 			phase = 0
+			--print("Дайм нарграду")
+			for _=1,14 do
+				local r=GetRandomInt(-100,100)
+				local r2=GetRandomInt(-100,100)
+				CreateFreeWood(bx+r,by+r2)
+			end
 		else --Проверяем есть ли живые герои
 			if BossFight then
 				local k=0
@@ -4446,7 +4452,7 @@ function InitUnitDeath()
 							local r=GetRandomInt(-50,50)
 							SetUnitPosition(data.WolfHelper,x+r,y+r)
 						else
-							if GetUnitCurrentOrder(data.WolfHelper)~=String2OrderIdBJ("Attack") then
+							if GetUnitCurrentOrder(data.WolfHelper)~=String2OrderIdBJ("attack") then
 								local rx,ry=x+GetRandomInt(-500,500),y+GetRandomInt(-500,500)
 								IssuePointOrder(data.WolfHelper,"attack", rx,ry)
 							end
@@ -4479,7 +4485,7 @@ function InitUnitDeath()
 			end
 
 		end
-		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево
+		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево, , большой энт
 			local x,y=GetUnitXY(DeadUnit)
 			for _=1,7 do
 				local r=GetRandomInt(-100,100)

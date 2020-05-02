@@ -282,7 +282,7 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 14 then
 					if not data.Perk14A then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/20|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 					else
 						BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100%% |r" .. " урона ") --|cffffff00AAAA|r
 						if lang==1 then

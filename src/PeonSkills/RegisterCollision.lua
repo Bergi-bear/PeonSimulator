@@ -206,7 +206,6 @@ function RegisterCollision(hero)
 						PerkUnlocker(data,15)
 					end
 
-
 				SetUnitExploded(CollisionUnit,true)
 				local nx,ny=GetUnitXY(CollisionUnit)
 				UnitDamageArea(CollisionUnit,100,nx,ny,150)
@@ -215,7 +214,7 @@ function RegisterCollision(hero)
 				local data=AnyData[GetHandleId(CollisionUnit)]
 				local x,y=data.x,data.y
 				TimerStart(CreateTimer(), 30, false, function()
-					local new =CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
+					local new =CreateUnit(Player(10), FourCC('n001'), x, y, 0)
 					AnyData[GetHandleId(new)]={
 						x=x,
 						y=y,

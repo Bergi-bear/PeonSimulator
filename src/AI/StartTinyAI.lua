@@ -3,11 +3,11 @@
 --- Created by Bergi.
 --- DateTime: 02.05.2020 2:43
 ---
-
+stoneEffModel = "Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
+Special = "Abilities\\Weapons\\ProcMissile\\ProcMissile"
 function StartTinyAI(xs, ys)
 	local boss = FindUnitOfType(FourCC('e009'))
-	local stoneEffModel = "Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
-	local Special = "Abilities\\Weapons\\ProcMissile\\ProcMissile"
+
 	local BossFight=true
 	UnitAddAbility(boss, FourCC('Abun'))
 	SetUnitPosition(boss, 1420, 2597)
@@ -59,6 +59,12 @@ function StartTinyAI(xs, ys)
 			end
 			DestroyTimer(GetExpiredTimer())
 			phase = 0
+			--print("Дайм нарграду")
+			for _=1,14 do
+				local r=GetRandomInt(-100,100)
+				local r2=GetRandomInt(-100,100)
+				CreateFreeWood(bx+r,by+r2)
+			end
 		else --Проверяем есть ли живые герои
 			if BossFight then
 				local k=0
@@ -101,7 +107,7 @@ function StartTinyAI(xs, ys)
 						eff = Special
 					end
 					CreateAndForceBullet(boss, angle, 15, eff, xb, yb, 50)
-					if phase ~= 1 then
+					if phase ~= 1 or not UnitAlive(boss) then
 						DestroyTimer(GetExpiredTimer())
 					end
 				end)
@@ -201,6 +207,14 @@ function MarkAndFall(x,y,effModel,hero)
 				SetDestructableInvulnerable(nd,true)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 				UnitDamageArea(hero,100,x,y,150)
+				for i = 0, 3 do
+					local herod = HERO[i].UnitHero
+					if IsUnitInRangeXY(herod, x,y, 150) then
+						HealUnit(herod,-200)
+					end
+				end
+
+
 				TimerStart(CreateTimer(), 5, false, function()
 					KillDestructable(nd)
 				end)
