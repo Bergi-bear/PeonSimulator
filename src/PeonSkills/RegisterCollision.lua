@@ -89,7 +89,7 @@ function RegisterCollision(hero)
 					data.CartUnit=CollisionUnit
 				end
 			end
-			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка
+			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка свинья
 				if GetLosingHP(hero)>1 then
 					HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
 					KillUnit(CollisionUnit)

@@ -6,6 +6,10 @@
 
 function StartTinyAI(xs,ys)
 	local boss=FindUnitOfType(FourCC('e009') )
+	local stoneEffModel="Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
+	local Special="Abilities\\Weapons\\ProcMissile\\ProcMissile"
+
+	UnitAddAbility(boss,FourCC('Abun'))
 	SetUnitPosition(boss,1420,2597)
 	SetUnitOwner(boss,Player(10),true)
 	local range=1000
@@ -39,7 +43,7 @@ function StartTinyAI(xs,ys)
 	for i=0,36 do
 		local angle=10
 		local dx,dy=MoveXY(x,y,range*.8,angle*i)
-		local newd=CreateDestructable(FourCC('LTrc'),dx,dy,0,GetRandomInt(1,1),GetRandomInt(1,3))
+		local newd=CreateDestructable(FourCC('LTrc'),dx,dy,0,GetRandomInt(1,1),GetRandomInt(1,5))
 		SetDestructableInvulnerable(newd,true)
 		--print("создан элемент "..i)
 	end

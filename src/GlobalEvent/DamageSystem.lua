@@ -104,10 +104,20 @@ function InitDamage()
 					end
 				end
 			end
+			--любой получил урон
+			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
+				--local x,y=GetUnitXY()
+				BlzSetEventDamage(0)
+				local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+				DestroyEffect(eff)
 
+
+
+			end
 			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
 				--print("урон по кодою")
-				local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
 				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
 				IssuePointOrder(target,"move",endX,endY)
@@ -208,8 +218,16 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if GetUnitTypeId(e)==FourCC('n007') then-- попытка ударить свинку лечилку
-				local x,y=GetUnitXY(u)
-				FlyTextTagHealXY(x,y,"Hp is full",GetOwningPlayer(u))
+				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=150 then
+					local x,y=GetUnitXY(u)
+					local mes=""
+					if BlzGetLocale()=="ruRU" then
+						mes="Герой полностью здоров"
+					else
+						mes="HP is full"
+					end
+					FlyTextTagHealXY(x,y,mes,GetOwningPlayer(u))
+				end
 			end
 			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер

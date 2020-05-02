@@ -197,10 +197,11 @@ function HealthBarAdd(u)
 	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true)
 	BlzFrameSetSize(heroico, 0.04, 0.04)
 	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
-
+	BlzFrameSetVisible(heroico,false)
 
 	if GetLocalPlayer()==GetOwningPlayer(u) then
 		BlzFrameSetVisible(bar,true)
+		BlzFrameSetVisible(heroico,true)
 	end
 	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
 	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
@@ -208,6 +209,7 @@ function HealthBarAdd(u)
 	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
 	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
 	local function on_timer()
+
 		BlzFrameSetValue(bar, GetUnitLifePercent(u))
 		BlzFrameSetText(lefttext, R2I(GetWidgetLife(u)))
 		BlzFrameSetText(righttext, R2I(BlzGetUnitMaxHP(u)))

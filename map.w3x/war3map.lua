@@ -19,11 +19,15 @@ gg_rct_Region_015 = nil
 gg_rct_Region_016 = nil
 gg_rct_EnterCave = nil
 gg_rct_EnterTown = nil
+gg_rct_Region_019 = nil
+gg_rct_Region_020 = nil
 gg_snd_Load = nil
 gg_snd_Reflect = nil
 gg_snd_Saw = nil
 gg_snd_Unlock = nil
 gg_snd_SaveKodo = nil
+gg_trg_In = nil
+gg_trg_Out = nil
 gg_trg_GuiInit = nil
 gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
@@ -461,7 +465,9 @@ function CreateRegions()
     EnableWeatherEffect(we, true)
     gg_rct_Region_016 = Rect(3456.0, -2400.0, 4064.0, -2080.0)
     gg_rct_EnterCave = Rect(2912.0, 1312.0, 3072.0, 1440.0)
-    gg_rct_EnterTown = Rect(9248.0, 3936.0, 9440.0, 4128.0)
+    gg_rct_EnterTown = Rect(11360.0, 4736.0, 11552.0, 4896.0)
+    gg_rct_Region_019 = Rect(11328.0, 4928.0, 11584.0, 5088.0)
+    gg_rct_Region_020 = Rect(2880.0, 1120.0, 3072.0, 1216.0)
 end
 
 --CUSTOM_CODE
@@ -647,6 +653,10 @@ end
 
 function StartTinyAI(xs,ys)
 	local boss=FindUnitOfType(FourCC('e009') )
+	local stoneEffModel="Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
+	local Special="Abilities\\Weapons\\ProcMissile\\ProcMissile"
+
+	UnitAddAbility(boss,FourCC('Abun'))
 	SetUnitPosition(boss,1420,2597)
 	SetUnitOwner(boss,Player(10),true)
 	local range=1000
@@ -680,7 +690,7 @@ function StartTinyAI(xs,ys)
 	for i=0,36 do
 		local angle=10
 		local dx,dy=MoveXY(x,y,range*.8,angle*i)
-		local newd=CreateDestructable(FourCC('LTrc'),dx,dy,0,GetRandomInt(1,1),GetRandomInt(1,3))
+		local newd=CreateDestructable(FourCC('LTrc'),dx,dy,0,GetRandomInt(1,1),GetRandomInt(1,5))
 		SetDestructableInvulnerable(newd,true)
 		--print("создан элемент "..i)
 	end
@@ -1252,10 +1262,11 @@ function HealthBarAdd(u)
 	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true)
 	BlzFrameSetSize(heroico, 0.04, 0.04)
 	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
-
+	BlzFrameSetVisible(heroico,false)
 
 	if GetLocalPlayer()==GetOwningPlayer(u) then
 		BlzFrameSetVisible(bar,true)
+		BlzFrameSetVisible(heroico,true)
 	end
 	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
 	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
@@ -1263,6 +1274,7 @@ function HealthBarAdd(u)
 	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
 	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
 	local function on_timer()
+
 		BlzFrameSetValue(bar, GetUnitLifePercent(u))
 		BlzFrameSetText(lefttext, R2I(GetWidgetLife(u)))
 		BlzFrameSetText(righttext, R2I(BlzGetUnitMaxHP(u)))
@@ -2653,10 +2665,20 @@ function InitDamage()
 					end
 				end
 			end
+			--любой получил урон
+			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
+				--local x,y=GetUnitXY()
+				BlzSetEventDamage(0)
+				local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+				DestroyEffect(eff)
 
+
+
+			end
 			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
 				--print("урон по кодою")
-				local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
 				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
 				IssuePointOrder(target,"move",endX,endY)
@@ -2757,8 +2779,16 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if GetUnitTypeId(e)==FourCC('n007') then-- попытка ударить свинку лечилку
-				local x,y=GetUnitXY(u)
-				FlyTextTagHealXY(x,y,"Hp is full",GetOwningPlayer(u))
+				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=150 then
+					local x,y=GetUnitXY(u)
+					local mes=""
+					if BlzGetLocale()=="ruRU" then
+						mes="Герой полностью здоров"
+					else
+						mes="HP is full"
+					end
+					FlyTextTagHealXY(x,y,mes,GetOwningPlayer(u))
+				end
 			end
 			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
@@ -5883,7 +5913,7 @@ function RegisterCollision(hero)
 					data.CartUnit=CollisionUnit
 				end
 			end
-			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка
+			if GetUnitTypeId(CollisionUnit)==FourCC('n007') then-- свинка лечилка свинья
 				if GetLosingHP(hero)>1 then
 					HealUnit(hero,GetUnitState(CollisionUnit,UNIT_STATE_LIFE))
 					KillUnit(CollisionUnit)
@@ -6633,6 +6663,42 @@ function WaveAttack(delay)
 end
 
 --CUSTOM_CODE
+function Trig_In_Conditions()
+    if (not (IsUnitType(GetTriggerUnit(), UNIT_TYPE_HERO) == true)) then
+        return false
+    end
+    return true
+end
+
+function Trig_In_Actions()
+    SetUnitPositionLoc(GetTriggerUnit(), GetRectCenter(gg_rct_EnterTown))
+end
+
+function InitTrig_In()
+    gg_trg_In = CreateTrigger()
+    TriggerRegisterEnterRectSimple(gg_trg_In, gg_rct_EnterCave)
+    TriggerAddCondition(gg_trg_In, Condition(Trig_In_Conditions))
+    TriggerAddAction(gg_trg_In, Trig_In_Actions)
+end
+
+function Trig_Out_Conditions()
+    if (not (IsUnitType(GetTriggerUnit(), UNIT_TYPE_HERO) == true)) then
+        return false
+    end
+    return true
+end
+
+function Trig_Out_Actions()
+    SetUnitPositionLoc(GetTriggerUnit(), GetRectCenter(gg_rct_Region_020))
+end
+
+function InitTrig_Out()
+    gg_trg_Out = CreateTrigger()
+    TriggerRegisterEnterRectSimple(gg_trg_Out, gg_rct_Region_019)
+    TriggerAddCondition(gg_trg_Out, Condition(Trig_Out_Conditions))
+    TriggerAddAction(gg_trg_Out, Trig_Out_Actions)
+end
+
 function Trig_GuiInit_Func003A()
     IssueTargetDestructableOrder(GetEnumUnit(), "harvest", gg_dest_LTlt_0364)
 end
@@ -6680,6 +6746,8 @@ function InitTrig_DeadHumanLumber()
 end
 
 function InitCustomTriggers()
+    InitTrig_In()
+    InitTrig_Out()
     InitTrig_GuiInit()
     InitTrig_Open()
     InitTrig_DeadHumanLumber()
