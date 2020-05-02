@@ -33,7 +33,7 @@ function InitDamage()
 
 				if data.Reflection and data.Perk10 then -- парирование с талантом
 					--print("Урон парирован")
-					local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+					local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
 					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
 					BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
 					DestroyEffect(eff)
@@ -108,11 +108,11 @@ function InitDamage()
 			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 				--local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
-				local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
-				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
-				DestroyEffect(eff)
-				PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
+				--local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+				--local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
+				--BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+				--DestroyEffect(eff)
+				PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
 
 
 			end

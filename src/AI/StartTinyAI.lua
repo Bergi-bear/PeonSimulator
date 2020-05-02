@@ -5,7 +5,7 @@
 ---
 
 function StartTinyAI(xs,ys)
-	local boss=FindUnitOfType(FourCC('e009') )
+	local boss=FindUnitOfType(FourCC('e009'))
 	local stoneEffModel="Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
 	local Special="Abilities\\Weapons\\ProcMissile\\ProcMissile"
 
@@ -51,6 +51,7 @@ function StartTinyAI(xs,ys)
 
 	local phase=0
 	local sec=0
+	local PhaseOn=true
 	TimerStart(CreateTimer(), 1, true, function()
 		if not UnitAlive(boss) then
 			DestroyTimer(GetExpiredTimer())
@@ -61,15 +62,17 @@ function StartTinyAI(xs,ys)
 		if sec>=10 then
 			sec=0
 			phase=phase+1
+			PhaseOn=true
 			print("phase "..phase)
 			if phase>=4 then
 				phase=0
 			end
 		end
 		--фазы
-		if phase==1 then
-			print("стреляем камнями")
-			TimerStart(CreateTimer(), .3, true, function()
+		if phase==1 and PhaseOn then
+			PhaseOn=false
+			--print("стреляем камнями")
+			TimerStart(CreateTimer(), .1, true, function()
 				local angle=GetRandomInt(0,359)
 				CreateAndForceBullet(boss,angle,15,stoneEffModel,xb,yb,50)
 				if  phase~=1 then
