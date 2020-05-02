@@ -4,85 +4,158 @@
 --- DateTime: 02.05.2020 2:43
 ---
 
-function StartTinyAI(xs,ys)
-	local boss=FindUnitOfType(FourCC('e009'))
-	local stoneEffModel="Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
-	local Special="Abilities\\Weapons\\ProcMissile\\ProcMissile"
-
-	UnitAddAbility(boss,FourCC('Abun'))
-	SetUnitPosition(boss,1420,2597)
-	SetUnitOwner(boss,Player(10),true)
-	local range=1000
-	local x,y=GetUnitXY(boss)
-	SetRect(GlobalRect, x - range, y - range, x + range, y +range)
-	EnumDestructablesInRect(GlobalRect,nil,function ()
-		local d=GetEnumDestructable()
-		local dx,dy=GetDestructableX(d),GetDestructableY(d)
-		if IsUnitInRangeXY(boss,dx,dy,range) then
+function StartTinyAI(xs, ys)
+	local boss = FindUnitOfType(FourCC('e009'))
+	local stoneEffModel = "Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
+	local Special = "Abilities\\Weapons\\ProcMissile\\ProcMissile"
+	local BossFight=true
+	UnitAddAbility(boss, FourCC('Abun'))
+	SetUnitPosition(boss, 1420, 2597)
+	SetUnitOwner(boss, Player(10), true)
+	local range = 1000
+	local x, y = GetUnitXY(boss)
+	SetRect(GlobalRect, x - range, y - range, x + range, y + range)
+	EnumDestructablesInRect(GlobalRect, nil, function()
+		local d = GetEnumDestructable()
+		local dx, dy = GetDestructableX(d), GetDestructableY(d)
+		if IsUnitInRangeXY(boss, dx, dy, range) then
 			KillDestructable(d)
 			--print("очистка зоны")
 		end
 	end)
 
 	--перенос героев в случайную точку
-	for i=0,3 do
-		local hero=HERO[i].UnitHero
-		if IsUnitInRangeXY(hero,xs,ys,300) then
+	for i = 0, 3 do
+		local hero = HERO[i].UnitHero
+		if IsUnitInRangeXY(hero, xs, ys, 300) then
 			--print("герои перенесены")
-			SetUnitPosition(hero,1420+GetRandomInt(-1,1)*500,2597+GetRandomInt(-1,1)*500)
+			SetUnitPosition(hero, 1420 + GetRandomInt(-1, 1) * 400, 2597 + GetRandomInt(-1, 1) * 400)
 		end
 	end
 
-
-	local FW=CreateFogModifierRectBJ(false, Player(0), FOG_OF_WAR_VISIBLE, GlobalRect)
+	local FW = CreateFogModifierRectBJ(false, Player(0), FOG_OF_WAR_VISIBLE, GlobalRect)
 	FogModifierStart(FW)
 
-
-	--print("создаём каменный круг")
-
-	for i=0,36 do
-		local angle=10
-		local dx,dy=MoveXY(x,y,range*.8,angle*i)
-		local newd=CreateDestructable(FourCC('LTrc'),dx,dy,0,GetRandomInt(1,1),GetRandomInt(1,5))
-		SetDestructableInvulnerable(newd,true)
+	print("создаём каменный круг")
+	local newd = {}
+	local maxd = 72
+	for i = 1, maxd do
+		local angle = 360 / maxd
+		local dx, dy = MoveXY(x, y, range * .8, angle * i)
+		newd[i] = CreateDestructable(FourCC('LTrc'), dx, dy, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
+		SetDestructableInvulnerable(newd[i], true)
 		--print("создан элемент "..i)
 	end
 
+	local phase = 2 --стартовая фаза
+	local sec = 0
+	local PhaseOn = true
+	TimerStart(CreateTimer(), 1, true, function() --каждую секунду
+		local bx,by=GetUnitXY(boss)
 
-	local phase=0
-	local sec=0
-	local PhaseOn=true
-	TimerStart(CreateTimer(), 1, true, function()
 		if not UnitAlive(boss) then
 			DestroyTimer(GetExpiredTimer())
-			phase=0
-		end
-		local xb,yb=GetUnitXY(boss)
-		sec=sec+1
-		if sec>=10 then
-			sec=0
-			phase=phase+1
-			PhaseOn=true
-			print("phase "..phase)
-			if phase>=4 then
-				phase=0
+			phase = 0
+		else --Проверяем есть ли живые герои
+			if BossFight then
+				local k=0
+				for i = 0, 3 do
+					local hero = HERO[i].UnitHero
+					if IsUnitInRange(hero, boss, 1000) then
+						k=k+1
+					end
+				end
+				if k==0 then
+					BossFight=false
+					phase=0
+					--print("Нет героев ломаем стену")
+					for i = 1, maxd do
+						KillDestructable(newd[i])
+					end
+				end
 			end
 		end
-		--фазы
-		if phase==1 and PhaseOn then
-			PhaseOn=false
-			--print("стреляем камнями")
-			TimerStart(CreateTimer(), .1, true, function()
-				local angle=GetRandomInt(0,359)
-				CreateAndForceBullet(boss,angle,15,stoneEffModel,xb,yb,50)
-				if  phase~=1 then
-					DestroyTimer(GetExpiredTimer())
+		local xb, yb = GetUnitXY(boss)
+		if BossFight then -- если идёт бой
+			sec = sec + 1
+			if sec >= 10 then
+				sec = 0
+				phase = phase + 1
+				PhaseOn = true
+				print("phase " .. phase)
+				if phase >= 4 then
+					phase = 0
 				end
-			end)
-		end
+			end
+			--фазы
+			if phase == 1 and PhaseOn then
+				PhaseOn = false
+				--print("стреляем камнями")
+				TimerStart(CreateTimer(), .1, true, function()
+					local angle = GetRandomInt(0, 359)
+					local eff = stoneEffModel
+					if GetRandomInt(1, 5) == 1 then
+						eff = Special
+					end
+					CreateAndForceBullet(boss, angle, 15, eff, xb, yb, 50)
+					if phase ~= 1 then
+						DestroyTimer(GetExpiredTimer())
+					end
+				end)
+			end
+			if phase == 2 and PhaseOn then
+				PhaseOn = false
+				--print("Падающие камни")
+				TimerStart(CreateTimer(), .5, true, function()
 
-		--конец
+					local effmodel = "Doodads\\LordaeronSummer\\Terrain\\LoardaeronRockChunks\\LoardaeronRockChunks3"
+					local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
+					MarkAndFall(bx+rx,by+ry,effmodel)
 
+					if phase ~= 2 then
+						DestroyTimer(GetExpiredTimer())
+					end
+				end)
+			end
+		else-- перезапуск боссфайта
+			local k=0
+			for i = 0, 3 do
+				local hero = HERO[i].UnitHero
+				if IsUnitInRange(hero, boss, 300) then
+					k=k+1
+				end
+			end
+			if k>=1 then
+				--print("повторно камни")
+				BossFight=true
+				for i = 1, maxd do
+					local angle = 360 / maxd
+					local dx, dy = MoveXY(x, y, range * .8, angle * i)
+					newd[i] = CreateDestructable(FourCC('LTrc'), dx, dy, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
+					SetDestructableInvulnerable(newd[i], true)
+					--print("создан элемент "..i)
+				end
+			end
+		end--конец
 	end)
+end
 
+function MarkAndFall(x,y,effModel)
+	local mark=AddSpecialEffect("Snipe Target",x,y)
+	TimerStart(CreateTimer(), 2, false, function()
+		DestroyEffect(mark)
+		local FallenEff=AddSpecialEffect(effModel,x,y)
+		BlzSetSpecialEffectZ(FallenEff,1000)
+		BlzSetSpecialEffectYaw(FallenEff, math.rad(GetRandomReal(0,360)))
+		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+			local z=BlzGetLocalSpecialEffectZ(FallenEff)
+			BlzSetSpecialEffectZ(FallenEff,z-50)
+			if z<=GetTerrainZ(x,y) then
+				DestroyTimer(GetExpiredTimer())
+				DestroyEffect(FallenEff)
+				local nd=CreateDestructable(FourCC('LTrc'), x, y, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
+				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+			end
+		end)
+	end)
 end

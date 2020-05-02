@@ -44,6 +44,9 @@ end
 
 function UnitAddForce(hero,angle,speed,distance)-- псевдо вектор использовать только для юнитов
 	local currentdistance=0
+	if  GetUnitTypeId(hero) == FourCC('e009') then
+		return
+	end
 	if not IsUnitType(hero,UNIT_TYPE_STRUCTURE) then
 		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 			currentdistance=currentdistance+speed

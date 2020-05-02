@@ -45,6 +45,10 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 		--print("zGround ="..zGround.."z= "..z)
 		--BlzSetSpecialEffectPosition(bam,MoveX(GetUnitX(hero),120,GetUnitFacing(hero)),MoveY(GetUnitY(hero),120,GetUnitFacing(hero)),z)
 		CollisionEnemy, DamagingUnit = UnitDamageArea(heroCurrent, damage, x, y, CollisionRange, ZBullet)
+		if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" and GetUnitTypeId(DamagingUnit) == FourCC('e009')  then
+			--print("Есть пробитие")
+			HealUnit(DamagingUnit,-50)
+		end
 		CollisisonDestr = PointContentDestructable(x, y, 100, false)
 		local PerepadZ = zGround - z
 		if dist > 1000 or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit, UNIT_TYPE_STRUCTURE) or PerepadZ > 20 then
@@ -84,7 +88,9 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 						--print("Отклонение снаряда щитом")
 						angleCurrent = GetUnitFacing(DamagingUnit)
 
-						heroCurrent=DamagingUnit
+						if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" then
+							heroCurrent=DamagingUnit
+						end
 
 						BlzSetSpecialEffectPosition(bullet, MoveX(x, speed * 2, angleCurrent), MoveY(y, speed * 2, angleCurrent), z - 2)
 					else
