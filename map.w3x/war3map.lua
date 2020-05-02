@@ -665,8 +665,8 @@ function StartTinyAI(xs,ys)
 	for i=0,3 do
 		local hero=HERO[i].UnitHero
 		if IsUnitInRangeXY(hero,xs,ys,300) then
-			print("герои перенесены")
-			SetUnitPosition(hero,1420+GetRandomInt(-1,1)*300,2597+GetRandomInt(-1,1)*300)
+			--print("герои перенесены")
+			SetUnitPosition(hero,1420+GetRandomInt(-1,1)*600,2597+GetRandomInt(-1,1)*600)
 		end
 	end
 
@@ -675,14 +675,14 @@ function StartTinyAI(xs,ys)
 	FogModifierStart(FW)
 
 
-	print("создаём каменный круг")
+	--print("создаём каменный круг")
 
 	for i=0,36 do
 		local angle=10
-		local dx,dy=MoveXY(x,y,range/2,angle*i)
+		local dx,dy=MoveXY(x,y,range*.8,angle*i)
 		local newd=CreateDestructable(FourCC('LTrc'),dx,dy,0,GetRandomInt(1,1),GetRandomInt(1,3))
 		SetDestructableInvulnerable(newd,true)
-		print("создан элемент "..i)
+		--print("создан элемент "..i)
 	end
 
 
