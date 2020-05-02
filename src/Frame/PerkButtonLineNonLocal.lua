@@ -73,7 +73,7 @@ description = {
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убивайте волков, чтобы получить шапку волка. ",
-	"Убейте каменного голема, чтобы укрепить свой щит ",
+	"Поймайте щитом камни голема ",
 	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
@@ -92,7 +92,7 @@ descriptionENG = {
 	"Destroy human Lumbermill ",
 	"Be in the cold. ",
 	"Kill wolfs. ",
-	"Kill stone golems ",
+	"Catch stones of golem ",
 	"Die from sheep or kill sheep ",
 	"Find the fire sphere. ",
 	"Team collected wood. ",
@@ -282,7 +282,7 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 14 then
 					if not data.Perk14A then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/1|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/20|r") --|cffffff00AAAA|r
 					else
 						BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100%% |r" .. " урона ") --|cffffff00AAAA|r
 						if lang==1 then

@@ -88,13 +88,7 @@ function InitUnitDeath()
 				PerkUnlocker(data,5)
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
-				data.StoneCount=data.StoneCount+1
-
-				if data.StoneCount==1 then
-					--UnitAddAbility(Killer,FourCC('A007'))
-					data.Perk14A=true
-					PerkUnlocker(data,14)
-				end
+					--перенесено в спеллкаст
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы овца
 

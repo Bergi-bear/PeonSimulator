@@ -17,7 +17,8 @@ do
 		InitAllZones()
 		LeavePlayer()
 		HeroEnterSaws()
-
+		InitTrig_Entire()
+		InitSpellTrigger()
 
 	end
 

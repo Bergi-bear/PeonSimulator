@@ -53,7 +53,10 @@ function StartTinyAI(xs, ys)
 	TimerStart(CreateTimer(), 1, true, function() --каждую секунду
 		local bx,by=GetUnitXY(boss)
 
-		if not UnitAlive(boss) then
+		if not UnitAlive(boss) then-- Место где босс умер тиник
+			for i = 1, maxd do
+				KillDestructable(newd[i])
+			end
 			DestroyTimer(GetExpiredTimer())
 			phase = 0
 		else --Проверяем есть ли живые герои
