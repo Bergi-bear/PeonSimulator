@@ -192,6 +192,13 @@ function HealthBarAdd(u)
 	BlzLoadTOCFile("Main.toc")
 	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
 	BlzFrameSetVisible(bar,false)
+
+	local heroico=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true)
+	BlzFrameSetSize(heroico, 0.04, 0.04)
+	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
+
+
 	if GetLocalPlayer()==GetOwningPlayer(u) then
 		BlzFrameSetVisible(bar,true)
 	end
@@ -206,7 +213,7 @@ function HealthBarAdd(u)
 		BlzFrameSetText(righttext, R2I(BlzGetUnitMaxHP(u)))
 	end
 	TimerStart(CreateTimer(),0.5,true, on_timer)
-	BlzFrameSetAbsPoint(bar, FRAMEPOINT_LEFT, 0.04, 0.58)
+	BlzFrameSetAbsPoint(bar, FRAMEPOINT_LEFT, 0.08, 0.58)
 end
 
 
@@ -428,11 +435,12 @@ StatusTexture={
 
 function CreateStatusBar(pid)
 	local data=HERO[pid]
+	local i=1
 	--for i=0,3 do
 		local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetTexture(status, StatusTexture[i], 0, true)
 		BlzFrameSetSize(status, 0.019, 0.019)
-		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.04 , 0.6-0.04)
+		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.08 , 0.6-0.04)
 		local statustxt = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetPoint(statustxt, FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
 		if GetLocalPlayer() ~= Player(pid) then

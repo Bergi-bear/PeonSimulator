@@ -312,7 +312,7 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 					end
 
 				end
-				if GetDestructableTypeId(d)==FourCC('LTrc') then --блок голема, камень
+				if GetDestructableTypeId(d)==FourCC('LTrc') and not IsDestructableInvulnerable(d) then --блок голема, камень
 					KillDestructable(d)
 					TotalStones=TotalStones+1
 					local  new=CreateUnit(Player(10), FourCC('n002'), GetDestructableX(d), GetDestructableY(d), 0)
@@ -332,7 +332,8 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 						FourCC('nmtw')
 					}
 					local  new=CreateUnit(Player(10), mid[GetRandomInt(1,#mid)], GetDestructableX(d), GetDestructableY(d), 0)
-					print("СОзданный мурлок идёт атаковать базу")
+					IssuePointOrder(new,"attack",0,0)
+					--print("СОзданный мурлок идёт атаковать базу")
 
 				end
 

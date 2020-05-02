@@ -18,16 +18,25 @@ function RegisterCollision(hero)
 		--print("any reg "..GetUnitName(CollisionUnit))
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
+
+			if GetUnitTypeId(CollisionUnit)==FourCC('o008')  then --Таурен
+				--print("защищайте кодоев")
+				SetUnitFacing(CollisionUnit,AngleBetweenUnits(CollisionUnit,hero))
+				PlaySoundAtPointBJ( gg_snd_SaveKodo, 100, RemoveLocation(Location(GetUnitXY(CollisionUnit))), 0 )
+			end
+
+
 			if GetUnitTypeId(CollisionUnit)==FourCC('e009')  and GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then --Тини
 				if BlzGetLocale()=="ruRU" then
-					print("|cff8080ffТиник: |r".."Уничтожьте 30 камней для нашей битвы")
+					print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
 				else
 					print("|cff8080ffTinyc: |r".."Destroy stones for battle")
 				end
-				FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
-				if TotalStones>=30 then
+				--FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
+				if TotalStones>=0 then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
-					print("тут должна быть эпичная битва но её ещё нет")
+					StartTinyAI(GetUnitXY(CollisionUnit))
+					--print("тут должна быть эпичная битва но её ещё нет")
 				end
 			end
 
