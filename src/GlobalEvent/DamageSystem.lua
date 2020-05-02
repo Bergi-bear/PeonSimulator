@@ -112,7 +112,7 @@ function InitDamage()
 				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
 				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 				DestroyEffect(eff)
-
+				PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
 
 
 			end
@@ -304,7 +304,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 
 
 			if iskill then
-				SetDestructableLife(d,GetDestructableLife(d)-damage)
+				if not IsDestructableInvulnerable(d) then
+					SetDestructableLife(d,GetDestructableLife(d)-damage)
+				end
 
 
 

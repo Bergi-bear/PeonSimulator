@@ -146,7 +146,7 @@ function InitGameCore()
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
-			Perk14A = false, -- щит 100
+			Perk14A = true, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
 			Perk17 = false, --Рывок

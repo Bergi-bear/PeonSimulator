@@ -676,7 +676,7 @@ function StartTinyAI(xs,ys)
 		local hero=HERO[i].UnitHero
 		if IsUnitInRangeXY(hero,xs,ys,300) then
 			--print("герои перенесены")
-			SetUnitPosition(hero,1420+GetRandomInt(-1,1)*600,2597+GetRandomInt(-1,1)*600)
+			SetUnitPosition(hero,1420+GetRandomInt(-1,1)*500,2597+GetRandomInt(-1,1)*500)
 		end
 	end
 
@@ -699,6 +699,11 @@ function StartTinyAI(xs,ys)
 	local phase=0
 	local sec=0
 	TimerStart(CreateTimer(), 1, true, function()
+		if not UnitAlive(boss) then
+			DestroyTimer(GetExpiredTimer())
+			phase=0
+		end
+		local xb,yb=GetUnitXY(boss)
 		sec=sec+1
 		if sec>=10 then
 			sec=0
@@ -708,12 +713,20 @@ function StartTinyAI(xs,ys)
 				phase=0
 			end
 		end
-
-
-
-		if not UnitAlive(boss) then
-			DestroyTimer(GetExpiredTimer())
+		--фазы
+		if phase==1 then
+			print("стреляем камнями")
+			TimerStart(CreateTimer(), .3, true, function()
+				local angle=GetRandomInt(0,359)
+				CreateAndForceBullet(boss,angle,15,stoneEffModel,xb,yb,50)
+				if  phase~=1 then
+					DestroyTimer(GetExpiredTimer())
+				end
+			end)
 		end
+
+		--конец
+
 	end)
 
 end
@@ -2673,7 +2686,7 @@ function InitDamage()
 				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
 				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 				DestroyEffect(eff)
-
+				PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
 
 
 			end
@@ -2865,7 +2878,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 
 
 			if iskill then
-				SetDestructableLife(d,GetDestructableLife(d)-damage)
+				if not IsDestructableInvulnerable(d) then
+					SetDestructableLife(d,GetDestructableLife(d)-damage)
+				end
 
 
 
@@ -3105,7 +3120,7 @@ function InitGameCore()
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
-			Perk14A = false, -- щит 100
+			Perk14A = true, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
 			Perk17 = false, --Рывок
