@@ -146,7 +146,7 @@ function InitGameCore()
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
-			Perk14A = true, -- щит 100
+			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
 			Perk17 = false, --Рывок
@@ -341,7 +341,11 @@ function InitGameCore()
 			--local hero=data.UnitHero
 			data.AttackTime = 0.0
 			if data.Perk14 then
-				UnitAddAbility(data.UnitHero, FourCC('A007'))
+				if data.Perk14A then
+					UnitAddAbility(data.UnitHero, FourCC('A00P'))
+				else
+					UnitAddAbility(data.UnitHero, FourCC('A007'))
+				end
 				if data.Perk12 then
 					UnitAddAbility(data.UnitHero, FourCC('A00I'))--эффект мороза
 				end
@@ -366,6 +370,7 @@ function InitGameCore()
 			local data = HERO[pid]
 			data.ReleaseLMB = false
 			UnitRemoveAbility(data.UnitHero, FourCC('A007'))
+			UnitRemoveAbility(data.UnitHero, FourCC('A00P'))
 			UnitRemoveAbility(data.UnitHero, FourCC('A00I'))
 		end
 	end)

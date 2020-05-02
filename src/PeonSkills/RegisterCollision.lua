@@ -33,7 +33,7 @@ function RegisterCollision(hero)
 					print("|cff8080ffTinyc: |r".."Destroy stones for battle")
 				end
 				--FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
-				if TotalStones>=0 then
+				if TotalStones>=30 then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					StartTinyAI(GetUnitXY(CollisionUnit))
 					--print("тут должна быть эпичная битва но её ещё нет")

@@ -47,7 +47,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 		CollisionEnemy, DamagingUnit = UnitDamageArea(heroCurrent, damage, x, y, CollisionRange, ZBullet)
 		if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" and GetUnitTypeId(DamagingUnit) == FourCC('e009')  then
 			--print("Есть пробитие")
-			HealUnit(DamagingUnit,-50)
+			HealUnit(DamagingUnit,-150)
 		end
 		CollisisonDestr = PointContentDestructable(x, y, 100, false)
 		local PerepadZ = zGround - z

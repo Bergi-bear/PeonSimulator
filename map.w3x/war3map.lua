@@ -693,7 +693,7 @@ function StartTinyAI(xs, ys)
 	local FW = CreateFogModifierRectBJ(false, Player(0), FOG_OF_WAR_VISIBLE, GlobalRect)
 	FogModifierStart(FW)
 
-	print("создаём каменный круг")
+	--print("создаём каменный круг")
 	local newd = {}
 	local maxd = 72
 	for i = 1, maxd do
@@ -739,7 +739,7 @@ function StartTinyAI(xs, ys)
 				sec = 0
 				phase = phase + 1
 				PhaseOn = true
-				print("phase " .. phase)
+				--print("phase " .. phase)
 				if phase >= 4 then
 					phase = 0
 				end
@@ -763,17 +763,55 @@ function StartTinyAI(xs, ys)
 			if phase == 2 and PhaseOn then
 				PhaseOn = false
 				--print("Падающие камни")
-				TimerStart(CreateTimer(), .5, true, function()
+				local effmodel = "Doodads\\LordaeronSummer\\Terrain\\LoardaeronRockChunks\\LoardaeronRockChunks3"
+				TimerStart(CreateTimer(), .5, true, function() -- случайные
 
-					local effmodel = "Doodads\\LordaeronSummer\\Terrain\\LoardaeronRockChunks\\LoardaeronRockChunks3"
+
 					local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
-					MarkAndFall(bx+rx,by+ry,effmodel)
+					MarkAndFall(bx+rx,by+ry,effmodel,boss)
+
+					if phase ~= 2 then
+						DestroyTimer(GetExpiredTimer())
+					end
+				end)
+				TimerStart(CreateTimer(), 1.5, true, function()--по героям
+					for i = 0, 3 do
+						local hero = HERO[i].UnitHero
+						if IsUnitInRange(hero, boss, 1000) then
+							MarkAndFall(GetUnitX(hero),GetUnitY(hero),effmodel,boss)
+						end
+					end
+
 
 					if phase ~= 2 then
 						DestroyTimer(GetExpiredTimer())
 					end
 				end)
 			end
+			if phase == 3 and PhaseOn and sec==5 then -- оживление големов
+				PhaseOn = false
+				SetRect(GlobalRect, x - range, y - range, x + range, y + range)
+				EnumDestructablesInRect(GlobalRect, nil, function()
+					local d = GetEnumDestructable()
+					local dx, dy = GetDestructableX(d), GetDestructableY(d)
+					if IsUnitInRangeXY(boss, dx, dy, range*.5) then
+						if GetDestructableLife(d)>1 then
+							local  new=CreateUnit(Player(10), FourCC('n002'), dx, dy, 0)
+
+							TimerStart(CreateTimer(),10,false, function()
+								KillUnit(new)
+								DestroyTimer(GetExpiredTimer())
+							end)
+							KillDestructable(d)
+						end
+					end
+				end)
+
+				if phase ~= 3 then
+					DestroyTimer(GetExpiredTimer())
+				end
+			end
+
 		else-- перезапуск боссфайта
 			local k=0
 			for i = 0, 3 do
@@ -797,10 +835,11 @@ function StartTinyAI(xs, ys)
 	end)
 end
 
-function MarkAndFall(x,y,effModel)
+function MarkAndFall(x,y,effModel,hero)
 	local mark=AddSpecialEffect("Snipe Target",x,y)
+	BlzSetSpecialEffectScale(mark,5)
 	TimerStart(CreateTimer(), 2, false, function()
-		DestroyEffect(mark)
+
 		local FallenEff=AddSpecialEffect(effModel,x,y)
 		BlzSetSpecialEffectZ(FallenEff,1000)
 		BlzSetSpecialEffectYaw(FallenEff, math.rad(GetRandomReal(0,360)))
@@ -808,10 +847,17 @@ function MarkAndFall(x,y,effModel)
 			local z=BlzGetLocalSpecialEffectZ(FallenEff)
 			BlzSetSpecialEffectZ(FallenEff,z-50)
 			if z<=GetTerrainZ(x,y) then
+				DestroyEffect(mark)
+				BlzSetSpecialEffectPosition(mark,5000,5000,0)
 				DestroyTimer(GetExpiredTimer())
 				DestroyEffect(FallenEff)
 				local nd=CreateDestructable(FourCC('LTrc'), x, y, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
+				SetDestructableInvulnerable(nd,true)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+				UnitDamageArea(hero,100,x,y,150)
+				TimerStart(CreateTimer(), 5, false, function()
+					KillDestructable(nd)
+				end)
 			end
 		end)
 	end)
@@ -2235,7 +2281,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 		CollisionEnemy, DamagingUnit = UnitDamageArea(heroCurrent, damage, x, y, CollisionRange, ZBullet)
 		if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" and GetUnitTypeId(DamagingUnit) == FourCC('e009')  then
 			--print("Есть пробитие")
-			HealUnit(DamagingUnit,-50)
+			HealUnit(DamagingUnit,-150)
 		end
 		CollisisonDestr = PointContentDestructable(x, y, 100, false)
 		local PerepadZ = zGround - z
@@ -3266,7 +3312,7 @@ function InitGameCore()
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
-			Perk14A = true, -- щит 100
+			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
 			Perk17 = false, --Рывок
@@ -3461,7 +3507,11 @@ function InitGameCore()
 			--local hero=data.UnitHero
 			data.AttackTime = 0.0
 			if data.Perk14 then
-				UnitAddAbility(data.UnitHero, FourCC('A007'))
+				if data.Perk14A then
+					UnitAddAbility(data.UnitHero, FourCC('A00P'))
+				else
+					UnitAddAbility(data.UnitHero, FourCC('A007'))
+				end
 				if data.Perk12 then
 					UnitAddAbility(data.UnitHero, FourCC('A00I'))--эффект мороза
 				end
@@ -3486,6 +3536,7 @@ function InitGameCore()
 			local data = HERO[pid]
 			data.ReleaseLMB = false
 			UnitRemoveAbility(data.UnitHero, FourCC('A007'))
+			UnitRemoveAbility(data.UnitHero, FourCC('A00P'))
 			UnitRemoveAbility(data.UnitHero, FourCC('A00I'))
 		end
 	end)
@@ -6021,7 +6072,7 @@ function RegisterCollision(hero)
 					print("|cff8080ffTinyc: |r".."Destroy stones for battle")
 				end
 				--FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
-				if TotalStones>=0 then
+				if TotalStones>=30 then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					StartTinyAI(GetUnitXY(CollisionUnit))
 					--print("тут должна быть эпичная битва но её ещё нет")

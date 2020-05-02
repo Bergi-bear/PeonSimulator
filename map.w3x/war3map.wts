@@ -478,3 +478,9 @@ STRING 84
 Ice Claws(up)2
 }
 
+STRING 85
+// Abilities: A00P (Щит в руке каменный), Name (Name)
+{
+Щит в руке каменный
+}
+
