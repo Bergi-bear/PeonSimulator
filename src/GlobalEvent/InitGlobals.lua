@@ -19,6 +19,7 @@ do
 		HeroEnterSaws()
 		InitTrig_Entire()
 		InitSpellTrigger()
+		Trig_Nahkampf_Initialisierung_Actions()
 
 	end
 
