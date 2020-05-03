@@ -93,7 +93,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 						--print("Отклонение снаряда щитом")
 						angleCurrent = GetUnitFacing(DamagingUnit)
 
-						if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" then
+						if effectmodel==Special or effectmodel==stoneEffModel then
 							heroCurrent=DamagingUnit
 						end
 

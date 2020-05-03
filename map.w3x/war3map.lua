@@ -146,7 +146,7 @@ function CreateBuildingsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("hctw"), -832.0, -1920.0, 270.000, FourCC("hctw"))
     u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -2080.0, 2848.0, 270.000, FourCC("hlum"))
     u = BlzCreateUnitWithSkin(p, FourCC("hshy"), -4320.0, 4512.0, 270.000, FourCC("hshy"))
-    u = BlzCreateUnitWithSkin(p, FourCC("hhou"), -3008.0, -384.0, 270.000, FourCC("hhou"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hhou"), -3200.0, -1536.0, 270.000, FourCC("hhou"))
     u = BlzCreateUnitWithSkin(p, FourCC("hlum"), -2080.0, -3360.0, 270.000, FourCC("hlum"))
     u = BlzCreateUnitWithSkin(p, FourCC("hhou"), -320.0, -3712.0, 270.000, FourCC("hhou"))
     u = BlzCreateUnitWithSkin(p, FourCC("hhou"), -192.0, -3712.0, 270.000, FourCC("hhou"))
@@ -281,7 +281,7 @@ function CreateUnitsForPlayer10()
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 2942.3, 407.7, 298.538, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
-    u = BlzCreateUnitWithSkin(p, FourCC("h003"), -1959.2, -4400.7, 257.650, FourCC("h003"))
+    u = BlzCreateUnitWithSkin(p, FourCC("h003"), -2379.1, -4083.8, 83.362, FourCC("h003"))
 end
 
 function CreateBuildingsForPlayer11()
@@ -650,11 +650,11 @@ end
 --- Created by Bergi.
 --- DateTime: 02.05.2020 2:43
 ---
-
+stoneEffModel = "Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
+Special = "Abilities\\Weapons\\ProcMissile\\ProcMissile"
 function StartTinyAI(xs, ys)
 	local boss = FindUnitOfType(FourCC('e009'))
-	local stoneEffModel = "Abilities\\Weapons\\RockBoltMissile\\RockBoltMissile"
-	local Special = "Abilities\\Weapons\\ProcMissile\\ProcMissile"
+
 	local BossFight=true
 	UnitAddAbility(boss, FourCC('Abun'))
 	SetUnitPosition(boss, 1420, 2597)
@@ -754,7 +754,7 @@ function StartTinyAI(xs, ys)
 						eff = Special
 					end
 					CreateAndForceBullet(boss, angle, 15, eff, xb, yb, 50)
-					if phase ~= 1 then
+					if phase ~= 1 or not UnitAlive(boss) then
 						DestroyTimer(GetExpiredTimer())
 					end
 				end)
@@ -854,6 +854,14 @@ function MarkAndFall(x,y,effModel,hero)
 				SetDestructableInvulnerable(nd,true)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 				UnitDamageArea(hero,100,x,y,150)
+				for i = 0, 3 do
+					local herod = HERO[i].UnitHero
+					if IsUnitInRangeXY(herod, x,y, 150) then
+						HealUnit(herod,-200)
+					end
+				end
+
+
 				TimerStart(CreateTimer(), 5, false, function()
 					KillDestructable(nd)
 				end)
@@ -2040,7 +2048,7 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 14 then
 					if not data.Perk14A then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/20|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 					else
 						BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона ") --|cffffff00AAAA|r
 						if lang==1 then
@@ -2278,9 +2286,14 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 		--print("zGround ="..zGround.."z= "..z)
 		--BlzSetSpecialEffectPosition(bam,MoveX(GetUnitX(hero),120,GetUnitFacing(hero)),MoveY(GetUnitY(hero),120,GetUnitFacing(hero)),z)
 		CollisionEnemy, DamagingUnit = UnitDamageArea(heroCurrent, damage, x, y, CollisionRange, ZBullet)
-		if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" and GetUnitTypeId(DamagingUnit) == FourCC('e009')  then
+		if  GetUnitTypeId(DamagingUnit) == FourCC('e009')  then
 			--print("Есть пробитие")
-			HealUnit(DamagingUnit,-150)
+			if effectmodel==Special then
+				HealUnit(DamagingUnit,-200)
+			end
+			if effectmodel==stoneEffModel then
+				HealUnit(DamagingUnit,-10)
+			end
 		end
 		CollisisonDestr = PointContentDestructable(x, y, 100, false)
 		local PerepadZ = zGround - z
@@ -2321,7 +2334,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 						--print("Отклонение снаряда щитом")
 						angleCurrent = GetUnitFacing(DamagingUnit)
 
-						if effectmodel=="Abilities\\Weapons\\ProcMissile\\ProcMissile" then
+						if effectmodel==Special or effectmodel==stoneEffModel then
 							heroCurrent=DamagingUnit
 						end
 
@@ -2873,11 +2886,14 @@ function InitDamage()
 			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 				--local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
-				local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
-				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
-				DestroyEffect(eff)
-				PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
+				if damage>10 then
+					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+					local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+					BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+					DestroyEffect(eff)
+					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
+				end
+
 
 
 			end
@@ -2982,7 +2998,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		--ремонт
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
-			if GetUnitTypeId(e)==FourCC('n007') then-- попытка ударить свинку лечилку
+			if GetUnitTypeId(e)==FourCC('n007') and damage>6 then-- попытка ударить свинку лечилку
 				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=150 then
 					local x,y=GetUnitXY(u)
 					local mes=""
@@ -4313,7 +4329,7 @@ function InitSpellTrigger()
 			local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 			if data.ReleaseLMB then
 				data.StoneCount=data.StoneCount+1
-				if data.StoneCount==20 then
+				if data.StoneCount==5 then
 					data.Perk14A=true
 					PerkUnlocker(data,14)
 				end
@@ -6304,7 +6320,6 @@ function RegisterCollision(hero)
 						PerkUnlocker(data,15)
 					end
 
-
 				SetUnitExploded(CollisionUnit,true)
 				local nx,ny=GetUnitXY(CollisionUnit)
 				UnitDamageArea(CollisionUnit,100,nx,ny,150)
@@ -6313,7 +6328,7 @@ function RegisterCollision(hero)
 				local data=AnyData[GetHandleId(CollisionUnit)]
 				local x,y=data.x,data.y
 				TimerStart(CreateTimer(), 30, false, function()
-					local new =CreateUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), FourCC('n001'), x, y, 0)
+					local new =CreateUnit(Player(10), FourCC('n001'), x, y, 0)
 					AnyData[GetHandleId(new)]={
 						x=x,
 						y=y,

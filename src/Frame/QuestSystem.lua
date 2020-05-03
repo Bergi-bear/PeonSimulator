@@ -18,7 +18,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 	BlzSetSpecialEffectPitch(QuestPointer,math.rad(-90))--/bj_DEGTORAD
 
 	if compas==true then
-		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		TimerStart(CreateTimer(), 0.01, true, function()
 			local z=GetUnitZ(hero)
 			local xc,yc=GetUnitX(hero),GetUnitY(hero)
 			if questendunit~=nil then
