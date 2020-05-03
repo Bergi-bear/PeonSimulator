@@ -8,7 +8,14 @@ function InitUnitDeath()
 	TriggerAddAction(gg_trg_DEADGUI, function()
 		--print("EventDead")
 		local DeadUnit=GetTriggerUnit()--умерший
+
 		local Killer=GetKillingUnit()--убийца
+		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
+			--print("волк убил")
+			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+2,0)
+			Killer=HERO[GetPlayerId(GetOwningPlayer(Killer))].UnitHero
+
+		end
 
 		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
 			local x,y=GetUnitXY(DeadUnit)
@@ -52,6 +59,8 @@ function InitUnitDeath()
 				end
 				SelectUnitForPlayerSingle(DeadUnit,PD)
 				data.IsWood=false
+				--data.ReleaseLMB=false
+				--data.ReleaseRMB=false
 				MakeUnitAllAlly(DeadUnit)
 				data.RevoltSec=0
 				data.Perk2=false

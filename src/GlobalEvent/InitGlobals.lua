@@ -445,9 +445,10 @@ function InitGameCore()
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
 			local hero = data.UnitHero
+			data.ReleaseRMB = false
+			data.Reflection = false
 			if UnitAlive(hero) then
-				data.ReleaseRMB = false
-				data.Reflection = false
+
 				if data.IsWood then
 					SetUnitAnimationByIndex(hero, 11)
 				else
@@ -533,8 +534,13 @@ function InitGameCore()
 				SetCameraQuickPosition(GetUnitX(hero), GetUnitY(hero))
 				SetCameraTargetControllerNoZForPlayer(p, hero, 10, 10, true) -- не дергается
 			else
-				SetCameraQuickPosition(GetUnitX(data.legs), GetUnitY(data.legs))
-				SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(data.legs), data.legs, 10, 10, true)
+				--print("x"..GetUnitX(hero))
+				--SetCameraQuickPosition(GetUnitX(hero), GetUnitY(hero))
+				--SetCameraPosition(GetUnitXY(hero))
+				--SetCameraTargetControllerNoZForPlayer( GetOwningPlayer(hero), hero, 10, 10, true) -- не дергается
+				--print(GetPlayerName(GetOwningPlayer(hero)))
+			--	SetCameraQuickPosition(GetUnitX(data.legs), GetUnitY(data.legs))
+			--	SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(data.legs), data.legs, 10, 10, true)
 			end
 
 			if data.ReleaseLMB and data.Perk14 and UnitAlive(hero) then

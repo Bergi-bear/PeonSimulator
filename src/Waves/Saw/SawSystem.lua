@@ -25,6 +25,7 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	local DamageDealer=CreateUnit(GetOwningPlayer(hero),DummyID,xs,ys,0)
 	ShowUnit(DamageDealer,false)
 	local SS=true
+	local DeadUnitOnSaw=nil
 
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
@@ -45,10 +46,33 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 
 		if OnDamage and ReflectorUnit then
 			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
-			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
+			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0) --звуковой дамми и его блок
 			UnitAddAbility(dummy,FourCC('Apsh'))
 			IssueImmediateOrder(dummy,"phaseshift")
 			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+
+			if IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+				if UnitAlive(ReflectorUnit) then
+					--print("жив")
+				else
+					if not DeadUnitOnSaw then
+						DeadUnitOnSaw=ReflectorUnit
+					end
+					--print("мертв")
+				end
+			end
+
+		end
+		if DeadUnitOnSaw then
+			if not UnitAlive(DeadUnitOnSaw) then
+				SetCameraQuickPosition(nx,ny)
+				SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(DeadUnitOnSaw), DamageDealer, 10, 10, true) -- не дергается
+				--SetCameraPosition(nx,ny)
+				SetUnitX(DeadUnitOnSaw,nx)
+				SetUnitY(DeadUnitOnSaw,ny)
+			else
+				DeadUnitOnSaw=nil
+			end
 		end
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
@@ -98,8 +122,10 @@ function CreateGroundSaw(hero,angle,z)
 
 		if not turn then
 			i=i+1
+			BlzSetSpecialEffectTimeScale(saw,-1)
 		else
 			i=i-1
+			BlzSetSpecialEffectTimeScale(saw,1)
 		end
 		--print(i)
 		x,y=MoveXY(xs,ys,step*i,angle)

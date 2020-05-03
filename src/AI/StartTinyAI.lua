@@ -54,6 +54,7 @@ function StartTinyAI(xs, ys)
 		local bx,by=GetUnitXY(boss)
 
 		if not UnitAlive(boss) then-- Место где босс умер тиник
+			StartSound(bj_questCompletedSound)
 			for i = 1, maxd do
 				KillDestructable(newd[i])
 			end

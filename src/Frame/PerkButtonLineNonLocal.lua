@@ -100,11 +100,11 @@ descriptionENG = {
 
 function PerkButtonLineNonLocal(k,lang)
 	if BlzGetLocale()~="ruRU" then
-	--	lang=1
+		lang=1
 	else
-		--lang=0
+		lang=0
 	end
-	lang=0
+	--lang=0
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")

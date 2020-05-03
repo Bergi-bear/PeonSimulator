@@ -1867,11 +1867,11 @@ descriptionENG = {
 
 function PerkButtonLineNonLocal(k,lang)
 	if BlzGetLocale()~="ruRU" then
-	--	lang=1
+		lang=1
 	else
-		--lang=0
+		lang=0
 	end
-	lang=0
+	--lang=0
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -2801,6 +2801,9 @@ function InitDamage()
 
 		local target          = GetTriggerUnit() -- тот кто получил урон
 		local targetHandleId  = GetHandleId(target)
+
+
+
 		local caster          = GetEventDamageSource() -- тот кто нанёс урон
 		local casterOwner     = GetOwningPlayer(caster)
 
@@ -2889,6 +2892,10 @@ function InitDamage()
 				end
 			end
 			--любой получил урон
+
+
+
+
 			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 				--local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
@@ -2899,9 +2906,6 @@ function InitDamage()
 					DestroyEffect(eff)
 					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
 				end
-
-
-
 			end
 			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
 				--print("урон по кодою")
@@ -3658,9 +3662,10 @@ function InitGameCore()
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
 			local hero = data.UnitHero
+			data.ReleaseRMB = false
+			data.Reflection = false
 			if UnitAlive(hero) then
-				data.ReleaseRMB = false
-				data.Reflection = false
+
 				if data.IsWood then
 					SetUnitAnimationByIndex(hero, 11)
 				else
@@ -3746,8 +3751,13 @@ function InitGameCore()
 				SetCameraQuickPosition(GetUnitX(hero), GetUnitY(hero))
 				SetCameraTargetControllerNoZForPlayer(p, hero, 10, 10, true) -- не дергается
 			else
-				SetCameraQuickPosition(GetUnitX(data.legs), GetUnitY(data.legs))
-				SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(data.legs), data.legs, 10, 10, true)
+				--print("x"..GetUnitX(hero))
+				--SetCameraQuickPosition(GetUnitX(hero), GetUnitY(hero))
+				--SetCameraPosition(GetUnitXY(hero))
+				--SetCameraTargetControllerNoZForPlayer( GetOwningPlayer(hero), hero, 10, 10, true) -- не дергается
+				--print(GetPlayerName(GetOwningPlayer(hero)))
+			--	SetCameraQuickPosition(GetUnitX(data.legs), GetUnitY(data.legs))
+			--	SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(data.legs), data.legs, 10, 10, true)
 			end
 
 			if data.ReleaseLMB and data.Perk14 and UnitAlive(hero) then
@@ -4359,7 +4369,12 @@ function InitUnitDeath()
 	TriggerAddAction(gg_trg_DEADGUI, function()
 		--print("EventDead")
 		local DeadUnit=GetTriggerUnit()--умерший
+
 		local Killer=GetKillingUnit()--убийца
+		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
+			print("волк убил")
+			Killer=HERO[GetPlayerId(GetOwningPlayer(Killer))].UnitHero
+		end
 
 		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
 			local x,y=GetUnitXY(DeadUnit)
@@ -4403,6 +4418,8 @@ function InitUnitDeath()
 				end
 				SelectUnitForPlayerSingle(DeadUnit,PD)
 				data.IsWood=false
+				--data.ReleaseLMB=false
+				--data.ReleaseRMB=false
 				MakeUnitAllAlly(DeadUnit)
 				data.RevoltSec=0
 				data.Perk2=false
@@ -6537,7 +6554,7 @@ function CreateTransportShip(x,y,xend,yend)
 			IssuePointOrder(new,"move",xend,yend)
 		end
 
-		if time>60 then
+		if time>30 then
 			DestroyTimer(GetExpiredTimer())
 			KillUnit(new)
 		end
@@ -6548,7 +6565,7 @@ function CreateTransportShip(x,y,xend,yend)
 			CreateEnemy(new,FourCC('hfoo'),4)
 			IssuePointOrder(new,"move",x,y)
 		end
-		if IsUnitInRangeXY(new,x,y,300) and time>=20 then
+		if IsUnitInRangeXY(new,x,y,300) and time>=15 then
 			DestroyTimer(GetExpiredTimer())
 			KillUnit(new)
 			--print("вернулся на базу")
@@ -6673,6 +6690,7 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 	local DamageDealer=CreateUnit(GetOwningPlayer(hero),DummyID,xs,ys,0)
 	ShowUnit(DamageDealer,false)
 	local SS=true
+	local DeadUnitOnSaw=nil
 
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local x,y=0,0
@@ -6693,10 +6711,33 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 
 		if OnDamage and ReflectorUnit then
 			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
-			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
+			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0) --звуковой дамми и его блок
 			UnitAddAbility(dummy,FourCC('Apsh'))
 			IssueImmediateOrder(dummy,"phaseshift")
 			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+
+			if IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
+				if UnitAlive(ReflectorUnit) then
+					--print("жив")
+				else
+					if not DeadUnitOnSaw then
+						DeadUnitOnSaw=ReflectorUnit
+					end
+					--print("мертв")
+				end
+			end
+
+		end
+		if DeadUnitOnSaw then
+			if not UnitAlive(DeadUnitOnSaw) then
+				SetCameraQuickPosition(nx,ny)
+				SetCameraTargetControllerNoZForPlayer(GetOwningPlayer(DeadUnitOnSaw), DamageDealer, 10, 10, true) -- не дергается
+				--SetCameraPosition(nx,ny)
+				SetUnitX(DeadUnitOnSaw,nx)
+				SetUnitY(DeadUnitOnSaw,ny)
+			else
+				DeadUnitOnSaw=nil
+			end
 		end
 		if OnDamage and IsUnitType(ReflectorUnit,UNIT_TYPE_HERO) then
 			local data=HERO[GetPlayerId(GetOwningPlayer(ReflectorUnit))]
@@ -6746,8 +6787,10 @@ function CreateGroundSaw(hero,angle,z)
 
 		if not turn then
 			i=i+1
+			BlzSetSpecialEffectTimeScale(saw,-1)
 		else
 			i=i-1
+			BlzSetSpecialEffectTimeScale(saw,1)
 		end
 		--print(i)
 		x,y=MoveXY(xs,ys,step*i,angle)

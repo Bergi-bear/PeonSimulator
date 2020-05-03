@@ -22,6 +22,9 @@ function InitDamage()
 
 		local target          = GetTriggerUnit() -- тот кто получил урон
 		local targetHandleId  = GetHandleId(target)
+
+
+
 		local caster          = GetEventDamageSource() -- тот кто нанёс урон
 		local casterOwner     = GetOwningPlayer(caster)
 
@@ -110,6 +113,10 @@ function InitDamage()
 				end
 			end
 			--любой получил урон
+
+
+
+
 			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 				--local x,y=GetUnitXY()
 				BlzSetEventDamage(0)
@@ -120,9 +127,6 @@ function InitDamage()
 					DestroyEffect(eff)
 					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
 				end
-
-
-
 			end
 			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
 				--print("урон по кодою")

@@ -30,7 +30,7 @@ function CreateTransportShip(x,y,xend,yend)
 			IssuePointOrder(new,"move",xend,yend)
 		end
 
-		if time>60 then
+		if time>30 then
 			DestroyTimer(GetExpiredTimer())
 			KillUnit(new)
 		end
@@ -41,7 +41,7 @@ function CreateTransportShip(x,y,xend,yend)
 			CreateEnemy(new,FourCC('hfoo'),4)
 			IssuePointOrder(new,"move",x,y)
 		end
-		if IsUnitInRangeXY(new,x,y,300) and time>=20 then
+		if IsUnitInRangeXY(new,x,y,300) and time>=15 then
 			DestroyTimer(GetExpiredTimer())
 			KillUnit(new)
 			--print("вернулся на базу")
@@ -63,7 +63,7 @@ function CreateEnemy(ship,id,k)
 	end
 	if n<50 then
 		for i=1,k do
-			local new=CreateUnit(GetOwningPlayer(ship), id, x, y, 0)
+			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
 			IssuePointOrder(new,"attack",-4935.0, 809.5)
