@@ -28,6 +28,7 @@ gg_snd_Unlock = nil
 gg_snd_SaveKodo = nil
 gg_trg_In = nil
 gg_trg_Out = nil
+gg_trg_Gandicap = nil
 gg_trg_GuiInit = nil
 gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
@@ -37,7 +38,6 @@ gg_unit_n006_0217 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
 gg_dest_DTlv_1234 = nil
-gg_trg_Gandicap = nil
 function InitGlobals()
     local i = 0
     udg_Lang = DialogCreate()
@@ -702,6 +702,7 @@ function StartTinyAI(xs, ys)
 		local bx,by=GetUnitXY(boss)
 
 		if not UnitAlive(boss) then-- Место где босс умер тиник
+			StartSound(bj_questCompletedSound)
 			for i = 1, maxd do
 				KillDestructable(newd[i])
 			end
@@ -4372,8 +4373,10 @@ function InitUnitDeath()
 
 		local Killer=GetKillingUnit()--убийца
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
-			print("волк убил")
+			--print("волк убил")
+			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+2,0)
 			Killer=HERO[GetPlayerId(GetOwningPlayer(Killer))].UnitHero
+
 		end
 
 		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
@@ -4399,7 +4402,7 @@ function InitUnitDeath()
 				PerkUnlocker(data,3)
 			end
 			if data.IsWood then
-				CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
+				CreateFreeWood(x,y)
 			end
 			TimerStart(CreateTimer(), 2.5, false, function()
 
@@ -6587,7 +6590,7 @@ function CreateEnemy(ship,id,k)
 	end
 	if n<50 then
 		for i=1,k do
-			local new=CreateUnit(GetOwningPlayer(ship), id, x, y, 0)
+			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
 			IssuePointOrder(new,"attack",-4935.0, 809.5)

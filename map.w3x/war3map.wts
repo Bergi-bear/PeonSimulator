@@ -23,11 +23,6 @@ STRING 5
 Player 1
 }
 
-STRING 6
-{
-Force 1
-}
-
 STRING 7
 // Units: o000 (Ноги батрака), Name (Name)
 {
@@ -111,11 +106,6 @@ Player 4
 STRING 21
 {
 Player 5
-}
-
-STRING 22
-{
-Force 2
 }
 
 STRING 23
@@ -482,5 +472,15 @@ STRING 85
 // Abilities: A00P (Щит в руке каменный), Name (Name)
 {
 Щит в руке каменный
+}
+
+STRING 86
+{
+Peon
+}
+
+STRING 87
+{
+Enemy
 }
 

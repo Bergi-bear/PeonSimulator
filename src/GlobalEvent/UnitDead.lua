@@ -40,7 +40,7 @@ function InitUnitDeath()
 				PerkUnlocker(data,3)
 			end
 			if data.IsWood then
-				CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'), x,y, 0)--дровишко
+				CreateFreeWood(x,y)
 			end
 			TimerStart(CreateTimer(), 2.5, false, function()
 
