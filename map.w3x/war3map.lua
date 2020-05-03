@@ -37,6 +37,7 @@ gg_unit_n006_0217 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
 gg_dest_DTlv_1234 = nil
+gg_trg_Gandicap = nil
 function InitGlobals()
     local i = 0
     udg_Lang = DialogCreate()
@@ -403,7 +404,7 @@ function CreateNeutralPassiveBuildings()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("n008"), 2176.0, -1152.0, 270.000, FourCC("n008"))
+    u = BlzCreateUnitWithSkin(p, FourCC("n008"), 3072.0, -1152.0, 270.000, FourCC("n008"))
 end
 
 function CreateNeutralPassive()
@@ -443,7 +444,7 @@ end
 
 function CreateRegions()
     local we
-    gg_rct_Winter = Rect(1344.0, -1696.0, 3360.0, -512.0)
+    gg_rct_Winter = Rect(1344.0, -1696.0, 3360.0, -736.0)
     we = AddWeatherEffect(gg_rct_Winter, FourCC("SNhs"))
     EnableWeatherEffect(we, true)
     gg_rct_Saws = Rect(-3232.0, 1856.0, -320.0, 3488.0)
@@ -2135,7 +2136,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 	BlzSetSpecialEffectPitch(QuestPointer,math.rad(-90))--/bj_DEGTORAD
 
 	if compas==true then
-		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		TimerStart(CreateTimer(), 0.01, true, function()
 			local z=GetUnitZ(hero)
 			local xc,yc=GetUnitX(hero),GetUnitY(hero)
 			if questendunit~=nil then
@@ -2808,6 +2809,11 @@ function InitDamage()
 			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+
+
+				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then
+					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget",GetUnitXY(target)))
+				end
 
 				if data.Reflection and data.Perk10 then -- парирование с талантом
 					--print("Урон парирован")
@@ -3519,48 +3525,50 @@ function InitGameCore()
 
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
-			if not data.ReleaseLMB then
-				data.ReleaseLMB = true
-			end
-			if data.ReleaseRMB and data.ShieldForce then
-				-- толчек щитом
-				--print("mini force")
-				data.ShieldForce = false
-				local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
-				local IsDamage, DamagingUnit = UnitDamageArea(data.UnitHero, 1, x, y, 100)
-				local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
-				local eff = AddSpecialEffect("DefendCaster", x, y)
-				BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
-				DestroyEffect(eff)
+			if  UnitAlive(data.UnitHero) then
+				if not data.ReleaseLMB then
+					data.ReleaseLMB = true
+				end
+				if data.ReleaseRMB and data.ShieldForce then
+					-- толчек щитом
+					--print("mini force")
+					data.ShieldForce = false
+					local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
+					local IsDamage, DamagingUnit = UnitDamageArea(data.UnitHero, 1, x, y, 100)
+					local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
+					local eff = AddSpecialEffect("DefendCaster", x, y)
+					BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
+					DestroyEffect(eff)
 
-				if IsUnitType(DamagingUnit, UNIT_TYPE_HERO) then
-					UnitAddVectorForce(DamagingUnit, angleU, 10, 50, false)
-				else
-					if GetUnitTypeId(DamagingUnit) ~= FourCC('o007') then
-						UnitAddForce(DamagingUnit, angleU, 10, 50)
+					if IsUnitType(DamagingUnit, UNIT_TYPE_HERO) then
+						UnitAddVectorForce(DamagingUnit, angleU, 10, 50, false)
+					else
+						if GetUnitTypeId(DamagingUnit) ~= FourCC('o007') then
+							UnitAddForce(DamagingUnit, angleU, 10, 50)
+						end
 					end
-				end
 
-				TimerStart(CreateTimer(), 0.3, false, function()
-					data.ShieldForce = true
-					DestroyTimer(GetExpiredTimer())
-				end)
-			end
-			--local hero=data.UnitHero
-			data.AttackTime = 0.0
-			if data.Perk14 then
-				if data.Perk14A then
-					UnitAddAbility(data.UnitHero, FourCC('A00P'))
-				else
-					UnitAddAbility(data.UnitHero, FourCC('A007'))
+					TimerStart(CreateTimer(), 0.3, false, function()
+						data.ShieldForce = true
+						DestroyTimer(GetExpiredTimer())
+					end)
 				end
-				if data.Perk12 then
-					UnitAddAbility(data.UnitHero, FourCC('A00I'))--эффект мороза
-				end
-				if data.IsWood then
-					local x, y = GetUnitXY(data.UnitHero)
-					CreateFreeWood(MoveXY(x, y, -60, data.LastTurn))
-					data.IsWood = false
+				--local hero=data.UnitHero
+				data.AttackTime = 0.0
+				if data.Perk14 then
+					if data.Perk14A then
+						UnitAddAbility(data.UnitHero, FourCC('A00P'))
+					else
+						UnitAddAbility(data.UnitHero, FourCC('A007'))
+					end
+					if data.Perk12 then
+						UnitAddAbility(data.UnitHero, FourCC('A00I'))--эффект мороза
+					end
+					if data.IsWood then
+						local x, y = GetUnitXY(data.UnitHero)
+						CreateFreeWood(MoveXY(x, y, -60, data.LastTurn))
+						data.IsWood = false
+					end
 				end
 			end
 		end
@@ -3600,42 +3608,43 @@ function InitGameCore()
 			-- это правая кнопка
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
-			if not data.ReleaseRMB then
-				data.ReleaseRMB = true
-			end
-			if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then
-				-- И талант на рывок
-				UnitAddVectorForce(data.UnitHero, data.LastTurn, 30, 300, false)
-				--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
-				data.OnCharge = true
-				data.ChargeIsReady = false
-				if data.Perk12 then
-					--ледяной щит
-					if not UnitAddAbility(data.UnitHero, FourCC('A00F')) then
-						--print("error")
-					end --Синий
-					--print("синий")
-				else
-					UnitAddAbility(data.UnitHero, FourCC('A00E')) --красный
-					--print("красный")
+			if  UnitAlive(data.UnitHero) then
+				if not data.ReleaseRMB then
+					data.ReleaseRMB = true
+				end
+				if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then
+					-- И талант на рывок
+					UnitAddVectorForce(data.UnitHero, data.LastTurn, 30, 300, false)
+					--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
+					data.OnCharge = true
+					data.ChargeIsReady = false
+					if data.Perk12 then
+						--ледяной щит
+						if not UnitAddAbility(data.UnitHero, FourCC('A00F')) then
+							--print("error")
+						end --Синий
+						--print("синий")
+					else
+						UnitAddAbility(data.UnitHero, FourCC('A00E')) --красный
+						--print("красный")
+					end
+
+					--
+
+					TimerStart(CreateTimer(), 2, false, function()
+						data.ChargeIsReady = true
+						UnitRemoveAbility(data.UnitHero, FourCC('A00E')) --красный
+						UnitRemoveAbility(data.UnitHero, FourCC('A00F')) --Синий
+						DestroyTimer(GetExpiredTimer())
+					end)
 				end
 
-				--
-
-				TimerStart(CreateTimer(), 2, false, function()
-					data.ChargeIsReady = true
-					UnitRemoveAbility(data.UnitHero, FourCC('A00E')) --красный
-					UnitRemoveAbility(data.UnitHero, FourCC('A00F')) --Синий
-					DestroyTimer(GetExpiredTimer())
-				end)
+				if not data.IsFrizzyDisabled then
+					--if not data.ReleaseA and not data.IsFrizzyDisabled then
+					data.ReleaseRMB = true
+					data.Reflection = true
+				end
 			end
-
-			if not data.IsFrizzyDisabled then
-				--if not data.ReleaseA and not data.IsFrizzyDisabled then
-				data.ReleaseRMB = true
-				data.Reflection = true
-			end
-
 		end
 	end)
 	local TrigDePressRMB = CreateTrigger()
@@ -3649,9 +3658,9 @@ function InitGameCore()
 			local pid = GetPlayerId(GetTriggerPlayer())
 			local data = HERO[pid]
 			local hero = data.UnitHero
-			data.ReleaseRMB = false
-			data.Reflection = false
 			if UnitAlive(hero) then
+				data.ReleaseRMB = false
+				data.Reflection = false
 				if data.IsWood then
 					SetUnitAnimationByIndex(hero, 11)
 				else
@@ -6516,7 +6525,7 @@ end
 
 function CreateTransportShip(x,y,xend,yend)
 	--x,y,xend,yend=-5000,-4900,-2600,-3500
-	local new=CreateUnit(Player(10), FourCC('h003'), x, y, 0) -- корабль
+	local new=CreateUnit(Player(9), FourCC('h003'), x, y, 0) -- корабль
 	local time=0
 	local IsFull=true
 	TimerStart(CreateTimer(), 2, true, function()
@@ -6561,7 +6570,7 @@ function CreateEnemy(ship,id,k)
 	end
 	if n<50 then
 		for i=1,k do
-			local new=CreateUnit(Player(10), id, x, y, 0)
+			local new=CreateUnit(GetOwningPlayer(ship), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
 			IssuePointOrder(new,"attack",-4935.0, 809.5)
@@ -6988,6 +6997,21 @@ function InitTrig_Out()
     TriggerAddAction(gg_trg_Out, Trig_Out_Actions)
 end
 
+function Trig_Gandicap_Func001A()
+    SetPlayerHandicapBJ(GetEnumPlayer(), 100)
+    SetPlayerHandicapDamageBJ(GetEnumPlayer(), 100)
+end
+
+function Trig_Gandicap_Actions()
+    ForForce(GetPlayersAll(), Trig_Gandicap_Func001A)
+end
+
+function InitTrig_Gandicap()
+    gg_trg_Gandicap = CreateTrigger()
+    TriggerRegisterTimerEventSingle(gg_trg_Gandicap, 1.00)
+    TriggerAddAction(gg_trg_Gandicap, Trig_Gandicap_Actions)
+end
+
 function Trig_GuiInit_Func003A()
     IssueTargetDestructableOrder(GetEnumUnit(), "harvest", gg_dest_LTlt_0364)
 end
@@ -7037,6 +7061,7 @@ end
 function InitCustomTriggers()
     InitTrig_In()
     InitTrig_Out()
+    InitTrig_Gandicap()
     InitTrig_GuiInit()
     InitTrig_Open()
     InitTrig_DeadHumanLumber()

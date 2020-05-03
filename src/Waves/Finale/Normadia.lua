@@ -18,7 +18,7 @@ end
 
 function CreateTransportShip(x,y,xend,yend)
 	--x,y,xend,yend=-5000,-4900,-2600,-3500
-	local new=CreateUnit(Player(10), FourCC('h003'), x, y, 0) -- корабль
+	local new=CreateUnit(Player(9), FourCC('h003'), x, y, 0) -- корабль
 	local time=0
 	local IsFull=true
 	TimerStart(CreateTimer(), 2, true, function()
@@ -63,7 +63,7 @@ function CreateEnemy(ship,id,k)
 	end
 	if n<50 then
 		for i=1,k do
-			local new=CreateUnit(Player(10), id, x, y, 0)
+			local new=CreateUnit(GetOwningPlayer(ship), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
 			IssuePointOrder(new,"attack",-4935.0, 809.5)

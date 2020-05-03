@@ -31,6 +31,11 @@ function InitDamage()
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
+
+				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then
+					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget",GetUnitXY(target)))
+				end
+
 				if data.Reflection and data.Perk10 then -- парирование с талантом
 					--print("Урон парирован")
 					local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
