@@ -16,10 +16,32 @@ texture = {
 	"ReplaceableTextures\\PassiveButtons\\PASBTNDemolish",
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
 	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
-	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
+	"ReplaceableTextures\\CommandButtons\\BTNResistantSkin",
 	"ReplaceableTextures\\CommandButtons\\BTNPlagueCloud",
 	"ReplaceableTextures\\CommandButtons\\BTNOrbOfFire",
 	"ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpThree",
+}
+
+--"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHumanArmorUpThree"
+
+DISBTNTexture = {
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPeasant",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNChaosPeon",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGoblinSapper",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBoots",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBloodLust",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNStormBolt",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNAbomination", --пудж
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNKotoBeast",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGatherGold", -- кирка
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNEngineeringUpgrade", -- техника безопасности
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISPASBTNDemolish",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISPASBTNFrost",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNTimberWolf",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNResistantSkin",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPlagueCloud",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNOrbOfFire",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHumanArmorUpThree",
 }
 Name = { --Определяет количество талантов
 	"Работник месяца",
@@ -116,9 +138,10 @@ function PerkButtonLineNonLocal(k,lang)
 			local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 			BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
 			BlzFrameSetSize(face, 0.04, 0.04)
-			local buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+			--local buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+			local buttonIconFrame = BlzCreateSimpleFrame("MyBar", face, 0)
 			BlzFrameSetAllPoints(buttonIconFrame, face)
-			BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+			--BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
 			local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face, "", 0)
 			local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
 			local UpDest = BlzGetFrameByName("BoxedTextValue", 0)
@@ -128,6 +151,21 @@ function PerkButtonLineNonLocal(k,lang)
 			BlzFrameSetSize(tooltip, 0.15, 0.08)
 			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 			BlzFrameSetText(UpDest, description[i])
+
+				--print("создаём перезаряжаемость")
+				--local fh = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
+				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
+				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.4, 0.3)
+				BlzFrameSetValue(buttonIconFrame, 100)
+				BlzFrameSetText(BlzGetFrameByName("MyBarText", 0), "")
+				BlzFrameSetTexture(BlzGetFrameByName("MyBarBackground", 0), DISBTNTexture[i], 0, true)
+				BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+				BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
+			if i==17 then
+				--StartFrameCD(10,buttonIconFrame)
+			end
+
+
 			if lang == 1 then
 				BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), NameENG[i])
 				BlzFrameSetText(UpDest, descriptionENG[i])
@@ -156,6 +194,7 @@ function PerkButtonLineNonLocal(k,lang)
 			data.LockFrame[i] = lock
 			data.VisualSelectorFrame[i] = buttonsprite
 			data.PekFrame[i] = UpDest
+			data.ReloadIco[i] = buttonIconFrame
 
 		end
 	--end

@@ -3,23 +3,34 @@
 --- Created by Bergi.
 --- DateTime: 04.05.2020 2:22
 ---
-
-
-
-function Trig_Nahkampf_Initialisierung_Actions ()
+function InitCDSystem()
 	if not BlzLoadTOCFile("war3mapimported\\mybar.toc") then
-		print("warning")
+			print("warning")
 	end
-	local fh = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-	BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.4, 0.3)
-	BlzFrameSetValue(fh, 50)
-	BlzFrameSetText(BlzGetFrameByName("MyBarText", 0), "")
-	BlzFrameSetTexture(BlzGetFrameByName("MyBarBackground", 0), "Replaceabletextures\\CommandButtons\\BTNHeroDeathKnight.blp", 0, true)
-	BlzFrameSetTexture(fh, "Replaceabletextures\\CommandButtons\\BTNArthas.blp", 0, true)
-	BlzFrameSetSize(fh, 0.08, 0.08)
+end
 
-	TimerStart(CreateTimer(), 0.08, true, function()
-		BlzFrameSetValue(fh, BlzFrameGetValue(fh) + GetRandomReal(-3, 3))
+
+function StartFrameCD(cd,data,index)
+	local amount=5/cd
+
+	local fh=data.ReloadIco[index]
+
+	if not fh then
+		print("error Не могу перезарядить фрейм, так как его нет")
+		return
+
+	end
+
+	local full=0
+
+
+	TimerStart(CreateTimer(), 0.05, true, function()
+		full=full+amount
+		BlzFrameSetValue(fh, full)
+		if full>=100 then
+			DestroyTimer(GetExpiredTimer())
+			full=0
+		end
 	end)
 
 end

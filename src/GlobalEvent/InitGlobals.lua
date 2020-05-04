@@ -19,8 +19,9 @@ do
 		HeroEnterSaws()
 		InitTrig_Entire()
 		InitSpellTrigger()
-		Trig_Nahkampf_Initialisierung_Actions()
-
+		--Trig_Nahkampf_Initialisierung_Actions()
+		InitCDSystem()
+		--StartFrameCD(10)
 	end
 
 end
@@ -165,7 +166,8 @@ function InitGameCore()
 			ToolTip = {},
 			PekFrame = {},
 			LockFrame = {},
-			VisualSelectorFrame = {}
+			VisualSelectorFrame = {},
+			ReloadIco={},
 		}
 
 		if HERO[i] then
@@ -402,7 +404,9 @@ function InitGameCore()
 				end
 				if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then
 					-- И талант на рывок
+					local cd=2
 					UnitAddVectorForce(data.UnitHero, data.LastTurn, 30, 300, false)
+					StartFrameCD(cd, data,17)
 					--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 					data.OnCharge = true
 					data.ChargeIsReady = false
@@ -419,7 +423,7 @@ function InitGameCore()
 
 					--
 
-					TimerStart(CreateTimer(), 2, false, function()
+					TimerStart(CreateTimer(), cd, false, function()
 						data.ChargeIsReady = true
 						UnitRemoveAbility(data.UnitHero, FourCC('A00E')) --красный
 						UnitRemoveAbility(data.UnitHero, FourCC('A00F')) --Синий

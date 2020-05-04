@@ -1222,23 +1222,39 @@ end
 --- Created by Bergi.
 --- DateTime: 04.05.2020 2:22
 ---
-
-
-
-function Trig_Nahkampf_Initialisierung_Actions ()
+function InitCDSystem()
 	if not BlzLoadTOCFile("war3mapimported\\mybar.toc") then
-		print("warning")
+			print("warning")
 	end
-	local fh = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-	BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.4, 0.3)
-	BlzFrameSetValue(fh, 50)
-	BlzFrameSetText(BlzGetFrameByName("MyBarText", 0), "")
-	BlzFrameSetTexture(BlzGetFrameByName("MyBarBackground", 0), "Replaceabletextures\\CommandButtons\\BTNHeroDeathKnight.blp", 0, true)
-	BlzFrameSetTexture(fh, "Replaceabletextures\\CommandButtons\\BTNArthas.blp", 0, true)
-	BlzFrameSetSize(fh, 0.08, 0.08)
+end
 
-	TimerStart(CreateTimer(), 0.08, true, function()
-		BlzFrameSetValue(fh, BlzFrameGetValue(fh) + GetRandomReal(-3, 3))
+
+function StartFrameCD(cd,data,index)
+	local amount=5/cd
+	--[[
+	if cd==10 then
+		amount=0.5
+	elseif cd==5 then
+		amount=1
+	elseif cd==2 then
+		amount=2.5
+	elseif cd==1 then
+		amount=5
+	end]]
+
+	local fh=data.ReloadIco[index]
+	if not fh then
+		print("error")
+	end
+
+	local full=0
+	TimerStart(CreateTimer(), 0.05, true, function()
+		full=full+amount
+		BlzFrameSetValue(fh, full)
+		if full>=100 then
+			DestroyTimer(GetExpiredTimer())
+			full=0
+		end
 	end)
 
 end
@@ -1379,7 +1395,7 @@ function MoveWoodAsFarm(hero,k)
 
 
 
-			if GTotalWood==50 or GTotalWood==51 then
+			if GTotalWood==50 or GTotalWood==51 or GTotalWood==1  then
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
 				HERO[2].Perk17=true
@@ -1810,10 +1826,32 @@ texture = {
 	"ReplaceableTextures\\PassiveButtons\\PASBTNDemolish",
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
 	"ReplaceableTextures\\CommandButtons\\BTNTimberWolf",
-	"ReplaceableTextures/CommandButtons/BTNResistantSkin",
+	"ReplaceableTextures\\CommandButtons\\BTNResistantSkin",
 	"ReplaceableTextures\\CommandButtons\\BTNPlagueCloud",
 	"ReplaceableTextures\\CommandButtons\\BTNOrbOfFire",
 	"ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpThree",
+}
+
+--"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHumanArmorUpThree"
+
+DISBTNTexture = {
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPeasant",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNChaosPeon",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGoblinSapper",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBoots",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBloodLust",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNStormBolt",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNAbomination", --пудж
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNKotoBeast",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGatherGold", -- кирка
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNEngineeringUpgrade", -- техника безопасности
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISPASBTNDemolish",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISPASBTNFrost",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNTimberWolf",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNResistantSkin",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPlagueCloud",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNOrbOfFire",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHumanArmorUpThree",
 }
 Name = { --Определяет количество талантов
 	"Работник месяца",
@@ -1910,9 +1948,10 @@ function PerkButtonLineNonLocal(k,lang)
 			local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 			BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
 			BlzFrameSetSize(face, 0.04, 0.04)
-			local buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+			--local buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+			local buttonIconFrame = BlzCreateSimpleFrame("MyBar", face, 0)
 			BlzFrameSetAllPoints(buttonIconFrame, face)
-			BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+			--BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
 			local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face, "", 0)
 			local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
 			local UpDest = BlzGetFrameByName("BoxedTextValue", 0)
@@ -1922,6 +1961,21 @@ function PerkButtonLineNonLocal(k,lang)
 			BlzFrameSetSize(tooltip, 0.15, 0.08)
 			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 			BlzFrameSetText(UpDest, description[i])
+
+				--print("создаём перезаряжаемость")
+				--local fh = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
+				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
+				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.4, 0.3)
+				BlzFrameSetValue(buttonIconFrame, 100)
+				BlzFrameSetText(BlzGetFrameByName("MyBarText", 0), "")
+				BlzFrameSetTexture(BlzGetFrameByName("MyBarBackground", 0), DISBTNTexture[i], 0, true)
+				BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+				BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
+			if i==17 then
+				--StartFrameCD(10,buttonIconFrame)
+			end
+
+
 			if lang == 1 then
 				BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), NameENG[i])
 				BlzFrameSetText(UpDest, descriptionENG[i])
@@ -1950,6 +2004,7 @@ function PerkButtonLineNonLocal(k,lang)
 			data.LockFrame[i] = lock
 			data.VisualSelectorFrame[i] = buttonsprite
 			data.PekFrame[i] = UpDest
+			data.ReloadIco[i] = buttonIconFrame
 
 		end
 	--end
@@ -3263,8 +3318,9 @@ do
 		HeroEnterSaws()
 		InitTrig_Entire()
 		InitSpellTrigger()
-		Trig_Nahkampf_Initialisierung_Actions()
-
+		--Trig_Nahkampf_Initialisierung_Actions()
+		InitCDSystem()
+		--StartFrameCD(10)
 	end
 
 end
@@ -3409,7 +3465,8 @@ function InitGameCore()
 			ToolTip = {},
 			PekFrame = {},
 			LockFrame = {},
-			VisualSelectorFrame = {}
+			VisualSelectorFrame = {},
+			ReloadIco={},
 		}
 
 		if HERO[i] then
@@ -3647,6 +3704,7 @@ function InitGameCore()
 				if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then
 					-- И талант на рывок
 					UnitAddVectorForce(data.UnitHero, data.LastTurn, 30, 300, false)
+					StartFrameCD(3,data,17)
 					--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 					data.OnCharge = true
 					data.ChargeIsReady = false

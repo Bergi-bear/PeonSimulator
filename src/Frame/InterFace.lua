@@ -134,7 +134,7 @@ function MoveWoodAsFarm(hero,k)
 
 
 
-			if GTotalWood==50 or GTotalWood==51 then
+			if GTotalWood==50 or GTotalWood==51 or GTotalWood==1  then
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
 				HERO[2].Perk17=true
