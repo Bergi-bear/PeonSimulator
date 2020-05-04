@@ -29,11 +29,18 @@ function AfterAttack(hero, delay)
 
 
 		end
-		if data.Perk6 and true then -- удар тора
+		if data.Perk6 and data.Thor then -- удар тора
 			--data.Perk6=false
 			--print("удар тора")
 
-			if UnitDamageArea(hero,90,x,y,150)  then
+			local cd=2
+
+			if UnitDamageArea(hero,damage*.5,x,y,150)  then
+				StartFrameCD(2,data,6)
+				data.Thor=false
+				TimerStart(CreateTimer(), cd, false, function()
+					data.Thor=true
+				end)
 				CastArea(hero,FourCC('A003'),x,y)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 			end

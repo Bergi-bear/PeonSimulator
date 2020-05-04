@@ -57,10 +57,10 @@ function InitGameCore()
 		--ButtonPress()
 		--CreateLanguageDialog()
 		for i=0,3 do
-			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
+			--if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
 				PerkButtonLineNonLocal(i,0)
 				CreateStatusBar(i)
-			end
+			--end
 		end
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
@@ -133,6 +133,7 @@ function InitGameCore()
 			WolfHelper = nil,
 			TreeCountOnTB = 0,
 			SheepCount = 0,
+			Thor=true,
 			---открытие перков
 			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
@@ -777,7 +778,7 @@ function InitGameCore()
 								--print("толкаемый герой не определён")
 							end
 
-							if data.Perk12 then
+							if data.Perk12 and BlzGetUnitAbility(DamagingUnit,FourCC('Bfro'))==0 then
 								--
 								local x12, y12 = GetUnitXY(DamagingUnit)
 								--print("замораживаем "..GetUnitName(caster))

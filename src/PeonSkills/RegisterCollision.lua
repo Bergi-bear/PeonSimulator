@@ -27,16 +27,18 @@ function RegisterCollision(hero)
 
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('e009')  and GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then --Тини
-				if BlzGetLocale()=="ruRU" then
-					print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
-				else
-					print("|cff8080ffTinyc: |r".."Destroy stones for battle")
-				end
+
 				--FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
-				if TotalStones>=30 then
+				if TotalStones>=30 then --30
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					StartTinyAI(GetUnitXY(CollisionUnit))
 					--print("тут должна быть эпичная битва но её ещё нет")
+				else
+					if BlzGetLocale()=="ruRU" then
+						print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
+					else
+						print("|cff8080ffTinyc: |r".."Destroy stones for battle")
+					end
 				end
 			end
 
@@ -85,6 +87,7 @@ function RegisterCollision(hero)
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('o005')  and not data.CartUnit then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
+					SetUnitInvulnerable(CollisionUnit,true)
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
 					data.CartUnit=CollisionUnit
 				end

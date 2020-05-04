@@ -23,14 +23,8 @@ function InitSpellTrigger()
 
 
 		if spellId == FourCC('ACtb') and IsUnitType(target,UNIT_TYPE_HERO) then -- Стано голема
-			local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-			if data.ReleaseLMB then
-				data.StoneCount=data.StoneCount+1
-				if data.StoneCount==5 then
-					data.Perk14A=true
-					PerkUnlocker(data,14)
-				end
-			end
+		--	local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+
 		end
 
 

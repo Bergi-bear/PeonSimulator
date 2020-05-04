@@ -12,7 +12,7 @@ function InitUnitDeath()
 		local Killer=GetKillingUnit()--убийца
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
 			--print("волк убил")
-			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+2,0)
+			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+1,0)
 			Killer=HERO[GetPlayerId(GetOwningPlayer(Killer))].UnitHero
 
 		end

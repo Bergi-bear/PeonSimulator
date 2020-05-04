@@ -16,7 +16,7 @@ function StartFrameCD(cd,data,index)
 	local fh=data.ReloadIco[index]
 
 	if not fh then
-		print("error Не могу перезарядить фрейм, так как его нет")
+	--	print("error Не могу перезарядить фрейм, так как его нет")
 		return
 
 	end

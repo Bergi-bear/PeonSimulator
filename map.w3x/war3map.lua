@@ -698,6 +698,7 @@ function StartTinyAI(xs, ys)
 	local phase = 2 --стартовая фаза
 	local sec = 0
 	local PhaseOn = true
+	local OnAttack=true
 	TimerStart(CreateTimer(), 1, true, function() --каждую секунду
 		local bx,by=GetUnitXY(boss)
 
@@ -714,13 +715,33 @@ function StartTinyAI(xs, ys)
 				local r2=GetRandomInt(-100,100)
 				CreateFreeWood(bx+r,by+r2)
 			end
-		else --Проверяем есть ли живые герои
+		else --Проверяем есть ли живые герои, когда тиник жив
 			if BossFight then
 				local k=0
 				for i = 0, 3 do
 					local hero = HERO[i].UnitHero
 					if IsUnitInRange(hero, boss, 1000) then
 						k=k+1
+					end
+
+					--print("Отталкивание для особо умных")
+					if OnAttack then
+						if IsUnitInRange(hero, boss, 250) then
+							--SetUnitTimeScale(boss,-1)
+							OnAttack=false
+							local angle=AngleBetweenUnits(boss,hero)
+							SetUnitFacing(boss,angle)
+							--SetUnitAnimation(boss,"Attack")
+
+							SetUnitAnimationByIndex(boss,3)
+							UnitAddVectorForce(hero,angle,30,300,false)
+							TimerStart(CreateTimer(), 1, false, function()
+								OnAttack=true
+								SetUnitAnimation(boss,"stand")
+								SetUnitTimeScale(boss,1)
+							end)
+						end
+
 					end
 				end
 				if k==0 then
@@ -749,6 +770,15 @@ function StartTinyAI(xs, ys)
 			if phase == 1 and PhaseOn then
 				PhaseOn = false
 				--print("стреляем камнями")
+				TimerStart(CreateTimer(), 1.5, true, function()
+					if UnitAlive(boss) then
+						SetUnitAnimationByIndex(boss,2)
+					end
+					if phase ~= 1 or not UnitAlive(boss) then
+						DestroyTimer(GetExpiredTimer())
+					end
+				end)
+
 				TimerStart(CreateTimer(), .1, true, function()
 					local angle = GetRandomInt(0, 359)
 					local eff = stoneEffModel
@@ -767,12 +797,13 @@ function StartTinyAI(xs, ys)
 				local effmodel = "Doodads\\LordaeronSummer\\Terrain\\LoardaeronRockChunks\\LoardaeronRockChunks3"
 				TimerStart(CreateTimer(), .5, true, function() -- случайные
 
-
+					SetUnitAnimationByIndex(boss,3)
 					local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
 					MarkAndFall(bx+rx,by+ry,effmodel,boss)
-
+					SetUnitFacing(boss,AngleBetweenXY(GetUnitX(boss),GetUnitY(boss),bx+rx,by+ry)/bj_DEGTORAD)
 					if phase ~= 2 then
 						DestroyTimer(GetExpiredTimer())
+						ResetUnitAnimation(boss)
 					end
 				end)
 				TimerStart(CreateTimer(), 1.5, true, function()--по героям
@@ -1231,23 +1262,18 @@ end
 
 function StartFrameCD(cd,data,index)
 	local amount=5/cd
-	--[[
-	if cd==10 then
-		amount=0.5
-	elseif cd==5 then
-		amount=1
-	elseif cd==2 then
-		amount=2.5
-	elseif cd==1 then
-		amount=5
-	end]]
 
 	local fh=data.ReloadIco[index]
+
 	if not fh then
-		print("error")
+	--	print("error Не могу перезарядить фрейм, так как его нет")
+		return
+
 	end
 
 	local full=0
+
+
 	TimerStart(CreateTimer(), 0.05, true, function()
 		full=full+amount
 		BlzFrameSetValue(fh, full)
@@ -1395,7 +1421,7 @@ function MoveWoodAsFarm(hero,k)
 
 
 
-			if GTotalWood==50 or GTotalWood==51 or GTotalWood==1  then
+			if GTotalWood==50 or GTotalWood==51  then--or GTotalWood==1
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
 				HERO[2].Perk17=true
@@ -1693,29 +1719,35 @@ end
 
 StatusTexture={
 	"ReplaceableTextures\\CommandButtons\\BTNGatherGold",
-
+	"ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpOne",
 }
 
 function CreateStatusBar(pid)
 	local data=HERO[pid]
-	local i=1
-	--for i=0,3 do
+	local statustxt={}
+	for i=1,2 do
 		local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetTexture(status, StatusTexture[i], 0, true)
 		BlzFrameSetSize(status, 0.019, 0.019)
-		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.08 , 0.6-0.04)
-		local statustxt = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-		BlzFrameSetPoint(statustxt, FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
+		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.08+0.02*(i-1) , 0.6-0.04)
+		statustxt[i] = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+		BlzFrameSetPoint(statustxt[i], FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
+
 		if GetLocalPlayer() ~= Player(pid) then
 			BlzFrameSetVisible(status, false)
-			BlzFrameSetVisible(statustxt, false)
+			BlzFrameSetVisible(statustxt[i], false)
 		end
 
-	--end
+	end
 
 	TimerStart(CreateTimer(), 1, true, function()
 		local d=R2I(BlzGetUnitBaseDamage(data.UnitHero,0))
-		BlzFrameSetText(statustxt, d)
+		BlzFrameSetText(statustxt[1], d)
+		if not data.Perk14A then
+			BlzFrameSetText(statustxt[2], 50)
+		else
+			BlzFrameSetText(statustxt[2], 100)
+		end
 	end)
 
 	--обновление текстаз
@@ -1961,16 +1993,13 @@ function PerkButtonLineNonLocal(k,lang)
 			BlzFrameSetSize(tooltip, 0.15, 0.08)
 			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 			BlzFrameSetText(UpDest, description[i])
-
-				--print("создаём перезаряжаемость")
-				--local fh = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
-				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.4, 0.3)
-				BlzFrameSetValue(buttonIconFrame, 100)
-				BlzFrameSetText(BlzGetFrameByName("MyBarText", 0), "")
-				BlzFrameSetTexture(BlzGetFrameByName("MyBarBackground", 0), DISBTNTexture[i], 0, true)
-				BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
-				BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
+			BlzFrameSetValue(buttonIconFrame, 100)
+			local cdtext=BlzGetFrameByName("MyBarText", 0)
+			BlzFrameSetText(cdtext, "")
+			local cdICO=BlzGetFrameByName("MyBarBackground", 0)
+			BlzFrameSetTexture(cdICO, DISBTNTexture[i], 0, true)
+			BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+			BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
 			if i==17 then
 				--StartFrameCD(10,buttonIconFrame)
 			end
@@ -1997,6 +2026,7 @@ function PerkButtonLineNonLocal(k,lang)
 			if GetLocalPlayer() ~= Player(k) then
 				BlzFrameSetVisible(lock, false)
 				BlzFrameSetVisible(face, false)
+				BlzFrameSetVisible(buttonIconFrame, false)
 			end
 			--глобалки
 
@@ -2043,8 +2073,8 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 6 then
 					if data.Perk6 then
-						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00" .. "90 доп. урона|r") --|cffffff00AAAA|r
-						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. "90 damage|r") end
+						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero, 0).." доп. урона|r") --|cffffff00AAAA|r
+						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..BlzGetUnitBaseDamage(data.UnitHero, 0).." damage|r") end
 					else
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
 					end
@@ -2225,7 +2255,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 				qx,qy=GetUnitX(questendunit),GetUnitY(questendunit)
 			end
 			local Angle=AngleBetweenXY(xc,yc,qx,qy)
-			BlzSetSpecialEffectPosition(QuestPointer,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+10)
+			BlzSetSpecialEffectPosition(QuestPointer,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+50)
 			BlzSetSpecialEffectYaw(QuestPointer,Angle)
 
 			--if data.isend==true then
@@ -2896,7 +2926,19 @@ function InitDamage()
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
 
-				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then
+				if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
+					UnitRemoveAbility(target,FourCC('BPSE'))
+					BlzSetEventDamage(0)
+					if data.ReleaseLMB then
+						data.StoneCount=data.StoneCount+1
+						if data.StoneCount==5 then
+							data.Perk14A=true
+							PerkUnlocker(data,14)
+						end
+					end
+					--print("урон от голема")
+				end
+				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then -- обледенение
 					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget",GetUnitXY(target)))
 				end
 
@@ -3091,7 +3133,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if GetUnitTypeId(e)==FourCC('n007') and damage>6 then-- попытка ударить свинку лечилку
-				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=150 then
+				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=70 then
 					local x,y=GetUnitXY(u)
 					local mes=""
 					if BlzGetLocale()=="ruRU" then
@@ -3356,10 +3398,10 @@ function InitGameCore()
 		--ButtonPress()
 		--CreateLanguageDialog()
 		for i=0,3 do
-			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
+			--if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
 				PerkButtonLineNonLocal(i,0)
 				CreateStatusBar(i)
-			end
+			--end
 		end
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
@@ -3432,6 +3474,7 @@ function InitGameCore()
 			WolfHelper = nil,
 			TreeCountOnTB = 0,
 			SheepCount = 0,
+			Thor=true,
 			---открытие перков
 			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
@@ -3703,8 +3746,9 @@ function InitGameCore()
 				end
 				if data.ReleaseLMB and data.ChargeIsReady and data.Perk17 then
 					-- И талант на рывок
+					local cd=2
 					UnitAddVectorForce(data.UnitHero, data.LastTurn, 30, 300, false)
-					StartFrameCD(3,data,17)
+					StartFrameCD(cd, data,17)
 					--data.ChargeEff=AddSpecialEffectTarget("Valiant Charge",data.UnitHero,"origin")
 					data.OnCharge = true
 					data.ChargeIsReady = false
@@ -3721,7 +3765,7 @@ function InitGameCore()
 
 					--
 
-					TimerStart(CreateTimer(), 2, false, function()
+					TimerStart(CreateTimer(), cd, false, function()
 						data.ChargeIsReady = true
 						UnitRemoveAbility(data.UnitHero, FourCC('A00E')) --красный
 						UnitRemoveAbility(data.UnitHero, FourCC('A00F')) --Синий
@@ -4075,7 +4119,7 @@ function InitGameCore()
 								--print("толкаемый герой не определён")
 							end
 
-							if data.Perk12 then
+							if data.Perk12 and BlzGetUnitAbility(DamagingUnit,FourCC('Bfro'))==0 then
 								--
 								local x12, y12 = GetUnitXY(DamagingUnit)
 								--print("замораживаем "..GetUnitName(caster))
@@ -4395,7 +4439,7 @@ function LeavePlayer()
 
 	TriggerAddAction(this, function()
 		local p=GetTriggerPlayer()
-		print("Разумом "..GetPlayerName(p).." овладел ИИ")
+		--print("Разумом "..GetPlayerName(p).." овладел ИИ")
 		if BlzGetLocale()=="ruRU" then
 			print("|cff8080ffСистема: |r".."Разумом "..GetPlayerName(p).." овладел ИИ")
 		else
@@ -4431,14 +4475,8 @@ function InitSpellTrigger()
 
 
 		if spellId == FourCC('ACtb') and IsUnitType(target,UNIT_TYPE_HERO) then -- Стано голема
-			local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-			if data.ReleaseLMB then
-				data.StoneCount=data.StoneCount+1
-				if data.StoneCount==5 then
-					data.Perk14A=true
-					PerkUnlocker(data,14)
-				end
-			end
+		--	local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+
 		end
 
 
@@ -4459,7 +4497,7 @@ function InitUnitDeath()
 		local Killer=GetKillingUnit()--убийца
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
 			--print("волк убил")
-			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+2,0)
+			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+1,0)
 			Killer=HERO[GetPlayerId(GetOwningPlayer(Killer))].UnitHero
 
 		end
@@ -6177,11 +6215,18 @@ function AfterAttack(hero, delay)
 
 
 		end
-		if data.Perk6 and true then -- удар тора
+		if data.Perk6 and data.Thor then -- удар тора
 			--data.Perk6=false
 			--print("удар тора")
 
-			if UnitDamageArea(hero,90,x,y,150)  then
+			local cd=2
+
+			if UnitDamageArea(hero,damage*.5,x,y,150)  then
+				StartFrameCD(2,data,6)
+				data.Thor=false
+				TimerStart(CreateTimer(), cd, false, function()
+					data.Thor=true
+				end)
 				CastArea(hero,FourCC('A003'),x,y)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 			end
@@ -6255,16 +6300,18 @@ function RegisterCollision(hero)
 
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('e009')  and GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then --Тини
-				if BlzGetLocale()=="ruRU" then
-					print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
-				else
-					print("|cff8080ffTinyc: |r".."Destroy stones for battle")
-				end
+
 				--FlyTextTagManaBurn(CollisionUnit,TotalStones,GetOwningPlayer(hero))
-				if TotalStones>=30 then
+				if TotalStones>=30 then --30
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					StartTinyAI(GetUnitXY(CollisionUnit))
 					--print("тут должна быть эпичная битва но её ещё нет")
+				else
+					if BlzGetLocale()=="ruRU" then
+						print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
+					else
+						print("|cff8080ffTinyc: |r".."Destroy stones for battle")
+					end
 				end
 			end
 
@@ -6313,6 +6360,7 @@ function RegisterCollision(hero)
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('o005')  and not data.CartUnit then--тележка
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
+					SetUnitInvulnerable(CollisionUnit,true)
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
 					data.CartUnit=CollisionUnit
 				end
@@ -6577,7 +6625,7 @@ function EntInTrees()
 			e = FirstOfGroup(perebor)
 
 			if e == nil then break end
-			if UnitAlive(e) and GetUnitTypeId(e)==id then
+			if UnitAlive(e) and GetUnitTypeId(e)==id and GetUnitZ(e)<=150 then
 				local x,y=GetUnitXY(e)
 				KillUnit(e)
 				DestroyEffect(AddSpecialEffect("",x,y))
@@ -6587,13 +6635,14 @@ function EntInTrees()
 					SetRect(GlobalRect, x - range, y - range, x + range, y +range)
 					EnumDestructablesInRect(GlobalRect,nil,function ()
 						local d=GetEnumDestructable()
-						if GetDestructableTypeId(d)==FourCC('LTlt') then
+						if GetDestructableTypeId(d)==FourCC('LTlt')  then
 							if GetDestructableLife(d)>0 then
 								KillDestructable(d)
 
 								local new=CreateUnit(Player(10), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
 								SetUnitAnimation(new,"birth")
 								TimerStart(CreateTimer(), 1, false, function()
+									SetUnitAnimation(new,"stand")
 									RemoveDestructable(d)
 									DestroyTimer(GetExpiredTimer())
 								end)
@@ -6605,10 +6654,7 @@ function EntInTrees()
 			end
 			GroupRemoveUnit(perebor,e)
 		end
-
 	end)
-
-
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -6618,6 +6664,8 @@ end
 ---
 function Normadia()
 	--print("Нормандия")
+	SetPlayerAllianceStateBJ(Player(14), Player(9), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(9), Player(14), bj_ALLIANCE_ALLIED_VISION)
 	TimerStart(CreateTimer(), 10, true, function()
 		CreateTransportShip(-5000,-5000,-2600,-3500)-- зона людей ПРОВЕРЕНО
 		CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
@@ -6673,7 +6721,7 @@ function CreateEnemy(ship,id,k)
 		--print("Число пехотинцев перевалило за "..100*nextfootmans)
 		nextfootmans=nextfootmans+1
 	end
-	if n<50 then
+	if n<100 then
 		for i=1,k do
 			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1
@@ -7214,19 +7262,19 @@ function InitCustomPlayerSlots()
     SetPlayerColor(Player(1), ConvertPlayerColor(1))
     SetPlayerRacePreference(Player(1), RACE_PREF_ORC)
     SetPlayerRaceSelectable(Player(1), false)
-    SetPlayerController(Player(1), MAP_CONTROL_USER)
+    SetPlayerController(Player(1), MAP_CONTROL_COMPUTER)
     SetPlayerStartLocation(Player(2), 2)
     ForcePlayerStartLocation(Player(2), 2)
     SetPlayerColor(Player(2), ConvertPlayerColor(2))
     SetPlayerRacePreference(Player(2), RACE_PREF_ORC)
     SetPlayerRaceSelectable(Player(2), false)
-    SetPlayerController(Player(2), MAP_CONTROL_USER)
+    SetPlayerController(Player(2), MAP_CONTROL_COMPUTER)
     SetPlayerStartLocation(Player(3), 3)
     ForcePlayerStartLocation(Player(3), 3)
     SetPlayerColor(Player(3), ConvertPlayerColor(3))
     SetPlayerRacePreference(Player(3), RACE_PREF_ORC)
     SetPlayerRaceSelectable(Player(3), false)
-    SetPlayerController(Player(3), MAP_CONTROL_USER)
+    SetPlayerController(Player(3), MAP_CONTROL_COMPUTER)
     SetPlayerStartLocation(Player(4), 4)
     ForcePlayerStartLocation(Player(4), 4)
     SetPlayerColor(Player(4), ConvertPlayerColor(4))
@@ -7291,9 +7339,6 @@ function InitCustomTeams()
 end
 
 function InitAllyPriorities()
-    SetStartLocPrioCount(0, 2)
-    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_LOW)
-    SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(1, 2)
     SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_LOW)
     SetStartLocPrio(1, 1, 3, MAP_LOC_PRIO_HIGH)
@@ -7340,7 +7385,7 @@ function config()
     SetMapDescription("TRIGSTR_003")
     SetPlayers(6)
     SetTeams(6)
-    SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
+    SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
     DefineStartLocation(0, -128.0, -192.0)
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)

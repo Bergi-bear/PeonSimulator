@@ -35,7 +35,19 @@ function InitDamage()
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
 
-				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then
+				if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
+					UnitRemoveAbility(target,FourCC('BPSE'))
+					BlzSetEventDamage(0)
+					if data.ReleaseLMB then
+						data.StoneCount=data.StoneCount+1
+						if data.StoneCount==5 then
+							data.Perk14A=true
+							PerkUnlocker(data,14)
+						end
+					end
+					--print("урон от голема")
+				end
+				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then -- обледенение
 					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget",GetUnitXY(target)))
 				end
 
@@ -230,7 +242,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if GetUnitTypeId(e)==FourCC('n007') and damage>6 then-- попытка ударить свинку лечилку
-				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=150 then
+				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=70 then
 					local x,y=GetUnitXY(u)
 					local mes=""
 					if BlzGetLocale()=="ruRU" then

@@ -12,7 +12,7 @@ function EntInTrees()
 			e = FirstOfGroup(perebor)
 
 			if e == nil then break end
-			if UnitAlive(e) and GetUnitTypeId(e)==id then
+			if UnitAlive(e) and GetUnitTypeId(e)==id and GetUnitZ(e)<=150 then
 				local x,y=GetUnitXY(e)
 				KillUnit(e)
 				DestroyEffect(AddSpecialEffect("",x,y))
@@ -22,13 +22,14 @@ function EntInTrees()
 					SetRect(GlobalRect, x - range, y - range, x + range, y +range)
 					EnumDestructablesInRect(GlobalRect,nil,function ()
 						local d=GetEnumDestructable()
-						if GetDestructableTypeId(d)==FourCC('LTlt') then
+						if GetDestructableTypeId(d)==FourCC('LTlt')  then
 							if GetDestructableLife(d)>0 then
 								KillDestructable(d)
 
 								local new=CreateUnit(Player(10), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
 								SetUnitAnimation(new,"birth")
 								TimerStart(CreateTimer(), 1, false, function()
+									SetUnitAnimation(new,"stand")
 									RemoveDestructable(d)
 									DestroyTimer(GetExpiredTimer())
 								end)
@@ -40,8 +41,5 @@ function EntInTrees()
 			end
 			GroupRemoveUnit(perebor,e)
 		end
-
 	end)
-
-
 end

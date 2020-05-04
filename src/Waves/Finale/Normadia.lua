@@ -6,6 +6,8 @@
 ---
 function Normadia()
 	--print("Нормандия")
+	SetPlayerAllianceStateBJ(Player(14), Player(9), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(9), Player(14), bj_ALLIANCE_ALLIED_VISION)
 	TimerStart(CreateTimer(), 10, true, function()
 		CreateTransportShip(-5000,-5000,-2600,-3500)-- зона людей ПРОВЕРЕНО
 		CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
@@ -61,7 +63,7 @@ function CreateEnemy(ship,id,k)
 		--print("Число пехотинцев перевалило за "..100*nextfootmans)
 		nextfootmans=nextfootmans+1
 	end
-	if n<50 then
+	if n<100 then
 		for i=1,k do
 			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1

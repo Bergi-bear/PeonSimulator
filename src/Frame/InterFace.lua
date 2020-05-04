@@ -134,7 +134,7 @@ function MoveWoodAsFarm(hero,k)
 
 
 
-			if GTotalWood==50 or GTotalWood==51 or GTotalWood==1  then
+			if GTotalWood==50 or GTotalWood==51  then--or GTotalWood==1
 				HERO[0].Perk17=true
 				HERO[1].Perk17=true
 				HERO[2].Perk17=true
@@ -432,29 +432,35 @@ end
 
 StatusTexture={
 	"ReplaceableTextures\\CommandButtons\\BTNGatherGold",
-
+	"ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpOne",
 }
 
 function CreateStatusBar(pid)
 	local data=HERO[pid]
-	local i=1
-	--for i=0,3 do
+	local statustxt={}
+	for i=1,2 do
 		local status=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetTexture(status, StatusTexture[i], 0, true)
 		BlzFrameSetSize(status, 0.019, 0.019)
-		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.08 , 0.6-0.04)
-		local statustxt = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-		BlzFrameSetPoint(statustxt, FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
+		BlzFrameSetAbsPoint(status, FRAMEPOINT_LEFT,0.08+0.02*(i-1) , 0.6-0.04)
+		statustxt[i] = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+		BlzFrameSetPoint(statustxt[i], FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
+
 		if GetLocalPlayer() ~= Player(pid) then
 			BlzFrameSetVisible(status, false)
-			BlzFrameSetVisible(statustxt, false)
+			BlzFrameSetVisible(statustxt[i], false)
 		end
 
-	--end
+	end
 
 	TimerStart(CreateTimer(), 1, true, function()
 		local d=R2I(BlzGetUnitBaseDamage(data.UnitHero,0))
-		BlzFrameSetText(statustxt, d)
+		BlzFrameSetText(statustxt[1], d)
+		if not data.Perk14A then
+			BlzFrameSetText(statustxt[2], 50)
+		else
+			BlzFrameSetText(statustxt[2], 100)
+		end
 	end)
 
 	--обновление текстаз

@@ -50,6 +50,7 @@ function StartTinyAI(xs, ys)
 	local phase = 2 --стартовая фаза
 	local sec = 0
 	local PhaseOn = true
+	local OnAttack=true
 	TimerStart(CreateTimer(), 1, true, function() --каждую секунду
 		local bx,by=GetUnitXY(boss)
 
@@ -66,13 +67,33 @@ function StartTinyAI(xs, ys)
 				local r2=GetRandomInt(-100,100)
 				CreateFreeWood(bx+r,by+r2)
 			end
-		else --Проверяем есть ли живые герои
+		else --Проверяем есть ли живые герои, когда тиник жив
 			if BossFight then
 				local k=0
 				for i = 0, 3 do
 					local hero = HERO[i].UnitHero
 					if IsUnitInRange(hero, boss, 1000) then
 						k=k+1
+					end
+
+					--print("Отталкивание для особо умных")
+					if OnAttack then
+						if IsUnitInRange(hero, boss, 250) then
+							--SetUnitTimeScale(boss,-1)
+							OnAttack=false
+							local angle=AngleBetweenUnits(boss,hero)
+							SetUnitFacing(boss,angle)
+							--SetUnitAnimation(boss,"Attack")
+
+							SetUnitAnimationByIndex(boss,3)
+							UnitAddVectorForce(hero,angle,30,300,false)
+							TimerStart(CreateTimer(), 1, false, function()
+								OnAttack=true
+								SetUnitAnimation(boss,"stand")
+								SetUnitTimeScale(boss,1)
+							end)
+						end
+
 					end
 				end
 				if k==0 then
@@ -101,6 +122,15 @@ function StartTinyAI(xs, ys)
 			if phase == 1 and PhaseOn then
 				PhaseOn = false
 				--print("стреляем камнями")
+				TimerStart(CreateTimer(), 1.5, true, function()
+					if UnitAlive(boss) then
+						SetUnitAnimationByIndex(boss,2)
+					end
+					if phase ~= 1 or not UnitAlive(boss) then
+						DestroyTimer(GetExpiredTimer())
+					end
+				end)
+
 				TimerStart(CreateTimer(), .1, true, function()
 					local angle = GetRandomInt(0, 359)
 					local eff = stoneEffModel
@@ -119,12 +149,13 @@ function StartTinyAI(xs, ys)
 				local effmodel = "Doodads\\LordaeronSummer\\Terrain\\LoardaeronRockChunks\\LoardaeronRockChunks3"
 				TimerStart(CreateTimer(), .5, true, function() -- случайные
 
-
+					SetUnitAnimationByIndex(boss,3)
 					local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
 					MarkAndFall(bx+rx,by+ry,effmodel,boss)
-
+					SetUnitFacing(boss,AngleBetweenXY(GetUnitX(boss),GetUnitY(boss),bx+rx,by+ry)/bj_DEGTORAD)
 					if phase ~= 2 then
 						DestroyTimer(GetExpiredTimer())
+						ResetUnitAnimation(boss)
 					end
 				end)
 				TimerStart(CreateTimer(), 1.5, true, function()--по героям

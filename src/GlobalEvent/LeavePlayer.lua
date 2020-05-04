@@ -11,7 +11,7 @@ function LeavePlayer()
 
 	TriggerAddAction(this, function()
 		local p=GetTriggerPlayer()
-		print("Разумом "..GetPlayerName(p).." овладел ИИ")
+		--print("Разумом "..GetPlayerName(p).." овладел ИИ")
 		if BlzGetLocale()=="ruRU" then
 			print("|cff8080ffСистема: |r".."Разумом "..GetPlayerName(p).." овладел ИИ")
 		else

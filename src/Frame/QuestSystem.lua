@@ -25,7 +25,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 				qx,qy=GetUnitX(questendunit),GetUnitY(questendunit)
 			end
 			local Angle=AngleBetweenXY(xc,yc,qx,qy)
-			BlzSetSpecialEffectPosition(QuestPointer,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+10)
+			BlzSetSpecialEffectPosition(QuestPointer,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+50)
 			BlzSetSpecialEffectYaw(QuestPointer,Angle)
 
 			--if data.isend==true then

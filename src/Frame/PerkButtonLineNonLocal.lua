@@ -151,16 +151,13 @@ function PerkButtonLineNonLocal(k,lang)
 			BlzFrameSetSize(tooltip, 0.15, 0.08)
 			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
 			BlzFrameSetText(UpDest, description[i])
-
-				--print("создаём перезаряжаемость")
-				--local fh = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
-				--BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.4, 0.3)
-				BlzFrameSetValue(buttonIconFrame, 100)
-				BlzFrameSetText(BlzGetFrameByName("MyBarText", 0), "")
-				BlzFrameSetTexture(BlzGetFrameByName("MyBarBackground", 0), DISBTNTexture[i], 0, true)
-				BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
-				BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
+			BlzFrameSetValue(buttonIconFrame, 100)
+			local cdtext=BlzGetFrameByName("MyBarText", 0)
+			BlzFrameSetText(cdtext, "")
+			local cdICO=BlzGetFrameByName("MyBarBackground", 0)
+			BlzFrameSetTexture(cdICO, DISBTNTexture[i], 0, true)
+			BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+			BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
 			if i==17 then
 				--StartFrameCD(10,buttonIconFrame)
 			end
@@ -187,6 +184,7 @@ function PerkButtonLineNonLocal(k,lang)
 			if GetLocalPlayer() ~= Player(k) then
 				BlzFrameSetVisible(lock, false)
 				BlzFrameSetVisible(face, false)
+				BlzFrameSetVisible(buttonIconFrame, false)
 			end
 			--глобалки
 
@@ -233,8 +231,8 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 6 then
 					if data.Perk6 then
-						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00" .. "90 доп. урона|r") --|cffffff00AAAA|r
-						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. "90 damage|r") end
+						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero, 0).." доп. урона|r") --|cffffff00AAAA|r
+						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..BlzGetUnitBaseDamage(data.UnitHero, 0).." damage|r") end
 					else
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
 					end
