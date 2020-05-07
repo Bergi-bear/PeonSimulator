@@ -4,6 +4,7 @@
 --- DateTime: 27.03.2020 22:59
 ---
 function AfterAttack(hero, delay)
+
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]

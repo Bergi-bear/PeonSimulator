@@ -45,7 +45,7 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 
 		if OnDamage and ReflectorUnit then
-			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+			PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0) --звуковой дамми и его блок
 			UnitAddAbility(dummy,FourCC('Apsh'))
 			IssueImmediateOrder(dummy,"phaseshift")
@@ -150,7 +150,7 @@ function CreateGroundSaw(hero,angle,z)
 			IssueImmediateOrder(dummy,"phaseshift")
 			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 			--ShowUnit(dummy,false)
-			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+			PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 		end
 
 

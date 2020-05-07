@@ -1089,9 +1089,9 @@ function CreateWeaponFrame()
 end
 
 function SwitchWeaponVisual(pid,index)
-	if GetLocalPlayer()==Player(pid) then
+	if GetLocalPlayer()==Player(pid) then --из другой карты
 		for i=1, #FrameSelecter do
-			BlzFrameSetVisible(FrameSelecter[i],false)
+		--	BlzFrameSetVisible(FrameSelecter[i],false)
 		end
 		BlzFrameSetVisible(FrameSelecter[index],true)
 	end
@@ -1157,7 +1157,7 @@ function HeroUpdateWeaponCharges(hero,index,amount)
 	end
 	--print(count)
 	if GetLocalPlayer()==Player(pid) then
-	BlzFrameSetText(VisualCharges[index], count )
+	--BlzFrameSetText(VisualCharges[index], count )
 	end
 	return HasAmmo
 end
@@ -1396,7 +1396,7 @@ function MoveWoodAsFarm(hero,k)
 	AddHeroXP(hero,70*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetVisible(wood,false)
-	if GetLocalPlayer()==GetOwningPlayer(hero) then
+	if GetLocalPlayer()==GetOwningPlayer(hero) and GetLocalON  then -- момент перемещения дерева, проверено - не он
 		BlzFrameSetVisible(wood,true)
 	end
 	BlzFrameSetTexture(wood, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
@@ -1486,7 +1486,7 @@ function HealthBarAdd(u)
 	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
 	BlzFrameSetVisible(heroico,false)
 
-	if GetLocalPlayer()==GetOwningPlayer(u) then
+	if GetLocalPlayer()==GetOwningPlayer(u) and GetLocalON then -- хп бары, они точно в норме
 		BlzFrameSetVisible(bar,true)
 		BlzFrameSetVisible(heroico,true)
 	end
@@ -1571,7 +1571,7 @@ function PerkButtonLine()
 	TimerStart(CreateTimer(), 1, true, function()
 		for i=0,3 do
 			local data=HERO[i]
-			if GetLocalPlayer()==Player(i) then
+			if GetLocalPlayer()==Player(i) then-- используется другой элемент
 				for k=1,#Name  do
 					--print(#Name)
 					if k==1 then
@@ -1705,7 +1705,7 @@ function CreateMouseHelper(sec)
 		for i=0,3 do
 			local data=HERO[i]
 			if data.MHoldSec >=5  and data.MHoldSec <=9  then
-				if GetLocalPlayer()==Player(i) then
+				if GetLocalPlayer()==Player(i) and GetLocalON  then -- маусхелпер 1 раз вначале
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
@@ -1733,7 +1733,7 @@ function CreateStatusBar(pid)
 		statustxt[i] = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetPoint(statustxt[i], FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
 
-		if GetLocalPlayer() ~= Player(pid) then
+		if GetLocalPlayer() ~= Player(pid) and GetLocalON then -- статус бар, вылетало и до него
 			BlzFrameSetVisible(status, false)
 			BlzFrameSetVisible(statustxt[i], false)
 		end
@@ -1832,7 +1832,7 @@ function CreateMouseHelperNEW(pid)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
 	BlzFrameSetAbsPoint(wasd, FRAMEPOINT_CENTER,0.1 , 0.25)]]
 
-	if GetLocalPlayer() ~= Player(pid) then
+	if GetLocalPlayer() ~= Player(pid) and GetLocalON  then -- включение маусхелпера
 		BlzFrameSetVisible(Mouse, false)
 	end
 	--updater
@@ -2023,7 +2023,7 @@ function PerkButtonLineNonLocal(k,lang)
 			BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
 
 			BlzFrameSetVisible(buttonsprite, false)
-			if GetLocalPlayer() ~= Player(k) then
+			if GetLocalPlayer() ~= Player(k) and GetLocalON  then -- скрытие интерфейса от других игроков
 				BlzFrameSetVisible(lock, false)
 				BlzFrameSetVisible(face, false)
 				BlzFrameSetVisible(buttonIconFrame, false)
@@ -2208,8 +2208,8 @@ end
 function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
-	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
-	if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) then
+	PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
+	if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) and GetLocalON  then -- РАзблокировка, проверено, не здесь десинхает
 		--print("звук!")
 		PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
 		--print("БЫл?")
@@ -2920,7 +2920,7 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-			--print(GetUnitName(caster).." атаковал "..GetUnitName(target))
+			--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
 			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
@@ -3319,15 +3319,15 @@ end
 --- Created by Bergi.
 --- DateTime: 16.01.2020 23:40
 ---
-GetPlayerMouseX={}
-GetPlayerMouseY={}
+GetPlayerMouseX={0,0,0,0}
+GetPlayerMouseY={0,0,0,0}
 function InitMouseMoveTrigger()
 	local MouseMoveTrigger = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
-		if GetPlayerSlotState(player) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(player) == MAP_CONTROL_USER then
+		--if GetPlayerSlotState(player) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(player) == MAP_CONTROL_USER then
 			TriggerRegisterPlayerEvent(MouseMoveTrigger, player, EVENT_PLAYER_MOUSE_MOVE)
-		end
+		--end
 	end
 		TriggerAddAction(MouseMoveTrigger, function()
 			--print("ismove")
@@ -3347,6 +3347,7 @@ end
 ---Глобалки
 TIMER_PERIOD = 0.03125
 HERO = {}
+GetLocalON=true--отключает и выключает полностью возможности гетлокалплеер
 do
 	local InitGlobalsOrigin = InitGlobals -- записываем InitGlobals в переменную
 	function InitGlobals()
@@ -3388,6 +3389,18 @@ do
 	end
 end
 
+
+--GetLocalPlayer
+--[[GLPK=0
+do
+	local GetLocalPlayer_Original = GetLocalPlayer
+	function GetLocalPlayer()
+		GLPK=GLPK+1
+		print(GLPK)
+		GetLocalPlayer_Original()
+	end
+end]]
+
 function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
@@ -3401,7 +3414,7 @@ function InitGameCore()
 			--if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
 				PerkButtonLineNonLocal(i,0)
 				CreateStatusBar(i)
-			--end
+		--	end
 		end
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
@@ -3481,12 +3494,12 @@ function InitGameCore()
 			Perk3 = false, -- Суицидник
 			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
-			Perk6 = false, -- Ученика кузнеца
+			Perk6 = true, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
 			Perk7A = false, -- Ожирение 2 степени
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
-			Perk10 = false, -- Кирка
+			Perk10 = false, -- парирование
 			Perk11 = false, -- Кирка
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
@@ -3519,7 +3532,7 @@ function InitGameCore()
 			HealthBarAdd(hero)
 			AddSpecialEffectTarget("GeneralHeroGlow", hero, "origin")
 			SetUnitColor(hero, ConvertPlayerColor(i))
-			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
+			UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
 
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
@@ -3731,10 +3744,10 @@ function InitGameCore()
 
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
-		if GetLocalPlayer() == GetTriggerPlayer() then
-			EnableUserControl(true)
+		--if GetLocalPlayer() == GetTriggerPlayer() and GetLocalON  then
+		--	EnableUserControl(true)
 			--print("клик левой")
-		end
+		--end
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 
 			-- это правая кнопка
@@ -3855,9 +3868,13 @@ function InitGameCore()
 			local WalkCart = false
 
 			local turn = 0
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then
+			--if  GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then --GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and
+			if true then
+				--print(1)
 				if not data.IsFrizzyDisabled then
+				--	print("2 x="..x.." y= "..y)
 					turn = AngleBetweenXY(x, y, GetPlayerMouseX[id], GetPlayerMouseY[id]) / bj_DEGTORAD
+				--	print(3)
 				end
 
 				if data.LastMouseX == GetPlayerMouseX[id] then
@@ -3871,7 +3888,7 @@ function InitGameCore()
 				end
 				data.LastMouseX = GetPlayerMouseX[id]
 			end
-
+			--print("eeeee")
 			local Vector3 = wGeometry.Vector3
 
 
@@ -4491,10 +4508,11 @@ function InitUnitDeath()
 	local gg_trg_DEADGUI = CreateTrigger()
 	TriggerRegisterAnyUnitEventBJ(gg_trg_DEADGUI, EVENT_PLAYER_UNIT_DEATH)--меня полностью устраивает это событие
 	TriggerAddAction(gg_trg_DEADGUI, function()
-		--print("EventDead")
+
 		local DeadUnit=GetTriggerUnit()--умерший
 
 		local Killer=GetKillingUnit()--убийца
+		--print("EventDead "..GetUnitName(DeadUnit).." "..GetUnitName(Killer))
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
 			--print("волк убил")
 			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+1,0)
@@ -4628,9 +4646,9 @@ function InitUnitDeath()
 					end)
 
 
-					if GetLocalPlayer()==PD then
-						BlzFrameSetVisible(PerkIsLock[13],false)
-					end
+					--if GetLocalPlayer()==PD and GetLocalON then
+					--	BlzFrameSetVisible(PerkIsLock[13],false)
+					--end
 				end
 			end
 		end
@@ -6190,6 +6208,7 @@ end)
 --- DateTime: 27.03.2020 22:59
 ---
 function AfterAttack(hero, delay)
+
 	TimerStart(CreateTimer(), delay, false, function()
 		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
@@ -6463,7 +6482,7 @@ function RegisterCollision(hero)
 					if not data.IsWood then
 						--print("звук подбора")
 						if not data.ReleaseLMB then
-							PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+						PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 							KillUnit(CollisionUnit)
 							data.IsWood=true
 						end
@@ -6846,7 +6865,7 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 
 		if OnDamage and ReflectorUnit then
-			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+			PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0) --звуковой дамми и его блок
 			UnitAddAbility(dummy,FourCC('Apsh'))
 			IssueImmediateOrder(dummy,"phaseshift")
@@ -6951,7 +6970,7 @@ function CreateGroundSaw(hero,angle,z)
 			IssueImmediateOrder(dummy,"phaseshift")
 			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 			--ShowUnit(dummy,false)
-			--PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+			PlaySoundAtPointBJ( gg_snd_Saw, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 		end
 
 
@@ -7262,19 +7281,19 @@ function InitCustomPlayerSlots()
     SetPlayerColor(Player(1), ConvertPlayerColor(1))
     SetPlayerRacePreference(Player(1), RACE_PREF_ORC)
     SetPlayerRaceSelectable(Player(1), false)
-    SetPlayerController(Player(1), MAP_CONTROL_COMPUTER)
+    SetPlayerController(Player(1), MAP_CONTROL_USER)
     SetPlayerStartLocation(Player(2), 2)
     ForcePlayerStartLocation(Player(2), 2)
     SetPlayerColor(Player(2), ConvertPlayerColor(2))
     SetPlayerRacePreference(Player(2), RACE_PREF_ORC)
     SetPlayerRaceSelectable(Player(2), false)
-    SetPlayerController(Player(2), MAP_CONTROL_COMPUTER)
+    SetPlayerController(Player(2), MAP_CONTROL_USER)
     SetPlayerStartLocation(Player(3), 3)
     ForcePlayerStartLocation(Player(3), 3)
     SetPlayerColor(Player(3), ConvertPlayerColor(3))
     SetPlayerRacePreference(Player(3), RACE_PREF_ORC)
     SetPlayerRaceSelectable(Player(3), false)
-    SetPlayerController(Player(3), MAP_CONTROL_COMPUTER)
+    SetPlayerController(Player(3), MAP_CONTROL_USER)
     SetPlayerStartLocation(Player(4), 4)
     ForcePlayerStartLocation(Player(4), 4)
     SetPlayerColor(Player(4), ConvertPlayerColor(4))
@@ -7339,6 +7358,9 @@ function InitCustomTeams()
 end
 
 function InitAllyPriorities()
+    SetStartLocPrioCount(0, 2)
+    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(1, 2)
     SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_LOW)
     SetStartLocPrio(1, 1, 3, MAP_LOC_PRIO_HIGH)
@@ -7385,12 +7407,12 @@ function config()
     SetMapDescription("TRIGSTR_003")
     SetPlayers(6)
     SetTeams(6)
-    SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
+    SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
     DefineStartLocation(0, -128.0, -192.0)
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)
-    DefineStartLocation(4, 960.0, -2560.0)
+    DefineStartLocation(4, -320.0, -2048.0)
     DefineStartLocation(5, 0.0, 512.0)
     InitCustomPlayerSlots()
     InitCustomTeams()

@@ -27,7 +27,7 @@ function CreateMouseHelperNEW(pid)
 	BlzFrameSetSize(wasd, 0.10, 0.10)
 	BlzFrameSetAbsPoint(wasd, FRAMEPOINT_CENTER,0.1 , 0.25)]]
 
-	if GetLocalPlayer() ~= Player(pid) then
+	if GetLocalPlayer() ~= Player(pid) and GetLocalON  then -- включение маусхелпера
 		BlzFrameSetVisible(Mouse, false)
 	end
 	--updater

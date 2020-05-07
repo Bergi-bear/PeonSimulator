@@ -6,10 +6,11 @@ function InitUnitDeath()
 	local gg_trg_DEADGUI = CreateTrigger()
 	TriggerRegisterAnyUnitEventBJ(gg_trg_DEADGUI, EVENT_PLAYER_UNIT_DEATH)--меня полностью устраивает это событие
 	TriggerAddAction(gg_trg_DEADGUI, function()
-		--print("EventDead")
+
 		local DeadUnit=GetTriggerUnit()--умерший
 
 		local Killer=GetKillingUnit()--убийца
+		--print("EventDead "..GetUnitName(DeadUnit).." "..GetUnitName(Killer))
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
 			--print("волк убил")
 			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+1,0)
@@ -143,9 +144,9 @@ function InitUnitDeath()
 					end)
 
 
-					if GetLocalPlayer()==PD then
-						BlzFrameSetVisible(PerkIsLock[13],false)
-					end
+					--if GetLocalPlayer()==PD and GetLocalON then
+					--	BlzFrameSetVisible(PerkIsLock[13],false)
+					--end
 				end
 			end
 		end

@@ -109,7 +109,7 @@ function MoveWoodAsFarm(hero,k)
 	AddHeroXP(hero,70*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetVisible(wood,false)
-	if GetLocalPlayer()==GetOwningPlayer(hero) then
+	if GetLocalPlayer()==GetOwningPlayer(hero) and GetLocalON  then -- момент перемещения дерева, проверено - не он
 		BlzFrameSetVisible(wood,true)
 	end
 	BlzFrameSetTexture(wood, "ReplaceableTextures\\CommandButtons\\BTNHumanLumberUpgrade2", 0, true)
@@ -199,7 +199,7 @@ function HealthBarAdd(u)
 	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
 	BlzFrameSetVisible(heroico,false)
 
-	if GetLocalPlayer()==GetOwningPlayer(u) then
+	if GetLocalPlayer()==GetOwningPlayer(u) and GetLocalON then -- хп бары, они точно в норме
 		BlzFrameSetVisible(bar,true)
 		BlzFrameSetVisible(heroico,true)
 	end
@@ -284,7 +284,7 @@ function PerkButtonLine()
 	TimerStart(CreateTimer(), 1, true, function()
 		for i=0,3 do
 			local data=HERO[i]
-			if GetLocalPlayer()==Player(i) then
+			if GetLocalPlayer()==Player(i) then-- используется другой элемент
 				for k=1,#Name  do
 					--print(#Name)
 					if k==1 then
@@ -418,7 +418,7 @@ function CreateMouseHelper(sec)
 		for i=0,3 do
 			local data=HERO[i]
 			if data.MHoldSec >=5  and data.MHoldSec <=9  then
-				if GetLocalPlayer()==Player(i) then
+				if GetLocalPlayer()==Player(i) and GetLocalON  then -- маусхелпер 1 раз вначале
 					BlzFrameSetVisible(wood,false)
 					BlzFrameSetVisible(new_FrameChargesText,false)
 					BlzFrameSetVisible(wasd,false)
@@ -446,7 +446,7 @@ function CreateStatusBar(pid)
 		statustxt[i] = BlzCreateFrameByType("TEXT", "ButtonChargesText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 		BlzFrameSetPoint(statustxt[i], FRAMEPOINT_CENTER,status,FRAMEPOINT_CENTER,0, 0)
 
-		if GetLocalPlayer() ~= Player(pid) then
+		if GetLocalPlayer() ~= Player(pid) and GetLocalON then -- статус бар, вылетало и до него
 			BlzFrameSetVisible(status, false)
 			BlzFrameSetVisible(statustxt[i], false)
 		end

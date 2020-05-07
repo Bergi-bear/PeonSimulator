@@ -3,15 +3,15 @@
 --- Created by Bergi.
 --- DateTime: 16.01.2020 23:40
 ---
-GetPlayerMouseX={}
-GetPlayerMouseY={}
+GetPlayerMouseX={0,0,0,0}
+GetPlayerMouseY={0,0,0,0}
 function InitMouseMoveTrigger()
 	local MouseMoveTrigger = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		local player = Player(i)
-		if GetPlayerSlotState(player) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(player) == MAP_CONTROL_USER then
+		--if GetPlayerSlotState(player) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(player) == MAP_CONTROL_USER then
 			TriggerRegisterPlayerEvent(MouseMoveTrigger, player, EVENT_PLAYER_MOUSE_MOVE)
-		end
+		--end
 	end
 		TriggerAddAction(MouseMoveTrigger, function()
 			--print("ismove")

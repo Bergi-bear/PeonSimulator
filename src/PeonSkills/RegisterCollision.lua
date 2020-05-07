@@ -190,7 +190,7 @@ function RegisterCollision(hero)
 					if not data.IsWood then
 						--print("звук подбора")
 						if not data.ReleaseLMB then
-							PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+						PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
 							KillUnit(CollisionUnit)
 							data.IsWood=true
 						end

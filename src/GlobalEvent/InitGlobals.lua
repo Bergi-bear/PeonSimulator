@@ -6,6 +6,7 @@
 ---Глобалки
 TIMER_PERIOD = 0.03125
 HERO = {}
+GetLocalON=true--отключает и выключает полностью возможности гетлокалплеер
 do
 	local InitGlobalsOrigin = InitGlobals -- записываем InitGlobals в переменную
 	function InitGlobals()
@@ -47,6 +48,18 @@ do
 	end
 end
 
+
+--GetLocalPlayer
+--[[GLPK=0
+do
+	local GetLocalPlayer_Original = GetLocalPlayer
+	function GetLocalPlayer()
+		GLPK=GLPK+1
+		print(GLPK)
+		GetLocalPlayer_Original()
+	end
+end]]
+
 function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
@@ -60,7 +73,7 @@ function InitGameCore()
 			--if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
 				PerkButtonLineNonLocal(i,0)
 				CreateStatusBar(i)
-			--end
+		--	end
 		end
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
@@ -140,12 +153,12 @@ function InitGameCore()
 			Perk3 = false, -- Суицидник
 			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
-			Perk6 = false, -- Ученика кузнеца
+			Perk6 = true, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
 			Perk7A = false, -- Ожирение 2 степени
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
-			Perk10 = false, -- Кирка
+			Perk10 = false, -- парирование
 			Perk11 = false, -- Кирка
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
@@ -390,10 +403,10 @@ function InitGameCore()
 
 	TriggerAddAction(TrigPressRMB, function()
 		--print("any")
-		if GetLocalPlayer() == GetTriggerPlayer() then
-			EnableUserControl(true)
+		--if GetLocalPlayer() == GetTriggerPlayer() and GetLocalON  then
+		--	EnableUserControl(true)
 			--print("клик левой")
-		end
+		--end
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
 
 			-- это правая кнопка
@@ -514,9 +527,13 @@ function InitGameCore()
 			local WalkCart = false
 
 			local turn = 0
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then
+			--if  GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then --GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and
+			if true then
+				--print(1)
 				if not data.IsFrizzyDisabled then
+				--	print("2 x="..x.." y= "..y)
 					turn = AngleBetweenXY(x, y, GetPlayerMouseX[id], GetPlayerMouseY[id]) / bj_DEGTORAD
+				--	print(3)
 				end
 
 				if data.LastMouseX == GetPlayerMouseX[id] then
@@ -530,7 +547,7 @@ function InitGameCore()
 				end
 				data.LastMouseX = GetPlayerMouseX[id]
 			end
-
+			--print("eeeee")
 			local Vector3 = wGeometry.Vector3
 
 

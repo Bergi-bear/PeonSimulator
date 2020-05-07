@@ -29,7 +29,7 @@ function InitDamage()
 		local casterOwner     = GetOwningPlayer(caster)
 
 		if isEventDamaged then
-			--print(GetUnitName(caster).." атаковал "..GetUnitName(target))
+			--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
 			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
 				--print("Герой получил урон")
 				local data=HERO[GetPlayerId(GetOwningPlayer(target))]

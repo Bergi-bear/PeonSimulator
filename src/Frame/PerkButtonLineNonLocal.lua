@@ -181,7 +181,7 @@ function PerkButtonLineNonLocal(k,lang)
 			BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
 
 			BlzFrameSetVisible(buttonsprite, false)
-			if GetLocalPlayer() ~= Player(k) then
+			if GetLocalPlayer() ~= Player(k) and GetLocalON  then -- скрытие интерфейса от других игроков
 				BlzFrameSetVisible(lock, false)
 				BlzFrameSetVisible(face, false)
 				BlzFrameSetVisible(buttonIconFrame, false)
@@ -366,8 +366,8 @@ end
 function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
-	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
-	if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) then
+	PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
+	if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) and GetLocalON  then -- РАзблокировка, проверено, не здесь десинхает
 		--print("звук!")
 		PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
 		--print("БЫл?")

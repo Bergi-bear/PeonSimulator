@@ -148,9 +148,9 @@ function CreateWeaponFrame()
 end
 
 function SwitchWeaponVisual(pid,index)
-	if GetLocalPlayer()==Player(pid) then
+	if GetLocalPlayer()==Player(pid) then --из другой карты
 		for i=1, #FrameSelecter do
-			BlzFrameSetVisible(FrameSelecter[i],false)
+		--	BlzFrameSetVisible(FrameSelecter[i],false)
 		end
 		BlzFrameSetVisible(FrameSelecter[index],true)
 	end
@@ -216,7 +216,7 @@ function HeroUpdateWeaponCharges(hero,index,amount)
 	end
 	--print(count)
 	if GetLocalPlayer()==Player(pid) then
-	BlzFrameSetText(VisualCharges[index], count )
+	--BlzFrameSetText(VisualCharges[index], count )
 	end
 	return HasAmmo
 end
