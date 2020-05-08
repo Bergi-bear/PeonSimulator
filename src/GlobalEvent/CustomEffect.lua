@@ -54,7 +54,7 @@ function EffectAddExplodedTimer(eff,time,hero)
 		sec=sec-1
 		if sec<0 then
 			ExplodeEffect(eff,3)
-			UnitDamageArea(hero,500,x,y,300)
+			UnitDamageArea(hero,500,x,y,300) -- взрыв от бочки оп истчениею таймера
 			DestroyTimer(GetExpiredTimer())
 		end
 	end)

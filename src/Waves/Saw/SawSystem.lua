@@ -133,11 +133,13 @@ function CreateGroundSaw(hero,angle,z)
 			SetUnitX(hero,x)
 			SetUnitY(hero,y)
 		else
-		--	print("ERROR - NOTINMAP"..x.." "..y)
+			print("ERROR - NOTINMAP"..x.." "..y)
+			PingMinimap(x,y,10)
 			DestroyTimer(GetExpiredTimer())
 			KillUnit(hero)
 		end
 		BlzSetSpecialEffectPosition(saw,x,y,z)
+		--урон от земляной пилы
 		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
 		local nx,ny=MoveXY(x,y,60,angle)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)

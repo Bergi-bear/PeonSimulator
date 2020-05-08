@@ -4,19 +4,31 @@
 --- DateTime: 27.03.2020 22:59
 ---
 function AfterAttack(hero, delay)
-
+	local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
+	local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+	local damage=BlzGetUnitBaseDamage(hero,0)--*50
 	TimerStart(CreateTimer(), delay, false, function()
-		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
-		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-		local damage=BlzGetUnitBaseDamage(hero,0)--*50
+
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+
 			if OnAttack then
 				data.RevoltSec=0
 			end
 
-			if (data.HaveAFire or data.Perk16 ) and ((not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit))) or GetUnitTypeId(CUnit)==FourCC('o005')) then
+			--if (data.HaveAFire or data.Perk16 ) and ) then
+			if (data.HaveAFire or data.Perk16 )  and true then
+				if  IsUnitType(CUnit,UNIT_TYPE_MECHANICAL)  and   IsUnitAlly(hero,GetOwningPlayer(CUnit))  and DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitXY(CUnit)) <=200 and GetUnitTypeId(CUnit)~=FourCC('o005') then
+					--print("в плотную нет огня")
+					DestroyTimer(GetExpiredTimer())
+					return
+				end
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
 				if (data.HaveAFire and data.Perk16)  then
 					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
@@ -30,13 +42,13 @@ function AfterAttack(hero, delay)
 
 
 		end
-		if data.Perk6 and data.Thor then -- удар тора
+		if false and data.Perk6 and data.Thor then -- удар тора
 			--data.Perk6=false
 			--print("удар тора")
 
 			local cd=2
 
-			if UnitDamageArea(hero,damage*.5,x,y,150)  then
+			if UnitDamageArea(hero,damage*.5,x,y,150)  then --дополнительный урон на торе
 				StartFrameCD(2,data,6)
 				data.Thor=false
 				TimerStart(CreateTimer(), cd, false, function()
@@ -48,8 +60,8 @@ function AfterAttack(hero, delay)
 			--print("ПОСТ удар тора")
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
-			data.Reflection=false
-			DestroyTimer(GetExpiredTimer())
+			--data.Reflection=false
+			--DestroyTimer(GetExpiredTimer())
 		end)
 		DestroyTimer(GetExpiredTimer())
 	end)

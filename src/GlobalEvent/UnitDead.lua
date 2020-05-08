@@ -84,7 +84,7 @@ function InitUnitDeath()
 				SetUnitExploded(DeadUnit, true)
 				local x,y=GetUnitXY(DeadUnit)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
-				--UnitDamageArea(Killer,200,x,y,250)
+				--UnitDamageArea(Killer,200,x,y,250)-- доп урон при убийстве
 			end
 
 
@@ -153,11 +153,11 @@ function InitUnitDeath()
 		----------------- смерть простых типов юнитов
 		---FourCC('e003')
 		--break --[[
-		Humans=CreateGroup()
+		--Humans=CreateGroup()
 		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин
 		--	print("Погиб крестьянин")
 			local x,y=GetUnitXY(DeadUnit)
-			local lum=FindUnitOfType(FourCC('hlum'),600,x,y)
+			local lum=FindUnitOfType(FourCC('hlum'),1200,x,y)
 			if lum then
 				TimerStart(CreateTimer(), 5, false, function()
 				--	print("создан новый рабочий")

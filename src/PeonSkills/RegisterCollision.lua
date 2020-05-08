@@ -211,7 +211,7 @@ function RegisterCollision(hero)
 
 				SetUnitExploded(CollisionUnit,true)
 				local nx,ny=GetUnitXY(CollisionUnit)
-				UnitDamageArea(CollisionUnit,100,nx,ny,150)
+				UnitDamageArea(CollisionUnit,100,nx,ny,150) -- взрыв овцы
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",nx,ny))
 				KillUnit(CollisionUnit)
 				local data=AnyData[GetHandleId(CollisionUnit)]

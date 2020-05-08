@@ -38,6 +38,7 @@ gg_unit_n006_0217 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
 gg_dest_DTlv_1234 = nil
+gg_trg_DontMove = nil
 function InitGlobals()
     local i = 0
     udg_Lang = DialogCreate()
@@ -886,7 +887,7 @@ function MarkAndFall(x,y,effModel,hero)
 				local nd=CreateDestructable(FourCC('LTrc'), x, y, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
 				SetDestructableInvulnerable(nd,true)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
-				UnitDamageArea(hero,100,x,y,150)
+				UnitDamageArea(hero,100,x,y,150) --при падении камня
 				for i = 0, 3 do
 					local herod = HERO[i].UnitHero
 					if IsUnitInRangeXY(herod, x,y, 150) then
@@ -2418,7 +2419,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 				--BlzSetSpecialEffectPosition(bullet,4000,4000,0)
 			end
 			--print("Условие урона прошло")
-			--UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
+			UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
 			if IsUnitType(hero, UNIT_TYPE_HERO) then
 				local data = HERO[GetPlayerId(GetOwningPlayer(hero))]
 				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit then
@@ -2681,13 +2682,13 @@ function JumpEffect(eff, speed, maxHeight, angle, distance, hero, flag, ZStart)
 					end]]
 				end
 				DestroyEffect(eff)
-				UnitDamageArea(hero, 210, nx, ny, 150, 127)
+				UnitDamageArea(hero, 210, nx, ny, 150 )
 				--print("урон прошел")
 			elseif flag == 3 then
 				-- осколки
 				CreateTorrent(nx, ny)
 				DestroyEffect(eff)
-				UnitDamageArea(hero, 100, nx, ny, 200, z)
+				UnitDamageArea(hero, 100, nx, ny, 200)
 			elseif flag == 4 then
 				-- выпрыгнул гоблин
 				if CreateTorrent(nx, ny, 0.1) then
@@ -2731,7 +2732,7 @@ function EffectAddRegistrationCollision(eff, hero, range, duration, flag)
 				elseif flag == 2 then
 					-- глубоководная мина
 					if IsUnitEnemy(e, GetOwningPlayer(hero)) then
-						UnitDamageArea(hero, 100, x, y, 200, z)
+						--UnitDamageArea(hero, 100, x, y, 200, z) --мина
 					end
 				end
 			end
@@ -2812,14 +2813,14 @@ function SawActivated(hero)
 		end
 
 		local nx, ny = MoveXY(x, y, 130, angle)
-
-		if UnitDamageArea(hero, 30, nx, ny, 150, GetUnitZ(hero) + 50, "Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl") then
+	-- вроде как и было отключено
+		--if UnitDamageArea(hero, 30, nx, ny, 150, GetUnitZ(hero) + 50, "Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl") then -- это и бло отключено
 			--[[if HeroUpdateWeaponCharges(hero,8,1) then
 			else
 				DestroyTimer(GetExpiredTimer())
 				DestroyEffect(saw)
 			end]]
-		end
+		--end
 
 		BlzSetSpecialEffectPosition(saw, nx, ny, GetUnitZ(hero) + 20)
 		if data.WeaponIndex ~= 8 then
@@ -2884,7 +2885,7 @@ function EffectAddExplodedTimer(eff,time,hero)
 		sec=sec-1
 		if sec<0 then
 			ExplodeEffect(eff,3)
-			UnitDamageArea(hero,500,x,y,300)
+			UnitDamageArea(hero,500,x,y,300) -- взрыв от бочки оп истчениею таймера
 			DestroyTimer(GetExpiredTimer())
 		end
 	end)
@@ -3097,25 +3098,28 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local isdamage=false
 	local e=nil
 	local hero=nil
-	--if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
+
+
 
 	--print("Поиск целей в на высоте "..ZDamageSource)
+	--local mperebor=CreateGroup()
 	GroupEnumUnitsInRange(perebor,x,y,range,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
-		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
+		if UnitAlive(e) and UnitAlive(u) and IsUnitEnemy(e,GetOwningPlayer(u))  and true then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
+			--print("вызов проблемной функции "..GetPlayerName(GetOwningPlayer(u)).." "..GetUnitName(u).." "..damage)
 			if EffectModel~=nil then
 				--print("эффеет")
-				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
+				--local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
 				--BlzSetSpecialEffectZ(DE,ZDamageSource)
-				DestroyEffect(DE)
+				--DestroyEffect(DE)
 			end
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 				--if data.
 
-				if data.HaveAFire then
+				if data.HaveAFire then --урон от фаербола
 					damage=damage*5
 					data.HaveAFire=false
 					if not data.Perk16 then
@@ -3126,11 +3130,13 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 
 			end
 			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
+			--print("урон прошёл для "..GetUnitName(e))
 			isdamage=true
 			hero=e
 		end
 		--ремонт
-		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
+		if  true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and IsUnitType(u,UNIT_TYPE_HERO)  then -- момент ремонта
+
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if GetUnitTypeId(e)==FourCC('n007') and damage>6 then-- попытка ударить свинку лечилку
 				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=70 then
@@ -3176,6 +3182,8 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		end
 		GroupRemoveUnit(perebor,e)
 	end
+	--DestroyGroup(mperebor)
+	--mperebor=nil
 	if PointContentDestructable(x,y,range,true,1+damage/4,u) then	isdamage=true	end
 	return isdamage, hero
 end
@@ -3390,21 +3398,13 @@ do
 end
 
 
---GetLocalPlayer
---[[GLPK=0
-do
-	local GetLocalPlayer_Original = GetLocalPlayer
-	function GetLocalPlayer()
-		GLPK=GLPK+1
-		print(GLPK)
-		GetLocalPlayer_Original()
-	end
-end]]
+
 
 function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
-	EnableDragSelect(false, false)
+	--EnableSelect(false,false)
+	--EnableDragSelect(false, false)
 	CreateWoodFrame()
 	HideEverything()
 	TimerStart(CreateTimer(), 0.5, false, function()
@@ -3489,10 +3489,10 @@ function InitGameCore()
 			SheepCount = 0,
 			Thor=true,
 			---открытие перков
-			Perk1 = false, --Работник
+			Perk1 = true, --Работник
 			Perk2 = false, -- Бунт
 			Perk3 = false, -- Суицидник
-			Perk4 = false, -- Лесной болван
+			Perk4 = true, -- Лесной болван
 			Perk5 = false, -- Убийца
 			Perk6 = true, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
@@ -3500,14 +3500,14 @@ function InitGameCore()
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
 			Perk10 = false, -- парирование
-			Perk11 = false, -- Кирка
+			Perk11 = false, -- Технологии людей
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
-			Perk16 = false, -- Фаерболы
-			Perk17 = false, --Рывок
+			Perk16 = true, -- Фаерболы
+			Perk17 = true, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -3532,7 +3532,7 @@ function InitGameCore()
 			HealthBarAdd(hero)
 			AddSpecialEffectTarget("GeneralHeroGlow", hero, "origin")
 			SetUnitColor(hero, ConvertPlayerColor(i))
-			UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
+			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
 
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
@@ -3679,7 +3679,7 @@ function InitGameCore()
 					--print("mini force")
 					data.ShieldForce = false
 					local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
-					local IsDamage, DamagingUnit = UnitDamageArea(data.UnitHero, 1, x, y, 100)
+					local IsDamage, DamagingUnit= UnitDamageArea(data.UnitHero, 1, x, y, 100)
 					local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
 					local eff = AddSpecialEffect("DefendCaster", x, y)
 					BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
@@ -3823,20 +3823,23 @@ function InitGameCore()
 		for i = 0, 3 do
 			local data = HERO[i]
 			local hero = data.UnitHero
-			ForceUIKeyBJ(GetOwningPlayer(hero), "M")
-			IssueImmediateOrder(hero, "stop")
+			if UnitAlive(hero) then
+				--SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
+				ForceUIKeyBJ(GetOwningPlayer(hero), "M")
+				--IssueImmediateOrder(hero, "stop")
+			end
 		end
 	end)
 
 	------------------------------ТЕСТ АНИМАЦИЙ
 	local ai = 0
 	TimerStart(CreateTimer(), 2, true, function()
-		local data = HERO[0]
-		local hero = data.legs
+		--local data = HERO[0]
+		--local hero = data.legs
 		--SetUnitAnimationByIndex(hero,ai)
 		--SetUnitAnimationByIndex(hero,8)
 		--print(ai)
-		ai = ai + 1
+		--ai = ai + 1
 	end)
 
 
@@ -3845,7 +3848,9 @@ function InitGameCore()
 	--local sec2=0
 	--local secattack=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		for i, data in pairs(HERO) do
+		--for i, data in pairs(HERO) do
+		for i=0,3 do
+			local data=HERO[i]
 			--print(i.." pairs")
 			local hero = data.UnitHero
 			local id = data.pid
@@ -4136,7 +4141,7 @@ function InitGameCore()
 								--print("толкаемый герой не определён")
 							end
 
-							if data.Perk12 and BlzGetUnitAbility(DamagingUnit,FourCC('Bfro'))==0 then
+							if data.Perk12 and GetUnitAbilityLevel(DamagingUnit,FourCC('Bfro'))==0 and IsUnitEnemy(DamagingUnit,GetOwningPlayer(hero)) and DamagingUnit then
 								--
 								local x12, y12 = GetUnitXY(DamagingUnit)
 								--print("замораживаем "..GetUnitName(caster))
@@ -4185,11 +4190,11 @@ function InitGameCore()
 					data.ForcesCount = 0
 					data.IsDisabled = false
 					SetUnitPathing(hero, true)
-					if data.OnCharge then
+					if data.OnCharge then-- место где окончился рывок и сплеш урон
 						data.OnCharge = false
 						UnitRemoveAbility(hero, FourCC('A00E')) --красный
 						UnitRemoveAbility(hero, FourCC('A00F')) --Синий
-						UnitDamageArea(hero, 100, GetUnitX(hero), GetUnitY(hero), 150)
+						UnitDamageArea(hero, BlzGetUnitBaseDamage(hero,0)*4, GetUnitX(hero), GetUnitY(hero), 150) -- удар после рывка
 						--DestroyEffect(data.ChargeEff)
 						--data.ChargeEff=nil
 						--print("нет больше сил")
@@ -4352,6 +4357,7 @@ function InitGameCore()
 		end
 	end)
 end
+
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -4586,7 +4592,7 @@ function InitUnitDeath()
 				SetUnitExploded(DeadUnit, true)
 				local x,y=GetUnitXY(DeadUnit)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
-				--UnitDamageArea(Killer,200,x,y,250)
+				--UnitDamageArea(Killer,200,x,y,250)-- доп урон при убийстве
 			end
 
 
@@ -4655,11 +4661,11 @@ function InitUnitDeath()
 		----------------- смерть простых типов юнитов
 		---FourCC('e003')
 		--break --[[
-		Humans=CreateGroup()
+		--Humans=CreateGroup()
 		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин
 		--	print("Погиб крестьянин")
 			local x,y=GetUnitXY(DeadUnit)
-			local lum=FindUnitOfType(FourCC('hlum'),600,x,y)
+			local lum=FindUnitOfType(FourCC('hlum'),1200,x,y)
 			if lum then
 				TimerStart(CreateTimer(), 5, false, function()
 				--	print("создан новый рабочий")
@@ -5198,69 +5204,75 @@ function FindUnitOfType(id,flag,x,y)
 	return unit,k
 end
 ---------ВЕКТОРА
-function UnitAddVectorForce(hero,Angle,Speed,Distance,AfterMoving)
-	local data=nil
-	local k=0
-	local h=0
+function UnitAddVectorForce(hero, Angle, Speed, Distance, AfterMoving)
+	local data = nil
+	local k = 0
+	local h = 0
 	--print("ForceFor "..GetUnitName(hero))
-	if IsUnitType(hero,UNIT_TYPE_HERO) then
-		h=GetPlayerId(GetOwningPlayer(hero))
+	if IsUnitType(hero, UNIT_TYPE_HERO) then
+		h = GetPlayerId(GetOwningPlayer(hero))
 
 	else
-		h=GetHandleId(hero)
-	--	print("НЕГЕРОЙ толкаемый "..GetUnitName(hero))
+		h = GetHandleId(hero)
+		--	print("НЕГЕРОЙ толкаемый "..GetUnitName(hero))
 	end
 	if not HERO[h] then
 		--print("первый толчек для "..GetUnitName(hero))
-		HERO[h]={
-			ForcesCount=0,
-			ForceRemain={},
-			ForceAngle={},
-			ForceSpeed={},
-			IsForce={}
+		HERO[h] = {
+			ForcesCount = 0,
+			ForceRemain = {},
+			ForceAngle = {},
+			ForceSpeed = {},
+			IsForce = {}
 		}
 		--data=HERO[GetHandleId(hero)]
 		--MovingSystem(hero)
 	end
-	data=HERO[h]
-	data.ForcesCount=data.ForcesCount+1
-	k=data.ForcesCount
-	data.ForceRemain[k]=Distance
-	data.ForceSpeed[k]=Speed
-	data.ForceAngle[k]=Angle
-	data.IsForce[k]=true
-	data.AngleForce=Angle
+	data = HERO[h]
+	data.ForcesCount = data.ForcesCount + 1
+	k = data.ForcesCount
+	data.ForceRemain[k] = Distance
+	data.ForceSpeed[k] = Speed
+	data.ForceAngle[k] = Angle
+	data.IsForce[k] = true
+	data.AngleForce = Angle
 
-	if  AfterMoving==nil then
-		AfterMoving=true
+	if AfterMoving == nil then
+		AfterMoving = true
 	end
-	if  data.AfterMoving==nil then
-		data.AfterMoving=AfterMoving
+	if data.AfterMoving == nil then
+		data.AfterMoving = AfterMoving
 	end
-	data.AfterMoving=AfterMoving
+	data.AfterMoving = AfterMoving
 	--print("параметры заданы"..GetUnitName(hero)..k)
 end
 
-function UnitAddForce(hero,angle,speed,distance)-- псевдо вектор использовать только для юнитов
-	local currentdistance=0
-	if  GetUnitTypeId(hero) == FourCC('e009') then
+onForces = {}
+function UnitAddForce(hero, angle, speed, distance)
+	-- псевдо вектор использовать только для юнитов
+	local currentdistance = 0
+	if onForces[GetHandleId(hero)] == nil then
+		onForces[GetHandleId(hero)] = true
+	end
+	if GetUnitTypeId(hero) == FourCC('e009') then
 		return
 	end
-	if not IsUnitType(hero,UNIT_TYPE_STRUCTURE) then
+	if not IsUnitType(hero, UNIT_TYPE_STRUCTURE) and onForces[GetHandleId(hero)]  then
+		onForces[GetHandleId(hero)]=false
 		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-			currentdistance=currentdistance+speed
+			currentdistance = currentdistance + speed
 			--print(currentdistance)
-			local x,y=GetUnitX(hero),GetUnitY(hero)
-			local newX,newY=MoveX(x,speed,angle),MoveY(y,speed,angle)
-			local dx=math.abs(x-newX)
+			local x, y = GetUnitX(hero), GetUnitY(hero)
+			local newX, newY = MoveX(x, speed, angle), MoveY(y, speed, angle)
 
-			SetUnitPositionSmooth(hero,newX,newY)
+			SetUnitPositionSmooth(hero, newX, newY)
 
-
-			if currentdistance>=distance   then --or (data.OnWater and data.OnTorrent==false)
+			if currentdistance >= distance then
+				--or (data.OnWater and data.OnTorrent==false)
 				--data.IsDisabled=false
 				--data.OnWater=false
 				DestroyTimer(GetExpiredTimer())
+				onForces[GetHandleId(hero)]=true
 				--print("stop cur="..currentdistance.." dist="..distance)
 			end
 		end)
@@ -6208,19 +6220,31 @@ end)
 --- DateTime: 27.03.2020 22:59
 ---
 function AfterAttack(hero, delay)
-
+	local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
+	local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+	local damage=BlzGetUnitBaseDamage(hero,0)--*50
 	TimerStart(CreateTimer(), delay, false, function()
-		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
-		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
-		local damage=BlzGetUnitBaseDamage(hero,0)--*50
+
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+
 			if OnAttack then
 				data.RevoltSec=0
 			end
 
-			if (data.HaveAFire or data.Perk16 ) and ((not GetOwningPlayer(CUnit,UNIT_TYPE_MECHANICAL)  and  not IsUnitAlly(hero,GetOwningPlayer(CUnit))) or GetUnitTypeId(CUnit)==FourCC('o005')) then
+			--if (data.HaveAFire or data.Perk16 ) and ) then
+			if (data.HaveAFire or data.Perk16 )  and true then
+				if  IsUnitType(CUnit,UNIT_TYPE_MECHANICAL)  and   IsUnitAlly(hero,GetOwningPlayer(CUnit))  and DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitXY(CUnit)) <=200 and GetUnitTypeId(CUnit)~=FourCC('o005') then
+					--print("в плотную нет огня")
+					DestroyTimer(GetExpiredTimer())
+					return
+				end
 				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
 				if (data.HaveAFire and data.Perk16)  then
 					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
@@ -6234,13 +6258,13 @@ function AfterAttack(hero, delay)
 
 
 		end
-		if data.Perk6 and data.Thor then -- удар тора
+		if false and data.Perk6 and data.Thor then -- удар тора
 			--data.Perk6=false
 			--print("удар тора")
 
 			local cd=2
 
-			if UnitDamageArea(hero,damage*.5,x,y,150)  then
+			if UnitDamageArea(hero,damage*.5,x,y,150)  then --дополнительный урон на торе
 				StartFrameCD(2,data,6)
 				data.Thor=false
 				TimerStart(CreateTimer(), cd, false, function()
@@ -6252,8 +6276,8 @@ function AfterAttack(hero, delay)
 			--print("ПОСТ удар тора")
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
-			data.Reflection=false
-			DestroyTimer(GetExpiredTimer())
+			--data.Reflection=false
+			--DestroyTimer(GetExpiredTimer())
 		end)
 		DestroyTimer(GetExpiredTimer())
 	end)
@@ -6503,7 +6527,7 @@ function RegisterCollision(hero)
 
 				SetUnitExploded(CollisionUnit,true)
 				local nx,ny=GetUnitXY(CollisionUnit)
-				UnitDamageArea(CollisionUnit,100,nx,ny,150)
+				UnitDamageArea(CollisionUnit,100,nx,ny,150) -- взрыв овцы
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",nx,ny))
 				KillUnit(CollisionUnit)
 				local data=AnyData[GetHandleId(CollisionUnit)]
@@ -6644,7 +6668,7 @@ function EntInTrees()
 			e = FirstOfGroup(perebor)
 
 			if e == nil then break end
-			if UnitAlive(e) and GetUnitTypeId(e)==id and GetUnitZ(e)<=150 then
+			if UnitAlive(e) and GetUnitTypeId(e)==id then
 				local x,y=GetUnitXY(e)
 				KillUnit(e)
 				DestroyEffect(AddSpecialEffect("",x,y))
@@ -6655,7 +6679,7 @@ function EntInTrees()
 					EnumDestructablesInRect(GlobalRect,nil,function ()
 						local d=GetEnumDestructable()
 						if GetDestructableTypeId(d)==FourCC('LTlt')  then
-							if GetDestructableLife(d)>0 then
+							if GetDestructableLife(d)>0 and GetTerrainZ(GetDestructableX(d), GetDestructableY(d))<=150 then
 								KillDestructable(d)
 
 								local new=CreateUnit(Player(10), FourCC('e001'), GetDestructableX(d), GetDestructableY(d), 0)
@@ -6953,11 +6977,13 @@ function CreateGroundSaw(hero,angle,z)
 			SetUnitX(hero,x)
 			SetUnitY(hero,y)
 		else
-		--	print("ERROR - NOTINMAP"..x.." "..y)
+			print("ERROR - NOTINMAP"..x.." "..y)
+			PingMinimap(x,y,10)
 			DestroyTimer(GetExpiredTimer())
 			KillUnit(hero)
 		end
 		BlzSetSpecialEffectPosition(saw,x,y,z)
+		--урон от земляной пилы
 		OnDamage,ReflectorUnit=UnitDamageArea(hero,20,x,y,60,z-90,CollisionEffect)
 		local nx,ny=MoveXY(x,y,60,angle)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
@@ -7256,6 +7282,35 @@ function InitTrig_DeadHumanLumber()
     TriggerAddAction(gg_trg_DeadHumanLumber, Trig_DeadHumanLumber_Actions)
 end
 
+function Trig_DontMove_Func002C()
+    if (not (IsUnitType(GetTriggerUnit(), UNIT_TYPE_HERO) == true)) then
+        return false
+    end
+    if (not (GetIssuedOrderIdBJ() == String2OrderIdBJ("move"))) then
+        return false
+    end
+    return true
+end
+
+function Trig_DontMove_Conditions()
+    if (not Trig_DontMove_Func002C()) then
+        return false
+    end
+    return true
+end
+
+function Trig_DontMove_Actions()
+    IssueImmediateOrderBJ(GetTriggerUnit(), "stop")
+end
+
+function InitTrig_DontMove()
+    gg_trg_DontMove = CreateTrigger()
+    TriggerRegisterAnyUnitEventBJ(gg_trg_DontMove, EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER)
+    TriggerRegisterAnyUnitEventBJ(gg_trg_DontMove, EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER)
+    TriggerAddCondition(gg_trg_DontMove, Condition(Trig_DontMove_Conditions))
+    TriggerAddAction(gg_trg_DontMove, Trig_DontMove_Actions)
+end
+
 function InitCustomTriggers()
     InitTrig_In()
     InitTrig_Out()
@@ -7263,6 +7318,7 @@ function InitCustomTriggers()
     InitTrig_GuiInit()
     InitTrig_Open()
     InitTrig_DeadHumanLumber()
+    InitTrig_DontMove()
 end
 
 function RunInitializationTriggers()

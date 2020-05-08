@@ -49,21 +49,13 @@ do
 end
 
 
---GetLocalPlayer
---[[GLPK=0
-do
-	local GetLocalPlayer_Original = GetLocalPlayer
-	function GetLocalPlayer()
-		GLPK=GLPK+1
-		print(GLPK)
-		GetLocalPlayer_Original()
-	end
-end]]
+
 
 function InitGameCore()
 	--создаём героев
 	--BlzEnableSelections(false,false)
-	EnableDragSelect(false, false)
+	--EnableSelect(false,false)
+	--EnableDragSelect(false, false)
 	CreateWoodFrame()
 	HideEverything()
 	TimerStart(CreateTimer(), 0.5, false, function()
@@ -148,10 +140,10 @@ function InitGameCore()
 			SheepCount = 0,
 			Thor=true,
 			---открытие перков
-			Perk1 = false, --Работник
+			Perk1 = true, --Работник
 			Perk2 = false, -- Бунт
 			Perk3 = false, -- Суицидник
-			Perk4 = false, -- Лесной болван
+			Perk4 = true, -- Лесной болван
 			Perk5 = false, -- Убийца
 			Perk6 = true, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
@@ -159,14 +151,14 @@ function InitGameCore()
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
 			Perk10 = false, -- парирование
-			Perk11 = false, -- Кирка
+			Perk11 = false, -- Технологии людей
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- Кирка
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
-			Perk16 = false, -- Фаерболы
-			Perk17 = false, --Рывок
+			Perk16 = true, -- Фаерболы
+			Perk17 = true, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -338,7 +330,7 @@ function InitGameCore()
 					--print("mini force")
 					data.ShieldForce = false
 					local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
-					local IsDamage, DamagingUnit = UnitDamageArea(data.UnitHero, 1, x, y, 100)
+					local IsDamage, DamagingUnit= UnitDamageArea(data.UnitHero, 1, x, y, 100)
 					local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
 					local eff = AddSpecialEffect("DefendCaster", x, y)
 					BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
@@ -482,20 +474,23 @@ function InitGameCore()
 		for i = 0, 3 do
 			local data = HERO[i]
 			local hero = data.UnitHero
-			ForceUIKeyBJ(GetOwningPlayer(hero), "M")
-			IssueImmediateOrder(hero, "stop")
+			if UnitAlive(hero) then
+				--SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
+				ForceUIKeyBJ(GetOwningPlayer(hero), "M")
+				--IssueImmediateOrder(hero, "stop")
+			end
 		end
 	end)
 
 	------------------------------ТЕСТ АНИМАЦИЙ
 	local ai = 0
 	TimerStart(CreateTimer(), 2, true, function()
-		local data = HERO[0]
-		local hero = data.legs
+		--local data = HERO[0]
+		--local hero = data.legs
 		--SetUnitAnimationByIndex(hero,ai)
 		--SetUnitAnimationByIndex(hero,8)
 		--print(ai)
-		ai = ai + 1
+		--ai = ai + 1
 	end)
 
 
@@ -504,7 +499,9 @@ function InitGameCore()
 	--local sec2=0
 	--local secattack=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		for i, data in pairs(HERO) do
+		--for i, data in pairs(HERO) do
+		for i=0,3 do
+			local data=HERO[i]
 			--print(i.." pairs")
 			local hero = data.UnitHero
 			local id = data.pid
@@ -795,7 +792,7 @@ function InitGameCore()
 								--print("толкаемый герой не определён")
 							end
 
-							if data.Perk12 and BlzGetUnitAbility(DamagingUnit,FourCC('Bfro'))==0 then
+							if data.Perk12 and GetUnitAbilityLevel(DamagingUnit,FourCC('Bfro'))==0 and IsUnitEnemy(DamagingUnit,GetOwningPlayer(hero)) and DamagingUnit then
 								--
 								local x12, y12 = GetUnitXY(DamagingUnit)
 								--print("замораживаем "..GetUnitName(caster))
@@ -844,11 +841,11 @@ function InitGameCore()
 					data.ForcesCount = 0
 					data.IsDisabled = false
 					SetUnitPathing(hero, true)
-					if data.OnCharge then
+					if data.OnCharge then-- место где окончился рывок и сплеш урон
 						data.OnCharge = false
 						UnitRemoveAbility(hero, FourCC('A00E')) --красный
 						UnitRemoveAbility(hero, FourCC('A00F')) --Синий
-						UnitDamageArea(hero, 100, GetUnitX(hero), GetUnitY(hero), 150)
+						UnitDamageArea(hero, BlzGetUnitBaseDamage(hero,0)*4, GetUnitX(hero), GetUnitY(hero), 150) -- удар после рывка
 						--DestroyEffect(data.ChargeEff)
 						--data.ChargeEff=nil
 						--print("нет больше сил")

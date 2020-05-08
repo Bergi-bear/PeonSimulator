@@ -206,25 +206,28 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local isdamage=false
 	local e=nil
 	local hero=nil
-	--if ZDamageSource==nil then ZDamageSource=GetUnitZ(u)+60 end
+
+
 
 	--print("Поиск целей в на высоте "..ZDamageSource)
+	--local mperebor=CreateGroup()
 	GroupEnumUnitsInRange(perebor,x,y,range,nil)
 	while true do
 		e = FirstOfGroup(perebor)
 		if e == nil then break end
-		if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(u))  then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
+		if UnitAlive(e) and UnitAlive(u) and IsUnitEnemy(e,GetOwningPlayer(u))  and true then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
+			--print("вызов проблемной функции "..GetPlayerName(GetOwningPlayer(u)).." "..GetUnitName(u).." "..damage)
 			if EffectModel~=nil then
 				--print("эффеет")
-				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
+				--local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
 				--BlzSetSpecialEffectZ(DE,ZDamageSource)
-				DestroyEffect(DE)
+				--DestroyEffect(DE)
 			end
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 				--if data.
 
-				if data.HaveAFire then
+				if data.HaveAFire then --урон от фаербола
 					damage=damage*5
 					data.HaveAFire=false
 					if not data.Perk16 then
@@ -235,11 +238,13 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 
 			end
 			UnitDamageTarget( u, e, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
+			--print("урон прошёл для "..GetUnitName(e))
 			isdamage=true
 			hero=e
 		end
 		--ремонт
-		if  UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and true then -- момент ремонта
+		if  true and UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(u)) and e~=u and IsUnitType(u,UNIT_TYPE_HERO)  then -- момент ремонта
+
 			local data=HERO[GetPlayerId(GetOwningPlayer(u))]
 			if GetUnitTypeId(e)==FourCC('n007') and damage>6 then-- попытка ударить свинку лечилку
 				if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=70 then
@@ -285,6 +290,8 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		end
 		GroupRemoveUnit(perebor,e)
 	end
+	--DestroyGroup(mperebor)
+	--mperebor=nil
 	if PointContentDestructable(x,y,range,true,1+damage/4,u) then	isdamage=true	end
 	return isdamage, hero
 end
