@@ -32,13 +32,13 @@ gg_trg_Gandicap = nil
 gg_trg_GuiInit = nil
 gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
+gg_trg_DontMove = nil
 gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_unit_n006_0217 = nil
 gg_dest_LTlt_0097 = nil
 gg_dest_LTlt_0364 = nil
 gg_dest_DTlv_1234 = nil
-gg_trg_DontMove = nil
 function InitGlobals()
     local i = 0
     udg_Lang = DialogCreate()
@@ -1337,7 +1337,7 @@ function CreateWoodFrame ()
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
 	if BlzGetLocale()=="ruRU" then
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-		BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
+		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
 	else
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
 		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
@@ -1439,7 +1439,7 @@ function MoveWoodAsFarm(hero,k)
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				if BlzGetLocale()=="ruRU" then
-					print("|cff8080ffКороль пеонов: |r".."Древисины достаточно, отправляйтесь ремонтировать корабль")
+					print("|cff8080ffКороль пеонов: |r".."Древесины достаточно, отправляйтесь ремонтировать корабль")
 				else
 					print("|cff8080ffPeon King: |r".."Wood is enough, go repair ship")
 				end
@@ -3291,9 +3291,10 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 end
 
 function CreateFreeWood(x,y)
-	local  new=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'),x,y , 0)
+	local  new=CreateUnit(Player(5), FourCC('e002'),x,y , 0)
 	UnitAddAbility(new,FourCC('A000'))
 	IssueImmediateOrder(new,"WindWalk")
+	SetUnitInvulnerable(new,true)
 end
 
 ---
@@ -3489,20 +3490,20 @@ function InitGameCore()
 			SheepCount = 0,
 			Thor=true,
 			---открытие перков
-			Perk1 = true, --Работник
+			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
 			Perk3 = false, -- Суицидник
-			Perk4 = true, -- Лесной болван
+			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
 			Perk6 = true, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
 			Perk7A = false, -- Ожирение 2 степени
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
-			Perk10 = false, -- парирование
+			Perk10 = true, -- парирование
 			Perk11 = false, -- Технологии людей
 			Perk12 = false, -- ледяной щит
-			Perk13 = false, -- Кирка
+			Perk13 = false, -- волк
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
@@ -6228,11 +6229,11 @@ function AfterAttack(hero, delay)
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
 
 			if OnAttack then
 				data.RevoltSec=0
@@ -6240,8 +6241,9 @@ function AfterAttack(hero, delay)
 
 			--if (data.HaveAFire or data.Perk16 ) and ) then
 			if (data.HaveAFire or data.Perk16 )  and true then
-				if  IsUnitType(CUnit,UNIT_TYPE_MECHANICAL)  and   IsUnitAlly(hero,GetOwningPlayer(CUnit))  and DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitXY(CUnit)) <=200 and GetUnitTypeId(CUnit)~=FourCC('o005') then
-					--print("в плотную нет огня")
+				if  IsUnitType(CUnit,UNIT_TYPE_MECHANICAL)  and   IsUnitAlly(hero,GetOwningPlayer(CUnit))  and DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitXY(CUnit)) <=200 and
+						GetUnitTypeId(CUnit)~=FourCC('o005') and GetUnitTypeId(CUnit)~=FourCC('e002')  then
+					--print("в плотную нет огня "..GetUnitName(CUnit))
 					DestroyTimer(GetExpiredTimer())
 					return
 				end
@@ -6634,7 +6636,7 @@ function InitAllZones()
 	CreateVulkano(913,-2550)--вулкан
 	StartAllTorch()--фонарики
 	FarmOfPig()
-	--Normadia()--Высадка пехотинцев
+	Normadia()--Высадка пехотинцев
 	StartWolfBossAI()
 end
 ---
@@ -6708,7 +6710,12 @@ end
 function Normadia()
 	--print("Нормандия")
 	SetPlayerAllianceStateBJ(Player(14), Player(9), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(14), Player(10), bj_ALLIANCE_ALLIED_VISION)
 	SetPlayerAllianceStateBJ(Player(9), Player(14), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(9), Player(10), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(10), Player(14), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(10), Player(9), bj_ALLIANCE_ALLIED_VISION)
+
 	TimerStart(CreateTimer(), 10, true, function()
 		CreateTransportShip(-5000,-5000,-2600,-3500)-- зона людей ПРОВЕРЕНО
 		CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
@@ -6730,7 +6737,9 @@ function CreateTransportShip(x,y,xend,yend)
 		local z=GetTerrainZ(MoveXY(xp,yp,200,GetUnitFacing(new)))
 		--print(z)
 		if IsFull then
-			IssuePointOrder(new,"move",xend,yend)
+			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+				IssuePointOrder(new,"move",xend,yend)
+			end
 		end
 
 		if time>30 then
@@ -6742,7 +6751,9 @@ function CreateTransportShip(x,y,xend,yend)
 			--print("высадка")
 			--
 			CreateEnemy(new,FourCC('hfoo'),4)
-			IssuePointOrder(new,"move",x,y)
+			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+				IssuePointOrder(new,"move",x,y)
+			end
 		end
 		if IsUnitInRangeXY(new,x,y,300) and time>=15 then
 			DestroyTimer(GetExpiredTimer())
@@ -6764,12 +6775,19 @@ function CreateEnemy(ship,id,k)
 		--print("Число пехотинцев перевалило за "..100*nextfootmans)
 		nextfootmans=nextfootmans+1
 	end
-	if n<100 then
+	local ship=FindUnitOfType(FourCC("o007"))
+	if n<50 then
 		for i=1,k do
 			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
-			IssuePointOrder(new,"attack",-4935.0, 809.5)
+			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("attack") then
+				if ship then
+					IssuePointOrder(new,"attack",-4935.0, 809.5)
+				else
+					IssuePointOrder(new,"attack",0, 0)
+				end
+			end
 		end
 	else
 	--	print("Заспамлено больше 50 пехотинцев"..n)

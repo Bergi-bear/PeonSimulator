@@ -140,20 +140,20 @@ function InitGameCore()
 			SheepCount = 0,
 			Thor=true,
 			---открытие перков
-			Perk1 = true, --Работник
+			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
 			Perk3 = false, -- Суицидник
-			Perk4 = true, -- Лесной болван
+			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
 			Perk6 = true, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
 			Perk7A = false, -- Ожирение 2 степени
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
-			Perk10 = false, -- парирование
+			Perk10 = true, -- парирование
 			Perk11 = false, -- Технологии людей
 			Perk12 = false, -- ледяной щит
-			Perk13 = false, -- Кирка
+			Perk13 = false, -- волк
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь

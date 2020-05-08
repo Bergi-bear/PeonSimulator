@@ -15,6 +15,6 @@ function InitAllZones()
 	CreateVulkano(913,-2550)--вулкан
 	StartAllTorch()--фонарики
 	FarmOfPig()
-	--Normadia()--Высадка пехотинцев
+	Normadia()--Высадка пехотинцев
 	StartWolfBossAI()
 end

@@ -12,11 +12,11 @@ function AfterAttack(hero, delay)
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
+			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
 
 			if OnAttack then
 				data.RevoltSec=0
@@ -24,8 +24,9 @@ function AfterAttack(hero, delay)
 
 			--if (data.HaveAFire or data.Perk16 ) and ) then
 			if (data.HaveAFire or data.Perk16 )  and true then
-				if  IsUnitType(CUnit,UNIT_TYPE_MECHANICAL)  and   IsUnitAlly(hero,GetOwningPlayer(CUnit))  and DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitXY(CUnit)) <=200 and GetUnitTypeId(CUnit)~=FourCC('o005') then
-					--print("в плотную нет огня")
+				if  IsUnitType(CUnit,UNIT_TYPE_MECHANICAL)  and   IsUnitAlly(hero,GetOwningPlayer(CUnit))  and DistanceBetweenXY(GetUnitX(hero),GetUnitY(hero),GetUnitXY(CUnit)) <=200 and
+						GetUnitTypeId(CUnit)~=FourCC('o005') and GetUnitTypeId(CUnit)~=FourCC('e002')  then
+					--print("в плотную нет огня "..GetUnitName(CUnit))
 					DestroyTimer(GetExpiredTimer())
 					return
 				end

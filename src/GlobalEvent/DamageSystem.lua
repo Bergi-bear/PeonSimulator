@@ -399,7 +399,8 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 end
 
 function CreateFreeWood(x,y)
-	local  new=CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC('e002'),x,y , 0)
+	local  new=CreateUnit(Player(5), FourCC('e002'),x,y , 0)
 	UnitAddAbility(new,FourCC('A000'))
 	IssueImmediateOrder(new,"WindWalk")
+	SetUnitInvulnerable(new,true)
 end

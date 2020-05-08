@@ -49,7 +49,7 @@ function CreateWoodFrame ()
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
 	if BlzGetLocale()=="ruRU" then
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-		BlzFrameSetText(UpDest, "Количество древисины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
+		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
 	else
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
 		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
@@ -151,7 +151,7 @@ function MoveWoodAsFarm(hero,k)
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				if BlzGetLocale()=="ruRU" then
-					print("|cff8080ffКороль пеонов: |r".."Древисины достаточно, отправляйтесь ремонтировать корабль")
+					print("|cff8080ffКороль пеонов: |r".."Древесины достаточно, отправляйтесь ремонтировать корабль")
 				else
 					print("|cff8080ffPeon King: |r".."Wood is enough, go repair ship")
 				end

@@ -7,7 +7,12 @@
 function Normadia()
 	--print("Нормандия")
 	SetPlayerAllianceStateBJ(Player(14), Player(9), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(14), Player(10), bj_ALLIANCE_ALLIED_VISION)
 	SetPlayerAllianceStateBJ(Player(9), Player(14), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(9), Player(10), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(10), Player(14), bj_ALLIANCE_ALLIED_VISION)
+	SetPlayerAllianceStateBJ(Player(10), Player(9), bj_ALLIANCE_ALLIED_VISION)
+
 	TimerStart(CreateTimer(), 10, true, function()
 		CreateTransportShip(-5000,-5000,-2600,-3500)-- зона людей ПРОВЕРЕНО
 		CreateTransportShip(4800,-4800,3500,-3500)--ЗОНА огня
@@ -29,7 +34,9 @@ function CreateTransportShip(x,y,xend,yend)
 		local z=GetTerrainZ(MoveXY(xp,yp,200,GetUnitFacing(new)))
 		--print(z)
 		if IsFull then
-			IssuePointOrder(new,"move",xend,yend)
+			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+				IssuePointOrder(new,"move",xend,yend)
+			end
 		end
 
 		if time>30 then
@@ -41,7 +48,9 @@ function CreateTransportShip(x,y,xend,yend)
 			--print("высадка")
 			--
 			CreateEnemy(new,FourCC('hfoo'),4)
-			IssuePointOrder(new,"move",x,y)
+			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+				IssuePointOrder(new,"move",x,y)
+			end
 		end
 		if IsUnitInRangeXY(new,x,y,300) and time>=15 then
 			DestroyTimer(GetExpiredTimer())
@@ -63,12 +72,19 @@ function CreateEnemy(ship,id,k)
 		--print("Число пехотинцев перевалило за "..100*nextfootmans)
 		nextfootmans=nextfootmans+1
 	end
-	if n<100 then
+	local ship=FindUnitOfType(FourCC("o007"))
+	if n<50 then
 		for i=1,k do
 			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
-			IssuePointOrder(new,"attack",-4935.0, 809.5)
+			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("attack") then
+				if ship then
+					IssuePointOrder(new,"attack",-4935.0, 809.5)
+				else
+					IssuePointOrder(new,"attack",0, 0)
+				end
+			end
 		end
 	else
 	--	print("Заспамлено больше 50 пехотинцев"..n)

@@ -64,7 +64,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 				--BlzSetSpecialEffectPosition(bullet,4000,4000,0)
 			end
 			--print("Условие урона прошло")
-			--UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
+			UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
 			if IsUnitType(hero, UNIT_TYPE_HERO) then
 				local data = HERO[GetPlayerId(GetOwningPlayer(hero))]
 				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit then
@@ -327,13 +327,13 @@ function JumpEffect(eff, speed, maxHeight, angle, distance, hero, flag, ZStart)
 					end]]
 				end
 				DestroyEffect(eff)
-				UnitDamageArea(hero, 210, nx, ny, 150, 127)
+				UnitDamageArea(hero, 210, nx, ny, 150 )
 				--print("урон прошел")
 			elseif flag == 3 then
 				-- осколки
 				CreateTorrent(nx, ny)
 				DestroyEffect(eff)
-				UnitDamageArea(hero, 100, nx, ny, 200, z)
+				UnitDamageArea(hero, 100, nx, ny, 200)
 			elseif flag == 4 then
 				-- выпрыгнул гоблин
 				if CreateTorrent(nx, ny, 0.1) then
@@ -377,7 +377,7 @@ function EffectAddRegistrationCollision(eff, hero, range, duration, flag)
 				elseif flag == 2 then
 					-- глубоководная мина
 					if IsUnitEnemy(e, GetOwningPlayer(hero)) then
-						UnitDamageArea(hero, 100, x, y, 200, z)
+						--UnitDamageArea(hero, 100, x, y, 200, z) --мина
 					end
 				end
 			end
@@ -458,14 +458,14 @@ function SawActivated(hero)
 		end
 
 		local nx, ny = MoveXY(x, y, 130, angle)
-
-		if UnitDamageArea(hero, 30, nx, ny, 150, GetUnitZ(hero) + 50, "Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl") then
+	-- вроде как и было отключено
+		--if UnitDamageArea(hero, 30, nx, ny, 150, GetUnitZ(hero) + 50, "Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl") then -- это и бло отключено
 			--[[if HeroUpdateWeaponCharges(hero,8,1) then
 			else
 				DestroyTimer(GetExpiredTimer())
 				DestroyEffect(saw)
 			end]]
-		end
+		--end
 
 		BlzSetSpecialEffectPosition(saw, nx, ny, GetUnitZ(hero) + 20)
 		if data.WeaponIndex ~= 8 then
