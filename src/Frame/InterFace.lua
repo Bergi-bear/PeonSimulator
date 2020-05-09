@@ -391,7 +391,7 @@ function PerkButtonLine()
 	end)
 end
 
-function CreateMouseHelper(sec)
+function CreateMouseHelper()
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wood, "RMB", 0, true)
 	BlzFrameSetSize(wood, 0.15, 0.15)

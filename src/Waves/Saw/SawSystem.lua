@@ -44,7 +44,7 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 
-		if OnDamage and ReflectorUnit then
+		if OnDamage and ReflectorUnit and not BlzIsUnitInvulnerable(ReflectorUnit)  then
 			local tl = Location(GetUnitXY(hero))
 			PlaySoundAtPointBJ( gg_snd_Saw, 100, tl, 0 )
 			RemoveLocation(tl)
@@ -148,10 +148,10 @@ function CreateGroundSaw(hero,angle,z)
 		nx,ny=MoveXY(x,y,-60,angle)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
 
-		if OnDamage and ReflectorUnit then
+		if OnDamage and ReflectorUnit and not BlzIsUnitInvulnerable(ReflectorUnit) then
 			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
 			UnitAddAbility(dummy,FourCC('Apsh'))
-			IssueImmediateOrder(dummy,"phaseshift")
+			IssueImmediateOrder(dummy,"phaseshift")-- поддельный звук пилы
 			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 			--ShowUnit(dummy,false)
 			local tl = Location(GetUnitXY(hero))

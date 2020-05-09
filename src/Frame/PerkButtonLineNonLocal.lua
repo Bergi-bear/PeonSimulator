@@ -231,8 +231,8 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 6 then
 					if data.Perk6 then
-						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero, 0).." доп. урона|r") --|cffffff00AAAA|r
-						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..BlzGetUnitBaseDamage(data.UnitHero, 0).." damage|r") end
+						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..(BlzGetUnitBaseDamage(data.UnitHero, 0)*.5).." доп. урона|r") --|cffffff00AAAA|r
+						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.UnitHero, 0)*.5).." damage|r") end
 					else
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
 					end

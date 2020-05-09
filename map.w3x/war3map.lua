@@ -1679,7 +1679,7 @@ function PerkButtonLine()
 	end)
 end
 
-function CreateMouseHelper(sec)
+function CreateMouseHelper()
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	BlzFrameSetTexture(wood, "RMB", 0, true)
 	BlzFrameSetSize(wood, 0.15, 0.15)
@@ -2074,8 +2074,8 @@ function PerkButtonLineNonLocal(k,lang)
 					end
 				elseif i == 6 then
 					if data.Perk6 then
-						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero, 0).." доп. урона|r") --|cffffff00AAAA|r
-						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..BlzGetUnitBaseDamage(data.UnitHero, 0).." damage|r") end
+						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..(BlzGetUnitBaseDamage(data.UnitHero, 0)*.5).." доп. урона|r") --|cffffff00AAAA|r
+						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.UnitHero, 0)*.5).." damage|r") end
 					else
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
 					end
@@ -2914,10 +2914,18 @@ function OnPostDamage()
 	local casterOwner     = GetOwningPlayer(caster)
 
 	--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
-	if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
+	if IsUnitType(target,UNIT_TYPE_HERO) then
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
+		local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
+		local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+		local Vector3 = wGeometry.Vector3
+		local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
+		local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
+		AngleSourceVector = AngleSourceVector:normalize()
+		local dot = UnitFacingVector:dotProduct(AngleSourceVector)
+		local dist=damage
 
 		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
 			UnitRemoveAbility(target,FourCC('BPSE'))
@@ -2937,25 +2945,19 @@ function OnPostDamage()
 
 		if data.Reflection and data.Perk10 then -- парирование с талантом
 			--print("Урон парирован")
-			local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
-			local tl = Location(GetUnitXY(target))
-			PlaySoundAtPointBJ( gg_snd_Reflect, 100, tl, 0 )
-			RemoveLocation(tl)
-			BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
-			DestroyEffect(eff)
-			BlzSetEventDamage(0)
+			if 0 < dot then
+				local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
+				local tl = Location(GetUnitXY(target))
+				PlaySoundAtPointBJ( gg_snd_Reflect, 100, tl, 0 )
+				RemoveLocation(tl)
+				BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
+				DestroyEffect(eff)
+				BlzSetEventDamage(0)
+			end
 		end
 
 
-		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
-			local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
-			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-			local Vector3 = wGeometry.Vector3
-			local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
-			local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
-			AngleSourceVector = AngleSourceVector:normalize()
-			local dot = UnitFacingVector:dotProduct(AngleSourceVector)
-			local dist=damage
+		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит --Prometheus Прометей
 			if dist >=25 then dist=25 end
 			if 0 < dot then
 				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
@@ -3312,7 +3314,7 @@ function InitTrig_Entire()
 	TriggerRegisterEnterRectSimple(this, GetPlayableMapRect())
 	TriggerAddAction(this, function()
 		local EntireUnit=GetTriggerUnit()
-		print(GetUnitName(EntireUnit))
+		--print(GetUnitName(EntireUnit))
 		if GetUnitTypeId(EntireUnit)==FourCC('n002')   then -- голем пытается скачатить на героя стан
 			TimerStart(CreateTimer(), 3, true, function()
 				for i = 0, 3 do
@@ -3429,11 +3431,10 @@ function InitGameCore()
 
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
-	TestFrame()
+	--TestFrame()
 	--VisualUnlock()--убирание выделение каждые 10 сек
 
 	CreateAndStartClock()
-	--CreateStatusBar() --нанель статусов, ещё не готова
 	-----Настоящая инициализация
 	for i = 0, 3 do
 		-- Число игроков
@@ -3500,7 +3501,7 @@ function InitGameCore()
 			Perk3 = false, -- Суицидник
 			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
-			Perk6 = true, -- Ученика кузнеца
+			Perk6 = false, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
 			Perk7A = false, -- Ожирение 2 степени
 			Perk8 = false, -- Кодой
@@ -3512,8 +3513,8 @@ function InitGameCore()
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
-			Perk16 = true, -- Фаерболы
-			Perk17 = true, --Рывок
+			Perk16 = false, -- Фаерболы
+			Perk17 = false, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -3555,7 +3556,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_W
 	local gg_trg_EventUpW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW, Player(i), OSKEY_W, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW, Player(i), OSKEY_UP, 0, true)
 	end
@@ -3572,7 +3572,6 @@ function InitGameCore()
 	end)
 	local TrigDepressW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW, Player(i), OSKEY_W, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW, Player(i), OSKEY_UP, 0, false)
 	end
@@ -3584,7 +3583,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_S
 	local gg_trg_EventUpS = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS, Player(i), OSKEY_S, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS, Player(i), OSKEY_DOWN, 0, true)
 	end
@@ -3601,7 +3599,6 @@ function InitGameCore()
 	end)
 	local TrigDepressS = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS, Player(i), OSKEY_S, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS, Player(i), OSKEY_DOWN, 0, false)
 	end
@@ -3613,7 +3610,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_D
 	local TrigPressD = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressD, Player(i), OSKEY_D, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressD, Player(i), OSKEY_RIGHT, 0, true)
 	end
@@ -3630,7 +3626,6 @@ function InitGameCore()
 	end)
 	local TrigDePressD = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD, Player(i), OSKEY_D, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD, Player(i), OSKEY_RIGHT, 0, false)
 	end
@@ -3642,7 +3637,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_A
 	local TrigPressA = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressA, Player(i), OSKEY_A, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressA, Player(i), OSKEY_LEFT, 0, true)
 	end
@@ -3659,7 +3653,6 @@ function InitGameCore()
 	end)
 	local TrigDePressA = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA, Player(i), OSKEY_A, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA, Player(i), OSKEY_LEFT, 0, false)
 	end
@@ -3671,7 +3664,6 @@ function InitGameCore()
 	-----------------------------------------------------------------LMB SWAP RMB
 	local TrigPressLMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigPressLMB, Player(i), EVENT_PLAYER_MOUSE_DOWN)
 	end
 	TriggerAddAction(TrigPressLMB, function()
@@ -3690,7 +3682,7 @@ function InitGameCore()
 					--print("mini force")
 					data.ShieldForce = false
 					local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
-					local IsDamage, DamagingUnit= UnitDamageArea(data.UnitHero, 1, x, y, 100)
+					local _, DamagingUnit= UnitDamageArea(data.UnitHero, 1, x, y, 100)
 					local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
 					local eff = AddSpecialEffect("DefendCaster", x, y)
 					BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
@@ -3731,7 +3723,6 @@ function InitGameCore()
 	end)
 	local TrigDePressLMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigDePressLMB, Player(i), EVENT_PLAYER_MOUSE_UP)
 	end
 
@@ -3749,7 +3740,6 @@ function InitGameCore()
 	-----------------------------------------------------------------RMB swap LMB
 	local TrigPressRMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigPressRMB, Player(i), EVENT_PLAYER_MOUSE_DOWN)
 	end
 
@@ -3807,7 +3797,7 @@ function InitGameCore()
 	end)
 	local TrigDePressRMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
+
 		TriggerRegisterPlayerEvent(TrigDePressRMB, Player(i), EVENT_PLAYER_MOUSE_UP)
 	end
 	TriggerAddAction(TrigDePressRMB, function()
@@ -3850,7 +3840,7 @@ function InitGameCore()
 		--SetUnitAnimationByIndex(hero,ai)
 		--SetUnitAnimationByIndex(hero,8)
 		--print(ai)
-		--ai = ai + 1
+		ai = ai + 1
 	end)
 
 
@@ -3881,7 +3871,7 @@ function InitGameCore()
 			local startwalk = false
 			local standanim = false
 			local walkattack = false
-			local WalkCart = false
+			--local WalkCart = false
 
 			local turn = 0
 			--if  GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then --GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and
@@ -4054,19 +4044,19 @@ function InitGameCore()
 				-- вектор внешней силы if false then--
 				--print("true")
 				local f = 0
-				for i = 1, k do
-					if data.ForceRemain[i] > 0 then
+				for i2 = 1, k do
+					if data.ForceRemain[i2] > 0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
 
 						f = f + 1
-						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i], data.ForceAngle[i] * (math.pi / 180), 0.0)
+						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i2], data.ForceAngle[i2] * (math.pi / 180), 0.0)
 						--newPos=newPos+Vector3:new(-5, 0, 0)
 						--newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
-						data.ForceRemain[i] = data.ForceRemain[i] - data.ForceSpeed[i]
+						data.ForceRemain[i2] = data.ForceRemain[i2] - data.ForceSpeed[i2]
 					else
-						if data.IsForce[i] then
-							data.IsForce[i] = false
+						if data.IsForce[i2] then
+							data.IsForce[i2] = false
 						end
 					end
 				end
@@ -4140,12 +4130,12 @@ function InitGameCore()
 				-- вектор внешней силы
 				--print("false")
 				local f = 0
-				for i = 1, k do
-					if data.ForceRemain[i] > 0 then
+				for i2 = 1, k do
+					if data.ForceRemain[i2] > 0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
 						if data.OnCharge then
 							--print("В процессе толкания")
-							local IsDamage, DamagingUnit = UnitDamageArea(hero, 1, GetUnitX(hero), GetUnitY(hero), 150)
+							local _, DamagingUnit = UnitDamageArea(hero, 1, GetUnitX(hero), GetUnitY(hero), 150)
 							local angleU = AngleBetweenUnits(hero, DamagingUnit)
 							--print(angleU)
 							if not DamagingUnit then
@@ -4186,14 +4176,14 @@ function InitGameCore()
 						end
 
 						f = f + 1
-						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i], data.ForceAngle[i] * (math.pi / 180), 0.0)
+						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i2], data.ForceAngle[i2] * (math.pi / 180), 0.0)
 						--newPos=newPos+Vector3:new(-5, 0, 0)
 						--newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
-						data.ForceRemain[i] = data.ForceRemain[i] - data.ForceSpeed[i]
+						data.ForceRemain[i2] = data.ForceRemain[i2] - data.ForceSpeed[i2]
 					else
-						if data.IsForce[i] then
-							data.IsForce[i] = false
+						if data.IsForce[i2] then
+							data.IsForce[i2] = false
 						end
 					end
 				end
@@ -4529,7 +4519,7 @@ function InitUnitDeath()
 		local DeadUnit=GetTriggerUnit()--умерший
 
 		local Killer=GetKillingUnit()--убийца
-		--print("EventDead "..GetUnitName(DeadUnit).." "..GetUnitName(Killer))
+		print("EventDead "..GetUnitName(DeadUnit).." "..GetUnitName(Killer))
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
 			--print("волк убил")
 			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+1,0)
@@ -6273,7 +6263,7 @@ function AfterAttack(hero, delay)
 
 
 		end
-		if false and data.Perk6 and data.Thor then -- удар тора
+		if true and data.Perk6 and data.Thor then -- удар тора
 			--data.Perk6=false
 			--print("удар тора")
 
@@ -6285,14 +6275,14 @@ function AfterAttack(hero, delay)
 				TimerStart(CreateTimer(), cd, false, function()
 					data.Thor=true
 				end)
-				CastArea(hero,FourCC('A003'),x,y)
+				--CastArea(hero,FourCC('A003'),x,y)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 			end
 			--print("ПОСТ удар тора")
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
-			--data.Reflection=false
-			--DestroyTimer(GetExpiredTimer())
+			data.Reflection=false
+			DestroyTimer(GetExpiredTimer())
 		end)
 		DestroyTimer(GetExpiredTimer())
 	end)
@@ -6655,7 +6645,7 @@ function InitAllZones()
 	CreateVulkano(913,-2550)--вулкан
 	StartAllTorch()--фонарики
 	FarmOfPig()
-	Normadia()--Высадка пехотинцев
+	--Normadia()--Высадка пехотинцев в самом начале игры для тестов
 	StartWolfBossAI()
 end
 ---

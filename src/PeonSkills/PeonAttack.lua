@@ -43,7 +43,7 @@ function AfterAttack(hero, delay)
 
 
 		end
-		if false and data.Perk6 and data.Thor then -- удар тора
+		if true and data.Perk6 and data.Thor then -- удар тора
 			--data.Perk6=false
 			--print("удар тора")
 
@@ -55,14 +55,14 @@ function AfterAttack(hero, delay)
 				TimerStart(CreateTimer(), cd, false, function()
 					data.Thor=true
 				end)
-				CastArea(hero,FourCC('A003'),x,y)
+				--CastArea(hero,FourCC('A003'),x,y)
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 			end
 			--print("ПОСТ удар тора")
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
-			--data.Reflection=false
-			--DestroyTimer(GetExpiredTimer())
+			data.Reflection=false
+			DestroyTimer(GetExpiredTimer())
 		end)
 		DestroyTimer(GetExpiredTimer())
 	end)

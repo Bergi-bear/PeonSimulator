@@ -16,10 +16,18 @@ function OnPostDamage()
 	local casterOwner     = GetOwningPlayer(caster)
 
 	--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
-	if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
+	if IsUnitType(target,UNIT_TYPE_HERO) then
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
+		local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
+		local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+		local Vector3 = wGeometry.Vector3
+		local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
+		local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
+		AngleSourceVector = AngleSourceVector:normalize()
+		local dot = UnitFacingVector:dotProduct(AngleSourceVector)
+		local dist=damage
 
 		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
 			UnitRemoveAbility(target,FourCC('BPSE'))
@@ -39,25 +47,19 @@ function OnPostDamage()
 
 		if data.Reflection and data.Perk10 then -- парирование с талантом
 			--print("Урон парирован")
-			local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
-			local tl = Location(GetUnitXY(target))
-			PlaySoundAtPointBJ( gg_snd_Reflect, 100, tl, 0 )
-			RemoveLocation(tl)
-			BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
-			DestroyEffect(eff)
-			BlzSetEventDamage(0)
+			if 0 < dot then
+				local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
+				local tl = Location(GetUnitXY(target))
+				PlaySoundAtPointBJ( gg_snd_Reflect, 100, tl, 0 )
+				RemoveLocation(tl)
+				BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
+				DestroyEffect(eff)
+				BlzSetEventDamage(0)
+			end
 		end
 
 
-		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
-			local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
-			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-			local Vector3 = wGeometry.Vector3
-			local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
-			local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
-			AngleSourceVector = AngleSourceVector:normalize()
-			local dot = UnitFacingVector:dotProduct(AngleSourceVector)
-			local dist=damage
+		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит --Prometheus Прометей
 			if dist >=25 then dist=25 end
 			if 0 < dot then
 				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
@@ -77,7 +79,7 @@ function OnPostDamage()
 
 				--print("boold")
 				if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
-					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+					--DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
 					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
 				end
 			end
@@ -107,7 +109,7 @@ function OnPostDamage()
 		else
 			--print("anydamage")
 			if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
-				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+			--	DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
 				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
 			end
 		end
@@ -119,7 +121,7 @@ function OnPostDamage()
 
 	if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 		--local x,y=GetUnitXY()
-		BlzSetEventDamage(0)
+		BlzSetEventDamage(damage*0.1)-- тини получает 10% урона
 		if damage>10 then
 			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
 			local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))

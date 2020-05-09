@@ -199,7 +199,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_W
 	local gg_trg_EventUpW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW, Player(i), OSKEY_W, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpW, Player(i), OSKEY_UP, 0, true)
 	end
@@ -216,7 +215,6 @@ function InitGameCore()
 	end)
 	local TrigDepressW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW, Player(i), OSKEY_W, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressW, Player(i), OSKEY_UP, 0, false)
 	end
@@ -228,7 +226,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_S
 	local gg_trg_EventUpS = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS, Player(i), OSKEY_S, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpS, Player(i), OSKEY_DOWN, 0, true)
 	end
@@ -245,7 +242,6 @@ function InitGameCore()
 	end)
 	local TrigDepressS = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS, Player(i), OSKEY_S, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDepressS, Player(i), OSKEY_DOWN, 0, false)
 	end
@@ -257,7 +253,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_D
 	local TrigPressD = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressD, Player(i), OSKEY_D, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressD, Player(i), OSKEY_RIGHT, 0, true)
 	end
@@ -274,7 +269,6 @@ function InitGameCore()
 	end)
 	local TrigDePressD = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD, Player(i), OSKEY_D, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressD, Player(i), OSKEY_RIGHT, 0, false)
 	end
@@ -286,7 +280,6 @@ function InitGameCore()
 	-----------------------------------------------------------------OSKEY_A
 	local TrigPressA = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressA, Player(i), OSKEY_A, 0, true)
 		BlzTriggerRegisterPlayerKeyEvent(TrigPressA, Player(i), OSKEY_LEFT, 0, true)
 	end
@@ -303,7 +296,6 @@ function InitGameCore()
 	end)
 	local TrigDePressA = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA, Player(i), OSKEY_A, 0, false)
 		BlzTriggerRegisterPlayerKeyEvent(TrigDePressA, Player(i), OSKEY_LEFT, 0, false)
 	end
@@ -315,7 +307,6 @@ function InitGameCore()
 	-----------------------------------------------------------------LMB SWAP RMB
 	local TrigPressLMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigPressLMB, Player(i), EVENT_PLAYER_MOUSE_DOWN)
 	end
 	TriggerAddAction(TrigPressLMB, function()
@@ -334,7 +325,7 @@ function InitGameCore()
 					--print("mini force")
 					data.ShieldForce = false
 					local x, y = MoveXY(GetUnitX(data.UnitHero), GetUnitY(data.UnitHero), 55, GetUnitFacing(data.UnitHero))
-					local IsDamage, DamagingUnit= UnitDamageArea(data.UnitHero, 1, x, y, 100)
+					local _, DamagingUnit= UnitDamageArea(data.UnitHero, 1, x, y, 100)
 					local angleU = AngleBetweenUnits(data.UnitHero, DamagingUnit)
 					local eff = AddSpecialEffect("DefendCaster", x, y)
 					BlzSetSpecialEffectYaw(eff, math.rad(GetUnitFacing(data.UnitHero)))
@@ -375,7 +366,6 @@ function InitGameCore()
 	end)
 	local TrigDePressLMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigDePressLMB, Player(i), EVENT_PLAYER_MOUSE_UP)
 	end
 
@@ -393,7 +383,6 @@ function InitGameCore()
 	-----------------------------------------------------------------RMB swap LMB
 	local TrigPressRMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
 		TriggerRegisterPlayerEvent(TrigPressRMB, Player(i), EVENT_PLAYER_MOUSE_DOWN)
 	end
 
@@ -451,7 +440,7 @@ function InitGameCore()
 	end)
 	local TrigDePressRMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		local player = Player(i)
+
 		TriggerRegisterPlayerEvent(TrigDePressRMB, Player(i), EVENT_PLAYER_MOUSE_UP)
 	end
 	TriggerAddAction(TrigDePressRMB, function()
@@ -494,7 +483,7 @@ function InitGameCore()
 		--SetUnitAnimationByIndex(hero,ai)
 		--SetUnitAnimationByIndex(hero,8)
 		--print(ai)
-		--ai = ai + 1
+		ai = ai + 1
 	end)
 
 
@@ -525,7 +514,7 @@ function InitGameCore()
 			local startwalk = false
 			local standanim = false
 			local walkattack = false
-			local WalkCart = false
+			--local WalkCart = false
 
 			local turn = 0
 			--if  GetPlayerSlotState(GetOwningPlayer(hero)) == PLAYER_SLOT_STATE_PLAYING then --GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_USER and
@@ -698,19 +687,19 @@ function InitGameCore()
 				-- вектор внешней силы if false then--
 				--print("true")
 				local f = 0
-				for i = 1, k do
-					if data.ForceRemain[i] > 0 then
+				for i2 = 1, k do
+					if data.ForceRemain[i2] > 0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
 
 						f = f + 1
-						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i], data.ForceAngle[i] * (math.pi / 180), 0.0)
+						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i2], data.ForceAngle[i2] * (math.pi / 180), 0.0)
 						--newPos=newPos+Vector3:new(-5, 0, 0)
 						--newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
-						data.ForceRemain[i] = data.ForceRemain[i] - data.ForceSpeed[i]
+						data.ForceRemain[i2] = data.ForceRemain[i2] - data.ForceSpeed[i2]
 					else
-						if data.IsForce[i] then
-							data.IsForce[i] = false
+						if data.IsForce[i2] then
+							data.IsForce[i2] = false
 						end
 					end
 				end
@@ -784,12 +773,12 @@ function InitGameCore()
 				-- вектор внешней силы
 				--print("false")
 				local f = 0
-				for i = 1, k do
-					if data.ForceRemain[i] > 0 then
+				for i2 = 1, k do
+					if data.ForceRemain[i2] > 0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
 						if data.OnCharge then
 							--print("В процессе толкания")
-							local IsDamage, DamagingUnit = UnitDamageArea(hero, 1, GetUnitX(hero), GetUnitY(hero), 150)
+							local _, DamagingUnit = UnitDamageArea(hero, 1, GetUnitX(hero), GetUnitY(hero), 150)
 							local angleU = AngleBetweenUnits(hero, DamagingUnit)
 							--print(angleU)
 							if not DamagingUnit then
@@ -830,14 +819,14 @@ function InitGameCore()
 						end
 
 						f = f + 1
-						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i], data.ForceAngle[i] * (math.pi / 180), 0.0)
+						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i2], data.ForceAngle[i2] * (math.pi / 180), 0.0)
 						--newPos=newPos+Vector3:new(-5, 0, 0)
 						--newPos=WASDMoving+WASDMoving:yawPitchOffset( speed, angle * ( math.pi / 180 ), 0.0 )
 						--newPos=Vector3:copyFromUnit(hero)+Vector3:new(data.ForceSpeed[i], data.ForceAngle[i] * ( math.pi / 180 ), 0)
-						data.ForceRemain[i] = data.ForceRemain[i] - data.ForceSpeed[i]
+						data.ForceRemain[i2] = data.ForceRemain[i2] - data.ForceSpeed[i2]
 					else
-						if data.IsForce[i] then
-							data.IsForce[i] = false
+						if data.IsForce[i2] then
+							data.IsForce[i2] = false
 						end
 					end
 				end
