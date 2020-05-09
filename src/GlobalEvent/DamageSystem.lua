@@ -121,7 +121,7 @@ function OnPostDamage()
 
 	if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 		--local x,y=GetUnitXY()
-		BlzSetEventDamage(damage*0.1)-- тини получает 10% урона
+		BlzSetEventDamage(damage*0.1)-- тини получает 10%% урона
 		if damage>10 then
 			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
 			local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))

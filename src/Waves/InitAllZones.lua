@@ -15,6 +15,7 @@ function InitAllZones()
 	CreateVulkano(913,-2550)--вулкан
 	StartAllTorch()--фонарики
 	FarmOfPig()
+	AutoCollectLumber(2)
 	--Normadia()--Высадка пехотинцев в самом начале игры для тестов
 	StartWolfBossAI()
 end

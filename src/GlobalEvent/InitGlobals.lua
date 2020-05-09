@@ -138,6 +138,7 @@ function InitGameCore()
 			TreeCountOnTB = 0,
 			SheepCount = 0,
 			Thor=true,
+			FBIsReady=true,
 			---открытие перков
 			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
@@ -173,6 +174,7 @@ function InitGameCore()
 			LockFrame = {},
 			VisualSelectorFrame = {},
 			ReloadIco={},
+			HeroIco=nil,
 		}
 
 		if HERO[i] then

@@ -484,3 +484,15 @@ STRING 87
 Enemy
 }
 
+STRING 88
+// Items: I001 (Руна антискорости), Name (Name)
+{
+Руна антискорости
+}
+
+STRING 89
+// Abilities: A00Q (Замедление от тора), Name (Name)
+{
+Замедление от тора
+}
+

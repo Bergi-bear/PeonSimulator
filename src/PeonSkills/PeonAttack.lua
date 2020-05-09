@@ -55,7 +55,8 @@ function AfterAttack(hero, delay)
 				TimerStart(CreateTimer(), cd, false, function()
 					data.Thor=true
 				end)
-				--CastArea(hero,FourCC('A003'),x,y)
+				--CastArea(hero,FourCC('A00Q'),x,y)
+				UnitAddItemById(hero,FourCC('I001'))
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 			end
 			--print("ПОСТ удар тора")

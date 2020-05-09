@@ -1476,20 +1476,17 @@ function MoveWoodAsFarm(hero,k)
 
 end
 
-function HealthBarAdd(u)
+function HealthBarAdd(u) --Код Сиренчика
 	BlzLoadTOCFile("Main.toc")
 	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
 	BlzFrameSetVisible(bar,false)
 
-	local heroico=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true)
-	BlzFrameSetSize(heroico, 0.04, 0.04)
-	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
-	BlzFrameSetVisible(heroico,false)
+	--Моделька пеона же
+
 
 	if GetLocalPlayer()==GetOwningPlayer(u) and GetLocalON then -- хп бары, они точно в норме
 		BlzFrameSetVisible(bar,true)
-		BlzFrameSetVisible(heroico,true)
+		--BlzFrameSetVisible(heroico,true)
 	end
 	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
 	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
@@ -1854,7 +1851,7 @@ texture = {
 	"ReplaceableTextures\\CommandButtons\\BTNStormBolt",
 	"ReplaceableTextures\\CommandButtons\\BTNAbomination", --пудж
 	"ReplaceableTextures\\CommandButtons\\BTNKotoBeast",
-	"ReplaceableTextures\\CommandButtons\\BTNGatherGold", -- кирка
+	"btngathergold",
 	"ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade", -- техника безопасности
 	"ReplaceableTextures\\PassiveButtons\\PASBTNDemolish",
 	"ReplaceableTextures\\PassiveButtons\\PASBTNFrost",
@@ -1876,7 +1873,7 @@ DISBTNTexture = {
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNStormBolt",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNAbomination", --пудж
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNKotoBeast",
-	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGatherGold", -- кирка
+	"disbtngathergold", -- кирка
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNEngineeringUpgrade", -- техника безопасности
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISPASBTNDemolish",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISPASBTNFrost",
@@ -1963,245 +1960,268 @@ descriptionENG = {
 	"Team collected wood. ",
 }
 
-function PerkButtonLineNonLocal(k,lang)
-	if BlzGetLocale()~="ruRU" then
-		lang=1
+function PerkButtonLineNonLocal(k, lang)
+	if BlzGetLocale() ~= "ruRU" then
+		lang = 1
 	else
-		lang=0
+		lang = 0
 	end
 	--lang=0
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
 	--for k = 0, 3 do
-		local data = HERO[k]
-		for i = 1, #Name do
-			-- число талантов
-			--print(i.." "..k.."создаём фрейм")
-			local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-			BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
-			BlzFrameSetSize(face, 0.04, 0.04)
-			--local buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
-			local buttonIconFrame = BlzCreateSimpleFrame("MyBar", face, 0)
-			BlzFrameSetAllPoints(buttonIconFrame, face)
-			--BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
-			local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face, "", 0)
-			local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
-			local UpDest = BlzGetFrameByName("BoxedTextValue", 0)
-			BlzFrameSetAllPoints(faceHover, face)
-			BlzFrameSetTooltip(faceHover, tooltip)
-			BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
-			BlzFrameSetSize(tooltip, 0.15, 0.08)
-			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
-			BlzFrameSetText(UpDest, description[i])
-			BlzFrameSetValue(buttonIconFrame, 100)
-			local cdtext=BlzGetFrameByName("MyBarText", 0)
-			BlzFrameSetText(cdtext, "")
-			local cdICO=BlzGetFrameByName("MyBarBackground", 0)
-			BlzFrameSetTexture(cdICO, DISBTNTexture[i], 0, true)
-			BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
-			BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
-			if i==17 then
-				--StartFrameCD(10,buttonIconFrame)
-			end
+	local data = HERO[k]
 
+	--Иконка пеона
+	local heroico = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
+	BlzFrameSetSize(heroico, 0.04, 0.04)
+	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT, 0.04, 0.6 - 0.03)
+	BlzFrameSetVisible(heroico, true)
+	BlzFrameSetValue(heroico, 100)
+	local cdtext1 = BlzGetFrameByName("MyBarText", 0)
+	BlzFrameSetText(cdtext1, "")
+	local cdICO1 = BlzGetFrameByName("MyBarBackground", 0)
+	BlzFrameSetTexture(cdICO1, "ReplaceableTextures\\CommandButtons\\btnchaospeon", 0, true) --красная
+	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true) -- зелёная
 
-			if lang == 1 then
-				BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), NameENG[i])
-				BlzFrameSetText(UpDest, descriptionENG[i])
-			end
+	if GetLocalPlayer() ~= Player(k) and GetLocalON then
+		BlzFrameSetVisible(heroico, false)
+	end
+	data.HeroIco = heroico
 
-			local lock = BlzCreateFrameByType("BACKDROP", "Face", face, "", 0)--замочек
-			BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0., 0.)
-			BlzFrameSetSize(lock, 0.04, 0.04)
-			BlzFrameSetTexture(lock, "close", 0, true)
+	for i = 1, #Name do
+		-- число талантов
+		--print(i.." "..k.."создаём фрейм")
+		local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+		BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1 + next * (i - 1), 0.02)
+		BlzFrameSetSize(face, 0.04, 0.04)
+		--local buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
+		local buttonIconFrame = BlzCreateSimpleFrame("MyBar", face, 0)
+		BlzFrameSetAllPoints(buttonIconFrame, face)
+		--BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face, "", 0)
+		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
+		local UpDest = BlzGetFrameByName("BoxedTextValue", 0)
+		BlzFrameSetAllPoints(faceHover, face)
+		BlzFrameSetTooltip(faceHover, tooltip)
+		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
+		BlzFrameSetSize(tooltip, 0.15, 0.08)
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
+		BlzFrameSetText(UpDest, description[i])
+		BlzFrameSetValue(buttonIconFrame, 0)
+		local cdtext = BlzGetFrameByName("MyBarText", 0)
+		BlzFrameSetText(cdtext, "")
+		local cdICO = BlzGetFrameByName("MyBarBackground", 0)
+		BlzFrameSetTexture(cdICO, DISBTNTexture[i], 0, true)
+		BlzFrameSetTexture(buttonIconFrame, texture[i], 0, true)
+		BlzFrameSetSize(buttonIconFrame, 0.04, 0.04)
 
-			--выделение Хейтовские
-			local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
-			BlzFrameSetPoint(buttonsprite, FRAMEPOINT_BOTTOMLEFT, face, FRAMEPOINT_BOTTOMLEFT, 0.02, 0.02)
-			BlzFrameSetSize(buttonsprite, 1., 1.)
-			BlzFrameSetScale(buttonsprite, 1.)
-			BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
-
-			BlzFrameSetVisible(buttonsprite, false)
-			if GetLocalPlayer() ~= Player(k) and GetLocalON  then -- скрытие интерфейса от других игроков
-				BlzFrameSetVisible(lock, false)
-				BlzFrameSetVisible(face, false)
-				BlzFrameSetVisible(buttonIconFrame, false)
-			end
-			--глобалки
-
-			data.ToolTip[i] = UpDest
-			data.LockFrame[i] = lock
-			data.VisualSelectorFrame[i] = buttonsprite
-			data.PekFrame[i] = UpDest
-			data.ReloadIco[i] = buttonIconFrame
-
+		if lang == 1 then
+			BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), NameENG[i])
+			BlzFrameSetText(UpDest, descriptionENG[i])
 		end
+
+		local lock = BlzCreateFrameByType("BACKDROP", "Face", face, "", 0)--замочек
+		BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0., 0.)
+		BlzFrameSetSize(lock, 0.04, 0.04)
+		--BlzFrameSetSize(lock, 0, 0)
+		BlzFrameSetTexture(lock, "close", 0, true)
+		BlzFrameSetAlpha(lock, 230)
+
+		--выделение Хейтовские
+		local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
+		BlzFrameSetPoint(buttonsprite, FRAMEPOINT_BOTTOMLEFT, face, FRAMEPOINT_BOTTOMLEFT, 0.02, 0.02)
+		BlzFrameSetSize(buttonsprite, 1., 1.)
+		BlzFrameSetScale(buttonsprite, 1.)
+		BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
+
+		BlzFrameSetVisible(buttonsprite, false)
+		if GetLocalPlayer() ~= Player(k) and GetLocalON then
+			-- скрытие интерфейса от других игроков
+			BlzFrameSetVisible(lock, false)
+			BlzFrameSetVisible(face, false)
+			BlzFrameSetVisible(buttonIconFrame, false)
+		end
+		--глобалки
+
+		data.ToolTip[i] = UpDest
+		data.LockFrame[i] = lock
+		data.VisualSelectorFrame[i] = buttonsprite
+		data.PekFrame[i] = UpDest
+		data.ReloadIco[i] = buttonIconFrame
+
+	end
 	--end
 	--print("end")
 
 	--обновление текста
 	TimerStart(CreateTimer(), 1, true, function()
 
-			for i = 1, #Name do
-				--print(#Name)
-				if i == 1 then
-					--print("смена текста")
+		for i = 1, #Name do
+			--print(#Name)
+			if i == 1 then
+				--print("смена текста")
 
-					if data.Perk1 then
-						BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r")
-					else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.SingleWoodCount .. "/25|r") --|cffffff00AAAA|r
-					end
-				elseif i == 2 then
-					if data.Perk2 then
-						BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти" .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r")
-					else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r") --|cffffff00AAAA|r
-					end
+				if data.Perk1 then
+					BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r")
+				else
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.SingleWoodCount .. "/25|r") --|cffffff00AAAA|r
+				end
+			elseif i == 2 then
+				if data.Perk2 then
+					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти" .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r")
+				else
+					BlzFrameSetValue(data.HeroIco, 100-R2I(data.RevoltSec/3) )
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r") --|cffffff00AAAA|r
+				end
 
-				elseif i == 3 then
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.Dies .. "/15|r") --|cffffff00AAAA|r
-				elseif i == 4 then
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang).. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r") --|cffffff00AAAA|r
-				elseif i == 5 then
-					if data.Perk5 then
-						BlzFrameSetText(data.PekFrame[i], "Урон увеличен, текущий урон: " .. "|cffffff00" .. BlzGetUnitBaseDamage(data.UnitHero, 0) .. "|r")
-						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Damage is increased, current: " .. "|cffffff00" .. BlzGetUnitBaseDamage(data.UnitHero, 0) .. "|r") end
-						else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang).. "|cffffff00" .. data.Kills .. "/5|r") --|cffffff00AAAA|r
+			elseif i == 3 then
+				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.Dies .. "/15|r") --|cffffff00AAAA|r
+			elseif i == 4 then
+				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r") --|cffffff00AAAA|r
+			elseif i == 5 then
+				if data.Perk5 then
+					BlzFrameSetText(data.PekFrame[i], "Урон увеличен, текущий урон: " .. "|cffffff00" .. BlzGetUnitBaseDamage(data.UnitHero, 0) .. "|r")
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Damage is increased, current: " .. "|cffffff00" .. BlzGetUnitBaseDamage(data.UnitHero, 0) .. "|r")
 					end
-				elseif i == 6 then
-					if data.Perk6 then
-						BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00"..(BlzGetUnitBaseDamage(data.UnitHero, 0)*.5).." доп. урона|r") --|cffffff00AAAA|r
-						if lang==1 then BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.UnitHero, 0)*.5).." damage|r") end
-					else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
+				else
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.Kills .. "/5|r") --|cffffff00AAAA|r
+				end
+			elseif i == 6 then
+				if data.Perk6 then
+					BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " доп. урона|r") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " damage|r")
 					end
-				elseif i == 7 then
-					if data.Perk7 then
-						if data.Perk7A then
-							BlzFrameSetText(data.PekFrame[i], "Восстанавливает " .. "|cffffff00" .. "3 %|r" .. " от максимального ХП при убийстве врагов в ближнем бою")
-							if lang==1 then
-								BlzFrameSetText(data.PekFrame[i], "Restore " .. "|cffffff00" .. "3 %|r" .. " max HP for kill enemy in melee combat")
-							end
-						else
-							BlzFrameSetText(data.PekFrame[i], "Продолжайте правильно питаться и овладеете вампиризмом. " .. "|cffffff00" .. R2I(data.Heals) .. "/5000|r")
-							if lang==1 then
-								BlzFrameSetText(data.PekFrame[i], "Gives 7 HP regen. Keep eating right for LifeSteel  " .. "|cffffff00" .. R2I(data.Heals) .. "/5000|r")
-							end
+				else
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.Repairs) .. "/1000|r") --|cffffff00AAAA|r
+				end
+			elseif i == 7 then
+				if data.Perk7 then
+					if data.Perk7A then
+						BlzFrameSetText(data.PekFrame[i], "Восстанавливает " .. "|cffffff00" .. "3 %|r" .. " от максимального ХП при убийстве врагов в ближнем бою")
+						if lang == 1 then
+							BlzFrameSetText(data.PekFrame[i], "Restore " .. "|cffffff00" .. "3 %|r" .. " max HP for kill enemy in melee combat")
 						end
 					else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang).. "|cffffff00" .. R2I(data.Heals) .. "/1000|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Продолжайте правильно питаться и овладеете вампиризмом. " .. "|cffffff00" .. R2I(data.Heals) .. "/5000|r")
+						if lang == 1 then
+							BlzFrameSetText(data.PekFrame[i], "Gives 7 HP regen. Keep eating right for LifeSteel  " .. "|cffffff00" .. R2I(data.Heals) .. "/5000|r")
+						end
 					end
+				else
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.Heals) .. "/1000|r") --|cffffff00AAAA|r
+				end
 
-				elseif i == 8 then
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang).. "|cffffff00" .. data.KodoCount .. "/1|r") --|cffffff00AAAA|r
-				elseif i == 9 then
-					if not data.Perk9 then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.FireCount .. "/5|r") --|cffffff00AAAA|r
-					else
-						if not data.HaveAFire then
-
-							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. "Обычная|r")
-							if lang==1 then
-								BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. "Normal|r")
-							end
-						else
-							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. "Калёная|r") --|cffffff00AAAA|r
-							if lang==1 then
-								BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. "Hot|r")
-							end
-						end
-					end
-				elseif i == 10 then
-					--техника безопусноти
-					if data.Perk10 then
-						BlzFrameSetText(data.PekFrame[i], "Парирует урон при совершении атаки в первые " .. "|cffffff00" .. "0,2 секунды|r" .. " после замаха") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "Parry damage after " .. "|cffffff00" .. "0,2 sec|r" .. " attack") --|cffffff00AAAA|r
+			elseif i == 8 then
+				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.KodoCount .. "/1|r") --|cffffff00AAAA|r
+			elseif i == 9 then
+				if not data.Perk9 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.FireCount .. "/5|r") --|cffffff00AAAA|r
+				else
+					if not data.HaveAFire then
+						BlzFrameSetTexture(data.ReloadIco[i], texture[i], 0, true)
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Обычная|r")
+						if lang == 1 then
+							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Normal|r")
 						end
 					else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.TreeCountOnTB .. "/10|r") --|cffffff00AAAA|r
-					end
-				elseif i == 11 then
-					-- погром
-					--print(k)
-					if data.Perk11 then
-						--print("0")
-						BlzFrameSetText(data.PekFrame[i], "Автоматически чинит союзные здания и технику в ридиусе 400. " .. "|cffffff00" .. "10 ед. в секунду|r") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "Automatic repair building in 400 area  " .. "|cffffff00" .. "10 HP per sec|r")
-						end
-					else
-						--print("2")
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang).. "|cffffff00" .. "0/1|r") --|cffffff00AAAA|r
-						--print("3")
-					end
-					--print(k.."end")
-				elseif i == 12 then
-					-- ледяной щит
-					--print("жвенадцать")
-					if data.Perk12 then
-						BlzFrameSetText(data.PekFrame[i], "При поглощении урона в щит враги замораживаются на " .. "|cffffff00" .. "3 секунды|r") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "freezes enemies upon taking damage " .. "|cffffff00" .. "3 sec|r") --|cffffff00AAAA|r
-						end
-					else
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. R2I(data.FrozenShield) .. "/60|r") --|cffffff00AAAA|r
-					end
-				elseif i == 13 then
-					if not data.Perk13 then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.WolfCount .. "/5|r") --|cffffff00AAAA|r
-					else
-						BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. " .. "|cffffff00" .. "Автономен и неуязвим|r") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "Summon spirit wolf. " .. "|cffffff00" .. "Offline and invulnerable|r") --|cffffff00AAAA|r
-						end
-					end
-				elseif i == 14 then
-					if not data.Perk14A then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
-					else
-						BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона ") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100% |r" .. " damage ") --|cffffff00AAAA|r
-						end
-					end
-				elseif i == 15 then
-					if not data.Perk15 then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. data.SheepCount .. "/40|r") --|cffffff00AAAA|r
-					else
-						BlzFrameSetText(data.PekFrame[i], "Герой взрывается при смерти нанося урон и каждую " .. "|cffffff002|r" .. " смерть воскресает") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "Exploded on death and Revive every " .. "|cffffff002|r" .. " death")
-						end
-					end
-				elseif i == 16 then
-					if not data.Perk16 then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. "Ищите за вулканом|r") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. "Search beyond the volcano|r")
-						end
-					else
-						BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой, увеличивает урон в " .. "|cffffff00" .. "5 раз |r" .. " и оглушает на |cffffff00 0,5 сек. |r") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], " 1000 Range Attack damage multiplier" .. "|cffffff00" .. "x 5 |r" .. " and stun|cffffff00 0,5 sec |r")
-						end
-					end
-				elseif i == 17 then
-					if not data.Perk17 then
-						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i,lang) .. "|cffffff00" .. GTotalWood .. "/50|r") --|cffffff00AAAA|r
-					else
-						BlzFrameSetText(data.PekFrame[i], "Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: " .. "|cffffff00" .. "2 сек |r" .. "") --|cffffff00AAAA|r
-						if lang==1 then
-							BlzFrameSetText(data.PekFrame[i], "When hold RMB, press LMB. Reload: " .. "|cffffff00" .. "2 sec |r" .. "")
+						BlzFrameSetTexture(data.ReloadIco[i], "btngathergoldON", 0, true)
+						BlzFrameSetText(data.PekFrame[i], "Метает 1 огненный шар в указанном направлении. Увеличивает урона в" .. "|cffffff00" .. "5 раз|r") --|cffffff00AAAA|r
+						if lang == 1 then
+							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Hot|r")
 						end
 					end
 				end
+			elseif i == 10 then
+				--техника безопусноти
+				if data.Perk10 then
+					BlzFrameSetText(data.PekFrame[i], "Парирует урон при совершении атаки в первые " .. "|cffffff00" .. "0,2 секунды|r" .. " после замаха") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Parry damage after " .. "|cffffff00" .. "0,2 sec|r" .. " attack") --|cffffff00AAAA|r
+					end
+				else
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.TreeCountOnTB .. "/10|r") --|cffffff00AAAA|r
+				end
+			elseif i == 11 then
+				-- погром
+				--print(k)
+				if data.Perk11 then
+					--print("0")
+					BlzFrameSetText(data.PekFrame[i], "Автоматически чинит союзные здания и технику в ридиусе 400. " .. "|cffffff00" .. "10 ед. в секунду|r") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Automatic repair building in 400 area  " .. "|cffffff00" .. "10 HP per sec|r")
+					end
+				else
+					--print("2")
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "0/1|r") --|cffffff00AAAA|r
+					--print("3")
+				end
+				--print(k.."end")
+			elseif i == 12 then
+				-- ледяной щит
+				--print("жвенадцать")
+				if data.Perk12 then
+					BlzFrameSetText(data.PekFrame[i], "При поглощении урона в щит враги замораживаются на " .. "|cffffff00" .. "3 секунды|r") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "freezes enemies upon taking damage " .. "|cffffff00" .. "3 sec|r") --|cffffff00AAAA|r
+					end
+				else
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.FrozenShield) .. "/60|r") --|cffffff00AAAA|r
+				end
+			elseif i == 13 then
+				if not data.Perk13 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.WolfCount .. "/5|r") --|cffffff00AAAA|r
+				else
+					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. " .. "|cffffff00" .. "Автономен и неуязвим|r") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Summon spirit wolf. " .. "|cffffff00" .. "Offline and invulnerable|r") --|cffffff00AAAA|r
+					end
+				end
+			elseif i == 14 then
+				if not data.Perk14A then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
+				else
+					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона ") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100% |r" .. " damage ") --|cffffff00AAAA|r
+					end
+				end
+			elseif i == 15 then
+				if not data.Perk15 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.SheepCount .. "/40|r") --|cffffff00AAAA|r
+				else
+					BlzFrameSetText(data.PekFrame[i], "Герой взрывается при смерти нанося урон и каждую " .. "|cffffff002|r" .. " смерть воскресает") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "Exploded on death and Revive every " .. "|cffffff002|r" .. " death")
+					end
+				end
+			elseif i == 16 then
+				if not data.Perk16 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Ищите за вулканом|r") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Search beyond the volcano|r")
+					end
+				else
+					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой, увеличивает урон в " .. "|cffffff00" .. "5 раз |r" .. " и оглушает на |cffffff00 0,5 сек. |r") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], " 1000 Range Attack damage multiplier" .. "|cffffff00" .. "x 5 |r" .. " and stun|cffffff00 0,5 sec |r")
+					end
+				end
+			elseif i == 17 then
+				if not data.Perk17 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. GTotalWood .. "/50|r") --|cffffff00AAAA|r
+				else
+					BlzFrameSetText(data.PekFrame[i], "Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: " .. "|cffffff00" .. "2 сек |r" .. "") --|cffffff00AAAA|r
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], "When hold RMB, press LMB. Reload: " .. "|cffffff00" .. "2 sec |r" .. "")
+					end
+				end
 			end
-			--end
+		end
+		--end
 		--end
 	end)
 end
@@ -2209,16 +2229,19 @@ end
 function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
+	BlzFrameSetValue(data.ReloadIco[index], 100)
+
 	local tl = Location(GetUnitXY(data.UnitHero))
 	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
 	if GetLocalON then
-		if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) then -- РАзблокировка, проверено, не здесь десинхает
+		if GetLocalPlayer() == GetOwningPlayer(data.UnitHero) then
+			-- РАзблокировка, проверено, не здесь десинхает
 			--print("звук!")
-			PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
+			PlaySoundAtPointBJ(gg_snd_Unlock, 100, tl, 0)
 			--print("БЫл?")
 		end
 	else
-		PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
+		PlaySoundAtPointBJ(gg_snd_Unlock, 100, tl, 0)
 	end
 	RemoveLocation(tl)
 	TimerStart(CreateTimer(), 10, true, function()
@@ -2226,12 +2249,12 @@ function PerkUnlocker(data, index)
 	end)
 end
 
-function GetLangDescription(index,lang)
-	local multidescr=""
-	if lang==0 then
-		multidescr=description[index]
+function GetLangDescription(index, lang)
+	local multidescr = ""
+	if lang == 0 then
+		multidescr = description[index]
 	else
-		multidescr=descriptionENG[index]
+		multidescr = descriptionENG[index]
 	end
 	return multidescr
 end
@@ -2428,14 +2451,21 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 			UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
 			if IsUnitType(hero, UNIT_TYPE_HERO) then
 				local data = HERO[GetPlayerId(GetOwningPlayer(hero))]
-				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit then
-					--print("файрболим "..GetUnitName(DamagingUnit))
+				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit and data.FBIsReady then
+					--print("фаерболим "..GetUnitName(DamagingUnit))
+					local cd=5
 					local dummy = CreateUnit(GetOwningPlayer(hero), DummyID, x, y, 0)--
 					UnitAddAbility(dummy, FourCC('A00G'))
 					UnitApplyTimedLife(dummy, FourCC('BTLF'), 0.1)
-					Cast(dummy, 0, 0, DamagingUnit)
-					--DestroyEffect(bullet)
-					--DestroyTimer(GetExpiredTimer())
+					if Cast(dummy, 0, 0, DamagingUnit) then
+						data.FBIsReady=false
+						StartFrameCD(cd, data,16)
+						TimerStart(CreateTimer(), cd, false, function()
+							DestroyTimer(GetExpiredTimer())
+							data.FBIsReady=true
+						end)
+					end
+
 				end
 			end
 			--блок разворота снаряда
@@ -2977,7 +3007,7 @@ function OnPostDamage()
 
 				--print("boold")
 				if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
-					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+					--DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
 					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
 				end
 			end
@@ -3007,7 +3037,7 @@ function OnPostDamage()
 		else
 			--print("anydamage")
 			if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
-				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+			--	DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
 				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
 			end
 		end
@@ -3019,7 +3049,7 @@ function OnPostDamage()
 
 	if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 		--local x,y=GetUnitXY()
-		BlzSetEventDamage(0)
+		BlzSetEventDamage(damage*0.1)-- тини получает 10% урона
 		if damage>10 then
 			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
 			local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
@@ -3495,6 +3525,7 @@ function InitGameCore()
 			TreeCountOnTB = 0,
 			SheepCount = 0,
 			Thor=true,
+			FBIsReady=true,
 			---открытие перков
 			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
@@ -3530,6 +3561,7 @@ function InitGameCore()
 			LockFrame = {},
 			VisualSelectorFrame = {},
 			ReloadIco={},
+			HeroIco=nil,
 		}
 
 		if HERO[i] then
@@ -4519,7 +4551,7 @@ function InitUnitDeath()
 		local DeadUnit=GetTriggerUnit()--умерший
 
 		local Killer=GetKillingUnit()--убийца
-		print("EventDead "..GetUnitName(DeadUnit).." "..GetUnitName(Killer))
+		--print("EventDead "..GetUnitName(DeadUnit).." "..GetUnitName(Killer))
 		if GetUnitTypeId(Killer)==FourCC('o006')  then --волк убил
 			--print("волк убил")
 			BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)+1,0)
@@ -6275,7 +6307,8 @@ function AfterAttack(hero, delay)
 				TimerStart(CreateTimer(), cd, false, function()
 					data.Thor=true
 				end)
-				--CastArea(hero,FourCC('A003'),x,y)
+				--CastArea(hero,FourCC('A00Q'),x,y)
+				UnitAddItemById(hero,FourCC('I001'))
 				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
 			end
 			--print("ПОСТ удар тора")
@@ -6645,8 +6678,62 @@ function InitAllZones()
 	CreateVulkano(913,-2550)--вулкан
 	StartAllTorch()--фонарики
 	FarmOfPig()
+	AutoCollectLumber(2)
 	--Normadia()--Высадка пехотинцев в самом начале игры для тестов
 	StartWolfBossAI()
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 09.05.2020 23:14
+---
+
+function AutoCollectLumber(period)
+	local Mill=FindUnitOfType(FourCC('o001'))
+
+	TimerStart(CreateTimer(), period, true, function()
+		for i = 0, 3 do
+			local data=HERO[i]
+			local hero = data.UnitHero
+			if IsUnitInRange(hero, Mill, 100) then
+
+				local k=1
+				if data.Perk1 then
+					k=k+1
+				end
+				if data.IsWood then
+					--print("Автосбор древисины")
+					if GetLosingHP(hero)<=5 then-- Техника безопасности
+						--print("Полное хп")
+						data.TreeCountOnTB=k+data.TreeCountOnTB
+						if data.TreeCountOnTB>=10 and not data.Perk10 then
+							data.Perk10=true
+							PerkUnlocker(data,10)
+						end
+					end
+					data.IsWood=false
+					--рывок перемещён в другое место в интерфейс
+					data.SingleWoodCount=data.SingleWoodCount+k
+					--print("дерево в личном зачете "..data.SingleWoodCount)
+					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
+						data.Perk1=true
+						PerkUnlocker(data,1)
+					end
+					--print(data.SingleWoodCount)
+
+					HealUnit(hero,1000)
+					AddLumber(k,hero)
+					MoveWoodAsFarm(hero,k)
+					UnitAddItemById(hero,FourCC('I000'))-- ускорение
+					data.RevoltSec=0
+				end
+			end
+		end
+
+		if not UnitAlive(Mill) then
+			DestroyTimer(GetExpiredTimer())
+		end
+	end)
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -6915,7 +7002,7 @@ function CreateRoundSawZ(hero,ChainCount,angle,z)
 
 		OnDamage,ReflectorUnit=UnitDamageArea(DamageDealer,20,nx,ny,150,z-90,CollisionEffect)
 
-		if OnDamage and ReflectorUnit then
+		if OnDamage and ReflectorUnit and not BlzIsUnitInvulnerable(ReflectorUnit)  then
 			local tl = Location(GetUnitXY(hero))
 			PlaySoundAtPointBJ( gg_snd_Saw, 100, tl, 0 )
 			RemoveLocation(tl)
@@ -7019,10 +7106,10 @@ function CreateGroundSaw(hero,angle,z)
 		nx,ny=MoveXY(x,y,-60,angle)
 		UnitDamageArea(hero,20,nx,ny,60,z-90,CollisionEffect)
 
-		if OnDamage and ReflectorUnit then
+		if OnDamage and ReflectorUnit and not BlzIsUnitInvulnerable(ReflectorUnit) then
 			local dummy=CreateUnit(Player(0), DummyID, nx ,ny, 0)
 			UnitAddAbility(dummy,FourCC('Apsh'))
-			IssueImmediateOrder(dummy,"phaseshift")
+			IssueImmediateOrder(dummy,"phaseshift")-- поддельный звук пилы
 			UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
 			--ShowUnit(dummy,false)
 			local tl = Location(GetUnitXY(hero))

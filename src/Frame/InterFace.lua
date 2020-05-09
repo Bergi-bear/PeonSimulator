@@ -188,20 +188,17 @@ function MoveWoodAsFarm(hero,k)
 
 end
 
-function HealthBarAdd(u)
+function HealthBarAdd(u) --Код Сиренчика
 	BlzLoadTOCFile("Main.toc")
 	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
 	BlzFrameSetVisible(bar,false)
 
-	local heroico=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true)
-	BlzFrameSetSize(heroico, 0.04, 0.04)
-	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT,0.04, 0.6-0.03)
-	BlzFrameSetVisible(heroico,false)
+	--Моделька пеона же
+
 
 	if GetLocalPlayer()==GetOwningPlayer(u) and GetLocalON then -- хп бары, они точно в норме
 		BlzFrameSetVisible(bar,true)
-		BlzFrameSetVisible(heroico,true)
+		--BlzFrameSetVisible(heroico,true)
 	end
 	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
 	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)

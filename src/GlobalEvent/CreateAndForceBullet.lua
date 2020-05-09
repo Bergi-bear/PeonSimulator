@@ -67,14 +67,21 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 			UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
 			if IsUnitType(hero, UNIT_TYPE_HERO) then
 				local data = HERO[GetPlayerId(GetOwningPlayer(hero))]
-				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit then
-					--print("файрболим "..GetUnitName(DamagingUnit))
+				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit and data.FBIsReady then
+					--print("фаерболим "..GetUnitName(DamagingUnit))
+					local cd=5
 					local dummy = CreateUnit(GetOwningPlayer(hero), DummyID, x, y, 0)--
 					UnitAddAbility(dummy, FourCC('A00G'))
 					UnitApplyTimedLife(dummy, FourCC('BTLF'), 0.1)
-					Cast(dummy, 0, 0, DamagingUnit)
-					--DestroyEffect(bullet)
-					--DestroyTimer(GetExpiredTimer())
+					if Cast(dummy, 0, 0, DamagingUnit) then
+						data.FBIsReady=false
+						StartFrameCD(cd, data,16)
+						TimerStart(CreateTimer(), cd, false, function()
+							DestroyTimer(GetExpiredTimer())
+							data.FBIsReady=true
+						end)
+					end
+
 				end
 			end
 			--блок разворота снаряда
