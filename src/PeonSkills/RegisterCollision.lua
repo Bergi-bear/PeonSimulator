@@ -22,7 +22,9 @@ function RegisterCollision(hero)
 			if GetUnitTypeId(CollisionUnit)==FourCC('o008')  then --Таурен
 				--print("защищайте кодоев")
 				SetUnitFacing(CollisionUnit,AngleBetweenUnits(CollisionUnit,hero))
-				PlaySoundAtPointBJ( gg_snd_SaveKodo, 100, RemoveLocation(Location(GetUnitXY(CollisionUnit))), 0 )
+				local location tl = Location(GetUnitXY(CollisionUnit))
+				PlaySoundAtPointBJ( gg_snd_SaveKodo, 100, tl, 0 )
+				RemoveLocation(tl)
 			end
 
 
@@ -182,7 +184,9 @@ function RegisterCollision(hero)
 						SetUnitUserData(data.CartUnit,wc+1)
 						wc=wc+1
 						--print("Всего дерева в тачке="..wc)
-						PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+						local tl = Location(GetUnitXY(hero))
+						PlaySoundAtPointBJ( gg_snd_Load, 100, tl, 0 )
+						RemoveLocation(tl)
 						KillUnit(CollisionUnit)
 						SetVisualWood(data.CartUnit,wc)
 					end
@@ -190,7 +194,9 @@ function RegisterCollision(hero)
 					if not data.IsWood then
 						--print("звук подбора")
 						if not data.ReleaseLMB then
-						PlaySoundAtPointBJ( gg_snd_Load, 100, RemoveLocation(Location(GetUnitXY(hero))), 0 )
+							local tl = Location(GetUnitXY(hero))
+						PlaySoundAtPointBJ( gg_snd_Load, 100, tl, 0 )
+						RemoveLocation(tl)
 							KillUnit(CollisionUnit)
 							data.IsWood=true
 						end

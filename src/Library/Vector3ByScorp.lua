@@ -3,11 +3,11 @@
 --- Created by Bergi.
 --- DateTime: 08.03.2020 12:10
 ---
-if(_G["WM"] == nil) then WM = (function(m,h) h(nil,(function() end), (function(e) _G[m] = e end)) end) end -- WLPM MM fallback
+--if(_G["WM"] == nil) then WM = (function(m,h) h(nil,(function() end), (function(e) _G[m] = e end)) end) end -- WLPM MM fallback
 
 -- Warcraft 3 Geometry module by ScorpioT1000 / 2020
 -- Thanks to DGUI by Ashujon / 2009
-WM("wGeometry", function(import, export, exportDefault)
+function wGeometryInit()
 	local Functions = nil
 	local Vector3 = nil
 	local Matrix3 = nil
@@ -29,7 +29,7 @@ WM("wGeometry", function(import, export, exportDefault)
 	end
 
 	local _GetItemZ = function(i)
-		return getTerrainZ(GetItemX(u), GetItemY(u))
+		return getTerrainZ(GetItemX(i), GetItemY(i))
 	end
 
 	local _GetDestructableZ = function(d)
@@ -393,7 +393,7 @@ WM("wGeometry", function(import, export, exportDefault)
 		end,
 
 		applyToUnit = function(self, u)
-			SetUnitX(u, self,x)
+			SetUnitX(u, self.x)
 			SetUnitY(u, self.y)
 			_SetUnitZ(u, self.z)
 		end,
@@ -931,6 +931,9 @@ WM("wGeometry", function(import, export, exportDefault)
 		Camera = Camera,
 		unlockUnitZ = unlockUnitZ
 	}
-	exportDefault(wGeometry)
-	export(wGeometry)
-end)
+	--exportDefault(wGeometry)
+	--export(wGeometry)
+	return wGeometry
+end
+
+wGeometry = wGeometryInit()

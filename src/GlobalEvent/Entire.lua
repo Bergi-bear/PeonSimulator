@@ -5,11 +5,12 @@
 ---
 ---
 function InitTrig_Entire()
-	gg_trg_EntireGui = CreateTrigger()
-	TriggerRegisterEnterRectSimple(gg_trg_EntireGui, GetPlayableMapRect())
-	TriggerAddAction(gg_trg_EntireGui, function()
+	local this = CreateTrigger()
+	TriggerRegisterEnterRectSimple(this, GetPlayableMapRect())
+	TriggerAddAction(this, function()
 		local EntireUnit=GetTriggerUnit()
-		if GetUnitTypeId(EntireUnit)==FourCC('n002')   then
+		--print(GetUnitName(EntireUnit))
+		if GetUnitTypeId(EntireUnit)==FourCC('n002')   then -- голем пытается скачатить на героя стан
 			TimerStart(CreateTimer(), 3, true, function()
 				for i = 0, 3 do
 					local hero = HERO[i].UnitHero

@@ -4,204 +4,202 @@
 --- DateTime: 08.02.2020 12:24
 
 
+function OnPostDamage()
+	local damage     = GetEventDamage() -- число урона
+	local damageType = BlzGetEventDamageType()
+	if damage < 1 then return end
+
+	local target          = GetTriggerUnit() -- тот кто получил урон
+	local targetHandleId  = GetHandleId(target)
+
+	local caster          = GetEventDamageSource() -- тот кто нанёс урон
+	local casterOwner     = GetOwningPlayer(caster)
+
+	--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
+	if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
+		--print("Герой получил урон")
+		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+
+
+		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
+			UnitRemoveAbility(target,FourCC('BPSE'))
+			BlzSetEventDamage(0)
+			if data.ReleaseLMB then
+				data.StoneCount=data.StoneCount+1
+				if data.StoneCount==5 then
+					data.Perk14A=true
+					PerkUnlocker(data,14)
+				end
+			end
+			--print("урон от голема")
+		end
+		if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then -- обледенение
+			DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget",GetUnitXY(target)))
+		end
+
+		if data.Reflection and data.Perk10 then -- парирование с талантом
+			--print("Урон парирован")
+			local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
+			local tl = Location(GetUnitXY(target))
+			PlaySoundAtPointBJ( gg_snd_Reflect, 100, tl, 0 )
+			RemoveLocation(tl)
+			BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
+			DestroyEffect(eff)
+			BlzSetEventDamage(0)
+		end
+
+
+		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
+			local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
+			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+			local Vector3 = wGeometry.Vector3
+			local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
+			local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
+			AngleSourceVector = AngleSourceVector:normalize()
+			local dot = UnitFacingVector:dotProduct(AngleSourceVector)
+			local dist=damage
+			if dist >=25 then dist=25 end
+			if 0 < dot then
+				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+				DestroyEffect(eff)
+				UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
+				if data.Perk14A then
+					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage),GetOwningPlayer(target))
+					BlzSetEventDamage(0)
+				else
+					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage/2),GetOwningPlayer(target))
+					BlzSetEventDamage(damage/2)
+					--print("факт поглощения урона ™")
+				end
+			else
+				DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Human\\HumanBlood\\HumanBloodFootman",GetUnitXY(target)))
+
+				--print("boold")
+				if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
+					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+				end
+			end
+			if data.Perk12 and dot>0 then--
+				if DistanceBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitXY(caster))<=200 then
+					local x,y=GetUnitXY(caster)
+					--print("замораживаем "..GetUnitName(caster))
+					local dummy=CreateUnit(GetOwningPlayer(target), DummyID, x, y, 0)--
+					UnitAddAbility(dummy,FourCC('A00H'))
+					UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
+					if Cast(dummy,0,0,caster) then
+						--	print("успех")
+					else
+						--	print("провел")
+					end
+					SetUnitTimeScale(caster,0)
+					SetUnitVertexColor(caster,60,200,255,240)
+					BlzPauseUnitEx(caster, true)
+					TimerStart(CreateTimer(), 3, false, function()
+						SetUnitTimeScale(caster,1)
+						SetUnitVertexColor(caster,255,255,255,255)
+						BlzPauseUnitEx(caster, false)
+						DestroyTimer(GetExpiredTimer())
+					end)
+				end
+			end
+		else
+			--print("anydamage")
+			if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
+				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
+				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+			end
+		end
+	end
+	--любой получил урон
+
+
+
+
+	if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
+		--local x,y=GetUnitXY()
+		BlzSetEventDamage(0)
+		if damage>10 then
+			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
+			local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
+			BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
+			DestroyEffect(eff)
+			local tl = Location(GetUnitXY(caster))
+			PlaySoundAtPointBJ( gg_snd_Reflect, 100, tl, 0 )
+			RemoveLocation(tl)
+		end
+	end
+	if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
+		--print("урон по кодою")
+		BlzSetEventDamage(0)
+		local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
+		IssuePointOrder(target,"move",endX,endY)
+		if IsUnitInRangeXY(target,endX,endY,120) then
+			SetUnitOwner(target,casterOwner,true)
+			--print("Ачивка кодоя")
+			local data=HERO[GetPlayerId(casterOwner)]
+			data.KodoCount=data.KodoCount+1-- считаем бездействие
+			if not data.Perk8 then
+				if data.KodoCount>=1 then
+					data.Perk8=true
+					BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
+					PerkUnlocker(data,8)
+					--print("Рабочий поднял бунт")
+					--Allian
+				end
+			end
+			--Старт ИИ кодоя
+			TimerStart(CreateTimer(), 10, true, function()
+				if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
+				if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+					local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
+					IssuePointOrder(target,"move", rx,ry)
+				end
+			end)
+			TimerStart(CreateTimer(), 1, true, function()
+				if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
+				local e=nil
+				GroupEnumUnitsInRange(perebor,GetUnitX(target),GetUnitY(target),600,nil)
+				while true do
+					e = FirstOfGroup(perebor)
+
+					if e == nil then break end
+					if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(target)) then
+						--print("пытаемся скушать врага")
+						--if Cast(target,0,0,e) then
+						if IssueTargetOrder(target,"devour",e) then
+							--print("успешно")
+						else
+
+						end
+					end
+					GroupRemoveUnit(perebor,e)
+				end
+			end)
+		end
+		TimerStart(CreateTimer(), 2, false, function()
+			IssueImmediateOrder(target,"stop")
+			DestroyTimer(GetExpiredTimer())
+		end)
+
+	end
+end
+
 
 function InitDamage()
 	local DamageTrigger = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		TriggerRegisterPlayerUnitEvent(DamageTrigger, Player(i), EVENT_PLAYER_UNIT_DAMAGING) -- До вычета брони
+		--TriggerRegisterPlayerUnitEvent(DamageTrigger, Player(i), EVENT_PLAYER_UNIT_DAMAGING) -- До вычета брони
 		TriggerRegisterPlayerUnitEvent(DamageTrigger, Player(i), EVENT_PLAYER_UNIT_DAMAGED) -- После вычета брони
 	end
-	TriggerAddAction(DamageTrigger, function()
-		local damage     = GetEventDamage() -- число урона
-		local damageType = BlzGetEventDamageType()
-		if damage < 1 then return end
-
-		local eventId         = GetHandleId(GetTriggerEventId())
-		local isEventDamaging = eventId == GetHandleId(EVENT_PLAYER_UNIT_DAMAGING)
-		local isEventDamaged  = eventId == GetHandleId(EVENT_PLAYER_UNIT_DAMAGED)
-
-		local target          = GetTriggerUnit() -- тот кто получил урон
-		local targetHandleId  = GetHandleId(target)
-
-
-
-		local caster          = GetEventDamageSource() -- тот кто нанёс урон
-		local casterOwner     = GetOwningPlayer(caster)
-
-		if isEventDamaged then
-			--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
-			if IsUnitType(target,UNIT_TYPE_HERO) then --Prometheus Прометей
-				--print("Герой получил урон")
-				local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-
-
-				if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
-					UnitRemoveAbility(target,FourCC('BPSE'))
-					BlzSetEventDamage(0)
-					if data.ReleaseLMB then
-						data.StoneCount=data.StoneCount+1
-						if data.StoneCount==5 then
-							data.Perk14A=true
-							PerkUnlocker(data,14)
-						end
-					end
-					--print("урон от голема")
-				end
-				if GetUnitAbilityLevel(caster,FourCC('A005'))>0 then -- обледенение
-					DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget",GetUnitXY(target)))
-				end
-
-				if data.Reflection and data.Perk10 then -- парирование с талантом
-					--print("Урон парирован")
-					local eff=AddSpecialEffect("DefendCasterNoSound",GetUnitXY(target))
-					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(target))), 0 )
-					BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(target)))
-					DestroyEffect(eff)
-					BlzSetEventDamage(0)
-				end
-
-
-				if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит
-					local AngleUnitRad = math.rad(GetUnitFacing(target))  -- data.LastTurn
-					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-					local Vector3 = wGeometry.Vector3
-					local UnitFacingVector = Vector3:new(math.cos(AngleUnitRad), math.sin(AngleUnitRad), 0)  -- вектор поворота юнита
-					local AngleSourceVector = Vector3:new(GetUnitX(caster) - GetUnitX(target), GetUnitY(caster) - GetUnitY(target), 0)  -- вектор получения от урона (by Doc)
-					AngleSourceVector = AngleSourceVector:normalize()
-					local dot = UnitFacingVector:dotProduct(AngleSourceVector)
-					local dist=damage
-					if dist >=25 then dist=25 end
-					if 0 < dot then
-						local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
-						BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
-						DestroyEffect(eff)
-						UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
-						if data.Perk14A then
-							FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage),GetOwningPlayer(target))
-							BlzSetEventDamage(0)
-						else
-							FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage/2),GetOwningPlayer(target))
-							BlzSetEventDamage(damage/2)
-							--print("факт поглощения урона ™")
-						end
-					else
-						DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Human\\HumanBlood\\HumanBloodFootman",GetUnitXY(target)))
-
-						--print("boold")
-						if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
-							DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
-							DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
-						end
-					end
-					if data.Perk12 and dot>0 then--
-						if DistanceBetweenXY(GetUnitX(target),GetUnitY(target),GetUnitXY(caster))<=200 then
-							local x,y=GetUnitXY(caster)
-							--print("замораживаем "..GetUnitName(caster))
-							local dummy=CreateUnit(GetOwningPlayer(target), DummyID, x, y, 0)--
-							UnitAddAbility(dummy,FourCC('A00H'))
-							UnitApplyTimedLife(dummy,FourCC('BTLF'),0.1)
-							if Cast(dummy,0,0,caster) then
-								--	print("успех")
-							else
-								--	print("провел")
-							end
-							SetUnitTimeScale(caster,0)
-							SetUnitVertexColor(caster,60,200,255,240)
-							BlzPauseUnitEx(caster, true)
-							TimerStart(CreateTimer(), 3, false, function()
-								SetUnitTimeScale(caster,1)
-								SetUnitVertexColor(caster,255,255,255,255)
-								BlzPauseUnitEx(caster, false)
-								DestroyTimer(GetExpiredTimer())
-							end)
-						end
-					end
-				else
-					--print("anydamage")
-					if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
-						DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
-						DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
-					end
-				end
-			end
-			--любой получил урон
-
-
-
-
-			if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
-				--local x,y=GetUnitXY()
-				BlzSetEventDamage(0)
-				if damage>10 then
-					local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
-					local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
-					BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
-					DestroyEffect(eff)
-					PlaySoundAtPointBJ( gg_snd_Reflect, 100, RemoveLocation(Location(GetUnitXY(caster))), 0 )
-				end
-			end
-			if GetUnitTypeId(target)==FourCC('o002')  and GetOwningPlayer(target)==Player(10) then --урон по кодою
-				--print("урон по кодою")
-				BlzSetEventDamage(0)
-				local endX,endY=GetRectCenterX(gg_rct_KodoZone),GetRectCenterY(gg_rct_KodoZone)
-				IssuePointOrder(target,"move",endX,endY)
-				if IsUnitInRangeXY(target,endX,endY,120) then
-					SetUnitOwner(target,casterOwner,true)
-					--print("Ачивка кодоя")
-					local data=HERO[GetPlayerId(casterOwner)]
-					data.KodoCount=data.KodoCount+1-- считаем бездействие
-					if not data.Perk8 then
-						if data.KodoCount>=1 then
-							data.Perk8=true
-							BlzSetUnitArmor(caster,BlzGetUnitArmor(caster)+10)
-							PerkUnlocker(data,8)
-							--print("Рабочий поднял бунт")
-							--Allian
-						end
-					end
-					--Старт ИИ кодоя
-					TimerStart(CreateTimer(), 10, true, function()
-						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
-						if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
-							local rx,ry=GetRandomInt(-500,500),GetRandomInt(-500,500)
-							IssuePointOrder(target,"move", rx,ry)
-						end
-					end)
-					TimerStart(CreateTimer(), 1, true, function()
-						if not UnitAlive(target) then DestroyTimer(GetExpiredTimer()) end
-						local e=nil
-						GroupEnumUnitsInRange(perebor,GetUnitX(target),GetUnitY(target),600,nil)
-						while true do
-							e = FirstOfGroup(perebor)
-
-							if e == nil then break end
-							if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(target)) then
-								--print("пытаемся скушать врага")
-								--if Cast(target,0,0,e) then
-								if IssueTargetOrder(target,"devour",e) then
-									--print("успешно")
-								else
-
-								end
-							end
-							GroupRemoveUnit(perebor,e)
-						end
-					end)
-				end
-				TimerStart(CreateTimer(), 2, false, function()
-					IssueImmediateOrder(target,"stop")
-					DestroyTimer(GetExpiredTimer())
-				end)
-
-			end
-		end
-	end)
+	TriggerAddAction(DamageTrigger, OnPostDamage)
 end
 
 
 
 
-perebor=CreateGroup()
+
 function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local isdamage=false
 	local e=nil
@@ -390,9 +388,9 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 
 			end
 		else
-			local data=HERO(UnitGetPid(hero))
+			--local data=HERO(UnitGetPid(hero))
 			--print("атака по мертвому "..GetUnitName(hero))
-			data.IsWood=true
+			--data.IsWood=true
 		end
 	end)
 	return content

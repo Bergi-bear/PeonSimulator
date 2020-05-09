@@ -368,7 +368,7 @@ function EffectAddRegistrationCollision(eff, hero, range, duration, flag)
 				if flag == 1 then
 					-- орк в уточке
 					if IsUnitType(hero, UNIT_TYPE_HERO) then
-						RemoveEffect(eff)
+						DestroyEffect(eff)
 						PlaySoundAtPointBJ(gg_snd_Load, 100, Location(x, y), 0)
 						DestroyTimer(GetExpiredTimer())
 						HealUnit(hero, 100)

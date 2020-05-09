@@ -366,12 +366,18 @@ end
 function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
-	PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
-	if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) and GetLocalON  then -- РАзблокировка, проверено, не здесь десинхает
-		--print("звук!")
-		PlaySoundAtPointBJ( gg_snd_Unlock, 100, RemoveLocation(Location(GetUnitXY(data.UnitHero))), 0 )
-		--print("БЫл?")
+	local tl = Location(GetUnitXY(data.UnitHero))
+	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
+	if GetLocalON then
+		if GetLocalPlayer()==GetOwningPlayer(data.UnitHero) then -- РАзблокировка, проверено, не здесь десинхает
+			--print("звук!")
+			PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
+			--print("БЫл?")
+		end
+	else
+		PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
 	end
+	RemoveLocation(tl)
 	TimerStart(CreateTimer(), 10, true, function()
 		BlzFrameSetVisible(data.VisualSelectorFrame[index], false)
 	end)

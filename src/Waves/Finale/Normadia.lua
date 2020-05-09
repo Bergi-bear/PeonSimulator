@@ -34,7 +34,7 @@ function CreateTransportShip(x,y,xend,yend)
 		local z=GetTerrainZ(MoveXY(xp,yp,200,GetUnitFacing(new)))
 		--print(z)
 		if IsFull then
-			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+			if GetUnitCurrentOrder(new)~=String2OrderIdBJ("move") then
 				IssuePointOrder(new,"move",xend,yend)
 			end
 		end
@@ -48,7 +48,7 @@ function CreateTransportShip(x,y,xend,yend)
 			--print("высадка")
 			--
 			CreateEnemy(new,FourCC('hfoo'),4)
-			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("move") then
+			if GetUnitCurrentOrder(new)~=String2OrderIdBJ("move") then
 				IssuePointOrder(new,"move",x,y)
 			end
 		end
@@ -78,7 +78,7 @@ function CreateEnemy(ship,id,k)
 			local new=CreateUnit(Player(14), id, x, y, 0)
 			footmans=footmans+1
 			--print("создан")
-			if GetUnitCurrentOrder(target)~=String2OrderIdBJ("attack") then
+			if GetUnitCurrentOrder(new)~=String2OrderIdBJ("attack") then
 				if ship then
 					IssuePointOrder(new,"attack",-4935.0, 809.5)
 				else

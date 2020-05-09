@@ -11,6 +11,7 @@ do
 	local InitGlobalsOrigin = InitGlobals -- записываем InitGlobals в переменную
 	function InitGlobals()
 		InitGlobalsOrigin() -- вызываем оригинальную InitGlobals из переменной
+		perebor=CreateGroup()
 		InitGameCore()
 		InitMouseMoveTrigger()
 		InitDamage()
@@ -73,11 +74,10 @@ function InitGameCore()
 
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
-	TestFrame()
+	--TestFrame()
 	--VisualUnlock()--убирание выделение каждые 10 сек
 
 	CreateAndStartClock()
-	--CreateStatusBar() --нанель статусов, ещё не готова
 	-----Настоящая инициализация
 	for i = 0, 3 do
 		-- Число игроков
@@ -107,7 +107,6 @@ function InitGameCore()
 			IsMouseMove = false,
 			LastMouseX = 0,
 			LastTurn = 0,
-			ForcesCount = 0,
 			ForceRemain = {},
 			ForceAngle = {},
 			ForceSpeed = {},
@@ -145,20 +144,20 @@ function InitGameCore()
 			Perk3 = false, -- Суицидник
 			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
-			Perk6 = true, -- Ученика кузнеца
+			Perk6 = false, -- Ученика кузнеца
 			Perk7 = false, -- Ожирение
 			Perk7A = false, -- Ожирение 2 степени
 			Perk8 = false, -- Кодой
 			Perk9 = false, -- Кирка
-			Perk10 = true, -- парирование
+			Perk10 = false, -- парирование
 			Perk11 = false, -- Технологии людей
 			Perk12 = false, -- ледяной щит
 			Perk13 = false, -- волк
 			Perk14 = true, -- Щит 50 всегда ВКл, а то щит сломается
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
-			Perk16 = true, -- Фаерболы
-			Perk17 = true, --Рывок
+			Perk16 = false, -- Фаерболы
+			Perk17 = false, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -188,6 +187,11 @@ function InitGameCore()
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)
 			end
+
+			--if(i>0) then
+			--	StartPeonAI(hero)
+			--end
+
 			--print("111111")
 		end
 	end
