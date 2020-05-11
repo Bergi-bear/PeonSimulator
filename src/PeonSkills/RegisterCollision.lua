@@ -21,11 +21,37 @@ function RegisterCollision(hero)
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('o009') and not data.Wagon  then --вагонетка
 				--print("вагонетка прилипает")
+
+
+
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					BlzPauseUnitEx(CollisionUnit,true)
 					SetUnitInvulnerable(CollisionUnit,true)
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
 					data.Wagon=CollisionUnit
+
+					local Turret=FindUnitOfType(FourCC('o00A'),300,GetUnitXY(CollisionUnit))
+					SetUnitInvulnerable(Turret,true)
+					SetUnitZ(Turret,220)
+					data.Turret=Turret
+
+					--Элементы для входа
+					if not data.TurretArrow and Turret then
+						print("Первое появление")
+						local x,y=GetUnitXY(CollisionUnit)
+						local model="AneuCaster"
+						local player=GetOwningPlayer(hero)
+						if GetLocalPlayer()~=player then
+							model=""
+						else
+							--print("звук созданного квеста")
+							StartSound(bj_questSecretSound)
+						end
+						local QuestPointer=AddSpecialEffect(model,x,y)
+						BlzSetSpecialEffectPitch(QuestPointer,math.rad(-90))--/bj_DEGTORAD
+						BlzSetSpecialEffectYaw(QuestPointer,math.rad(180))
+						data.TurretArrow=QuestPointer
+					end
 				end
 			end
 

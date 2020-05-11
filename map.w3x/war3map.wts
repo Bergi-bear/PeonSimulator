@@ -1,37 +1,7 @@
-﻿STRING 1
-{
-PeonRPG
-}
-
-STRING 2
-{
-18+
-}
-
-STRING 3
-{
-Using WASD and mouse, to control your peon, cut wood for victory
-}
-
-STRING 4
-{
-Bergi
-}
-
-STRING 5
-{
-Player 1
-}
-
-STRING 7
+﻿STRING 7
 // Units: o000 (Ноги батрака), Name (Name)
 {
 Ноги батрака
-}
-
-STRING 8
-{
- 
 }
 
 STRING 9
@@ -88,26 +58,6 @@ STRING 17
 Отключение коллизии
 }
 
-STRING 18
-{
-Player 2
-}
-
-STRING 19
-{
-Player 3
-}
-
-STRING 20
-{
-Player 4
-}
-
-STRING 21
-{
-Player 5
-}
-
 STRING 23
 // Abilities: A001 (Ускорение от руны), Name (Name)
 {
@@ -124,11 +74,6 @@ STRING 27
 // Abilities: A002 (Аура регенерации здоровья (300)), Name (Name)
 {
 Аура регенерации здоровья (300)
-}
-
-STRING 28
-{
-Player 6
 }
 
 STRING 29
@@ -391,11 +336,6 @@ STRING 71
  (красный)
 }
 
-STRING 72
-{
- 
-}
-
 STRING 73
 // Units: O004 (Король пеонов), Name (Name)
 {
@@ -474,16 +414,6 @@ STRING 85
 Щит в руке каменный
 }
 
-STRING 86
-{
-Peon
-}
-
-STRING 87
-{
-Enemy
-}
-
 STRING 88
 // Items: I001 (Руна антискорости), Name (Name)
 {
@@ -508,14 +438,20 @@ STRING 91
 R2
 }
 
-STRING 92
-{
-123
-}
-
 STRING 93
 // Units: o009 (Пустая вагонетка), Name (Name)
 {
 Пустая вагонетка
+}
+
+STRING 94
+// Units: o00A (Турель), Name (Name)
+{
+Турель
+}
+
+STRING 95
+{
+ 
 }
 

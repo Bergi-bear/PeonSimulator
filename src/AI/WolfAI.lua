@@ -24,7 +24,7 @@ local boss=FindUnitOfType(FourCC('nwwd'))--id босса
 		end
 
 		local hero=this[GetRandomInt(1,#this)]
-		if hero and GetUnitTypeId() then
+		if hero and GetUnitAbilityLevel(boss,FourCC('BPSE'))==0 then
 			--print("Нападаем на "..GetUnitName(hero))
 			local angle= math.deg(AngleBetweenXY(GetUnitX(boss), GetUnitY(boss), GetUnitX(hero), GetUnitY(hero)))
 			BlzSetUnitFacingEx(boss,angle)

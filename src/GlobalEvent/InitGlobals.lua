@@ -180,6 +180,8 @@ function InitGameCore()
 			cy=0,
 			ShowSplat=false,
 			Wagon=nil,
+			Turret=nil,
+			TurretArrow=nil,
 			Compass=nil,
 			CompassX=0,
 			CompassY=0,
@@ -1054,17 +1056,21 @@ function InitGameCore()
 					end
 					if cy<=4541-70 and cy>=1630+70 then
 						SetUnitY(data.Wagon,cy)
+						SetUnitY(data.Turret,cy)
+						BlzSetSpecialEffectPosition(data.TurretArrow,MoveX(cx,100,0/bj_DEGTORAD),MoveY(cy,100,0/bj_DEGTORAD),170)
 					else
 
 					end
 					--print(GetUnitX(data.Wagon))
 					SetUnitX(data.Wagon,11532.25+5)
+					SetUnitX(data.Turret,11532.25-25)
 				end
 				if rangeCart >= 115 or not UnitAlive(hero) then
 					--print("отрыв вагонетки")
 					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
 					SetUnitAnimationByIndex(data.CartUnit, 0)
 					data.Wagon = nil
+					data.Turret = nil
 				end
 			end--конец блока вагонетка
 

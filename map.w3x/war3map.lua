@@ -428,6 +428,7 @@ function CreateNeutralPassive()
     u = BlzCreateUnitWithSkin(p, FourCC("e007"), 2904.6, -2346.4, 353.440, FourCC("e007"))
     gg_unit_n006_0217 = BlzCreateUnitWithSkin(p, FourCC("n006"), 3581.2, -1649.5, 269.192, FourCC("n006"))
     u = BlzCreateUnitWithSkin(p, FourCC("o009"), 11532.3, 1861.4, 90.000, FourCC("o009"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o00A"), 11395.3, 1866.9, 180.000, FourCC("o00A"))
 end
 
 function CreatePlayerBuildings()
@@ -939,7 +940,7 @@ local boss=FindUnitOfType(FourCC('nwwd'))--id босса
 		end
 
 		local hero=this[GetRandomInt(1,#this)]
-		if hero and GetUnitTypeId() then
+		if hero and GetUnitAbilityLevel(boss,FourCC('BPSE'))==0 then
 			--print("Нападаем на "..GetUnitName(hero))
 			local angle= math.deg(AngleBetweenXY(GetUnitX(boss), GetUnitY(boss), GetUnitX(hero), GetUnitY(hero)))
 			BlzSetUnitFacingEx(boss,angle)
@@ -3572,6 +3573,8 @@ function InitGameCore()
 			cy=0,
 			ShowSplat=false,
 			Wagon=nil,
+			Turret=nil,
+			TurretArrow=nil,
 			Compass=nil,
 			CompassX=0,
 			CompassY=0,
@@ -4446,17 +4449,21 @@ function InitGameCore()
 					end
 					if cy<=4541-70 and cy>=1630+70 then
 						SetUnitY(data.Wagon,cy)
+						SetUnitY(data.Turret,cy)
+						BlzSetSpecialEffectPosition(data.TurretArrow,MoveX(cx,100,0/bj_DEGTORAD),MoveY(cy,100,0/bj_DEGTORAD),170)
 					else
 
 					end
 					--print(GetUnitX(data.Wagon))
 					SetUnitX(data.Wagon,11532.25+5)
+					SetUnitX(data.Turret,11532.25-25)
 				end
 				if rangeCart >= 115 or not UnitAlive(hero) then
 					--print("отрыв вагонетки")
 					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
 					SetUnitAnimationByIndex(data.CartUnit, 0)
 					data.Wagon = nil
+					data.Turret = nil
 				end
 			end--конец блока вагонетка
 
@@ -6468,11 +6475,37 @@ function RegisterCollision(hero)
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('o009') and not data.Wagon  then --вагонетка
 				--print("вагонетка прилипает")
+
+
+
 				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
 					BlzPauseUnitEx(CollisionUnit,true)
 					SetUnitInvulnerable(CollisionUnit,true)
 					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
 					data.Wagon=CollisionUnit
+
+					local Turret=FindUnitOfType(FourCC('o00A'),300,GetUnitXY(CollisionUnit))
+					SetUnitInvulnerable(Turret,true)
+					SetUnitZ(Turret,220)
+					data.Turret=Turret
+
+					--Элементы для входа
+					if not data.TurretArrow and Turret then
+						print("Первое появление")
+						local x,y=GetUnitXY(CollisionUnit)
+						local model="AneuCaster"
+						local player=GetOwningPlayer(hero)
+						if GetLocalPlayer()~=player then
+							model=""
+						else
+							--print("звук созданного квеста")
+							StartSound(bj_questSecretSound)
+						end
+						local QuestPointer=AddSpecialEffect(model,x,y)
+						BlzSetSpecialEffectPitch(QuestPointer,math.rad(-90))--/bj_DEGTORAD
+						BlzSetSpecialEffectYaw(QuestPointer,math.rad(180))
+						data.TurretArrow=QuestPointer
+					end
 				end
 			end
 
@@ -7806,8 +7839,8 @@ function main()
 end
 
 function config()
-    SetMapName("TRIGSTR_001")
-    SetMapDescription("TRIGSTR_003")
+    SetMapName("")
+    SetMapDescription("")
     SetPlayers(6)
     SetTeams(6)
     SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
