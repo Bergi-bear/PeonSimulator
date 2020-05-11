@@ -53,14 +53,14 @@ function CreateWoodFrame ()
 	BlzFrameSetAllPoints(faceHover, wood) --faceHover copies the size and position of face.
 	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
-	BlzFrameSetSize(tooltip, 0.18, 0.18)
-	if BlzGetLocale()=="ruRU" then
-		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Общая древесина")
-		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля. Потеря лесопилки приведёт к поражению всех игроков")
-	else
-		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
-		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
-	end
+	BlzFrameSetSize(tooltip, 0.18, 0.20)
+	--if BlzGetLocale()=="ruRU" then
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "|cffffff00".."Общая древесина".."|r")
+		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля и победы. Потеря лесопилки приведёт к поражению всех игроков")
+	--else
+	--	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
+	--	BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
+	--end
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)

@@ -37,7 +37,7 @@ function RegisterCollision(hero)
 
 					--Элементы для входа
 					if not data.TurretArrow and Turret then
-						print("Первое появление")
+						--print("Первое появление")
 						local x,y=GetUnitXY(CollisionUnit)
 						local model="AneuCaster"
 						local player=GetOwningPlayer(hero)

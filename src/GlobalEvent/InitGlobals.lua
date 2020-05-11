@@ -191,6 +191,7 @@ function InitGameCore()
 			local hero = HERO[i].UnitHero
 			SelectUnitForPlayerSingle(hero, GetOwningPlayer(hero))
 			RegisterCollision(hero)
+			MakeUnitAllAlly(hero)
 			HealthBarAdd(hero)
 			AddSpecialEffectTarget("GeneralHeroGlow", hero, "origin")
 			SetUnitColor(hero, ConvertPlayerColor(i))
