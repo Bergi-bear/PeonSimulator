@@ -49,7 +49,7 @@ function UnitAddForce(hero, angle, speed, distance)
 	if onForces[GetHandleId(hero)] == nil then
 		onForces[GetHandleId(hero)] = true
 	end
-	if GetUnitTypeId(hero) == FourCC('e009') then
+	if GetUnitTypeId(hero) == FourCC('e009') or GetUnitTypeId(hero) == FourCC('o009') then
 		return
 	end
 	if not IsUnitType(hero, UNIT_TYPE_STRUCTURE) and onForces[GetHandleId(hero)]  then

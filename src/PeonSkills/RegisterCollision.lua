@@ -19,10 +19,21 @@ function RegisterCollision(hero)
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
 
+			if GetUnitTypeId(CollisionUnit)==FourCC('o009') and not data.Wagon  then --вагонетка
+				--print("вагонетка прилипает")
+				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
+					BlzPauseUnitEx(CollisionUnit,true)
+					SetUnitInvulnerable(CollisionUnit,true)
+					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
+					data.Wagon=CollisionUnit
+				end
+			end
+
+
 			if GetUnitTypeId(CollisionUnit)==FourCC('o008')  then --Таурен
 				--print("защищайте кодоев")
 				SetUnitFacing(CollisionUnit,AngleBetweenUnits(CollisionUnit,hero))
-				local location tl = Location(GetUnitXY(CollisionUnit))
+				local  tl = Location(GetUnitXY(CollisionUnit))
 				PlaySoundAtPointBJ( gg_snd_SaveKodo, 100, tl, 0 )
 				RemoveLocation(tl)
 			end

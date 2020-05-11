@@ -179,6 +179,7 @@ function InitGameCore()
 			cx=0,
 			cy=0,
 			ShowSplat=false,
+			Wagon=nil,
 		}
 
 		if HERO[i] then
@@ -1014,6 +1015,54 @@ function InitGameCore()
 					data.CartUnit = nil
 				end
 			end
+
+			if data.Wagon then -- вагонетка
+
+				local rangeCart = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon))
+				--print(rangeCart)
+				local range=110
+				if rangeCart >= range then
+					--print("угол пеона ="..angle.." тележки "..data.CartAngle)
+
+
+					--data.CartAngle = -180 + AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
+					--local cx, cy = 0,0
+					--cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), -80, data.CartAngle)
+
+
+					--SetUnitPositionSmooth(data.Wagon, GetUnitX(data.Wagon), cy)
+					--SetUnitY(data.Wagon,cy)
+					--print(GetUnitX(data.Wagon))
+					--SetUnitX(data.Wagon,11532.25)
+
+				else --толкаем
+					local cx,cy=0,0
+					BlzSetUnitFacingEx(data.Wagon,90)
+					if GetUnitY(hero)>= GetUnitY(data.Wagon) then
+						data.CartAngle = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
+						--print("толкаему сверху вниз"..data.CartAngle)
+						cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), range, data.CartAngle)
+
+					else
+						--print("толкаему снизу вверх вверх")
+						data.CartAngle = -180 + AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
+						cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), -range, data.CartAngle)
+
+					end
+					if cy<=4541-70 and cy>=1630+70 then
+						SetUnitY(data.Wagon,cy)
+					end
+					--print(GetUnitX(data.Wagon))
+					SetUnitX(data.Wagon,11532.25+5)
+				end
+				if rangeCart >= 115 or not UnitAlive(hero) then
+					--print("отрыв вагонетки")
+					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
+					SetUnitAnimationByIndex(data.CartUnit, 0)
+					data.Wagon = nil
+				end
+			end--конец блока вагонетка
+
 			if UnitAlive(hero) then
 				SetUnitFacing(hero, turn)
 			else

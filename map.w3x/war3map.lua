@@ -21,6 +21,7 @@ gg_rct_EnterCave = nil
 gg_rct_EnterTown = nil
 gg_rct_Region_019 = nil
 gg_rct_Region_020 = nil
+gg_rct_CartStart = nil
 gg_snd_Load = nil
 gg_snd_Reflect = nil
 gg_snd_Saw = nil
@@ -422,6 +423,7 @@ function CreateNeutralPassive()
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), 996.7, -3800.0, 353.510, FourCC("o005"))
     u = BlzCreateUnitWithSkin(p, FourCC("e007"), 2904.6, -2346.4, 353.440, FourCC("e007"))
     gg_unit_n006_0217 = BlzCreateUnitWithSkin(p, FourCC("n006"), 3581.2, -1649.5, 269.192, FourCC("n006"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o009"), 11532.3, 1861.4, 90.000, FourCC("o009"))
 end
 
 function CreatePlayerBuildings()
@@ -471,6 +473,7 @@ function CreateRegions()
     gg_rct_EnterTown = Rect(11488.0, 192.0, 11808.0, 448.0)
     gg_rct_Region_019 = Rect(11360.0, 448.0, 11840.0, 704.0)
     gg_rct_Region_020 = Rect(2880.0, 1120.0, 3072.0, 1216.0)
+    gg_rct_CartStart = Rect(11392.0, 1600.0, 11552.0, 1728.0)
 end
 
 --CUSTOM_CODE
@@ -3568,6 +3571,7 @@ function InitGameCore()
 			cx=0,
 			cy=0,
 			ShowSplat=false,
+			Wagon=nil,
 		}
 
 		if HERO[i] then
@@ -4403,6 +4407,54 @@ function InitGameCore()
 					data.CartUnit = nil
 				end
 			end
+
+			if data.Wagon then -- вагонетка
+
+				local rangeCart = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon))
+				--print(rangeCart)
+				local range=110
+				if rangeCart >= range then
+					--print("угол пеона ="..angle.." тележки "..data.CartAngle)
+
+
+					--data.CartAngle = -180 + AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
+					--local cx, cy = 0,0
+					--cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), -80, data.CartAngle)
+
+
+					--SetUnitPositionSmooth(data.Wagon, GetUnitX(data.Wagon), cy)
+					--SetUnitY(data.Wagon,cy)
+					--print(GetUnitX(data.Wagon))
+					--SetUnitX(data.Wagon,11532.25)
+
+				else --толкаем
+					local cx,cy=0,0
+					BlzSetUnitFacingEx(data.Wagon,90)
+					if GetUnitY(hero)>= GetUnitY(data.Wagon) then
+						data.CartAngle = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
+						--print("толкаему сверху вниз"..data.CartAngle)
+						cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), range, data.CartAngle)
+
+					else
+						--print("толкаему снизу вверх вверх")
+						data.CartAngle = -180 + AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
+						cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), -range, data.CartAngle)
+
+					end
+					if cy<=4541-70 and cy>=1630+70 then
+						SetUnitY(data.Wagon,cy)
+					end
+					--print(GetUnitX(data.Wagon))
+					SetUnitX(data.Wagon,11532.25+5)
+				end
+				if rangeCart >= 115 or not UnitAlive(hero) then
+					--print("отрыв вагонетки")
+					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
+					SetUnitAnimationByIndex(data.CartUnit, 0)
+					data.Wagon = nil
+				end
+			end--конец блока вагонетка
+
 			if UnitAlive(hero) then
 				SetUnitFacing(hero, turn)
 			else
@@ -5308,7 +5360,7 @@ function UnitAddForce(hero, angle, speed, distance)
 	if onForces[GetHandleId(hero)] == nil then
 		onForces[GetHandleId(hero)] = true
 	end
-	if GetUnitTypeId(hero) == FourCC('e009') then
+	if GetUnitTypeId(hero) == FourCC('e009') or GetUnitTypeId(hero) == FourCC('o009') then
 		return
 	end
 	if not IsUnitType(hero, UNIT_TYPE_STRUCTURE) and onForces[GetHandleId(hero)]  then
@@ -6394,10 +6446,21 @@ function RegisterCollision(hero)
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
 
+			if GetUnitTypeId(CollisionUnit)==FourCC('o009') and not data.Wagon  then --вагонетка
+				--print("вагонетка прилипает")
+				if GetOwningPlayer(CollisionUnit)==Player(PLAYER_NEUTRAL_PASSIVE) then
+					BlzPauseUnitEx(CollisionUnit,true)
+					SetUnitInvulnerable(CollisionUnit,true)
+					SetUnitOwner(CollisionUnit,GetOwningPlayer(hero),true)
+					data.Wagon=CollisionUnit
+				end
+			end
+
+
 			if GetUnitTypeId(CollisionUnit)==FourCC('o008')  then --Таурен
 				--print("защищайте кодоев")
 				SetUnitFacing(CollisionUnit,AngleBetweenUnits(CollisionUnit,hero))
-				local location tl = Location(GetUnitXY(CollisionUnit))
+				local  tl = Location(GetUnitXY(CollisionUnit))
 				PlaySoundAtPointBJ( gg_snd_SaveKodo, 100, tl, 0 )
 				RemoveLocation(tl)
 			end
@@ -7446,7 +7509,7 @@ function InitTrig_DeadHumanLumber()
     TriggerAddAction(gg_trg_DeadHumanLumber, Trig_DeadHumanLumber_Actions)
 end
 
-function Trig_DontMove_Func002C()
+function Trig_DontMove_Func004C()
     if (not (IsUnitType(GetTriggerUnit(), UNIT_TYPE_HERO) == true)) then
         return false
     end
@@ -7457,14 +7520,16 @@ function Trig_DontMove_Func002C()
 end
 
 function Trig_DontMove_Conditions()
-    if (not Trig_DontMove_Func002C()) then
+    if (not Trig_DontMove_Func004C()) then
         return false
     end
     return true
 end
 
 function Trig_DontMove_Actions()
+    PauseUnitBJ(true, GetTriggerUnit())
     IssueImmediateOrderBJ(GetTriggerUnit(), "stop")
+    PauseUnitBJ(false, GetTriggerUnit())
 end
 
 function InitTrig_DontMove()
