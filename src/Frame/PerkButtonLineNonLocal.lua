@@ -50,7 +50,7 @@ Name = { --Определяет количество талантов
 	"Лесной Болван",
 	"Вкус крови",
 	"Ученик Тора",
-	"Ожирение 0 степени",
+	"Ожирение",
 	"Толстокожий друг",
 	"Калёная кирка", --9
 	"Правила ТБ",
@@ -82,20 +82,20 @@ NameENG = { --Определяет количество талантов
 	"Dash", --17
 }
 description = {
-	"Принесите 25 дерева, чтобы удвоить его добычу ",
-	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
-	"Умрите 15 раз, чтобы получить +100 к здоровью ",
-	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее ",
-	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
-	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
-	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
-	"Приручите кодоя, чтобы получить 10 ед брони ",
-	"Накалите кирку до красна, чтобы увеличить урон в 5 раз ",
+	"Принесите 25 дерева, чтобы удвоить его добычу. ",
+	"Ничего не делайте в течении 300 сек, чтобы поднять бунт. ",
+	"Умрите 15 раз, чтобы получить +100 к здоровью. ",
+	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее. ",
+	"Убивайте врагов, чтобы увеличить свой урон в 2 раза. ",
+	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе. ",
+	"Исцелитесть в объёме 1000 ед, чтобы получить +7 к регенерации. ",
+	"Приручите кодоя, чтобы получить 10 ед брони. ",
+	"Накалите кирку до красна, чтобы увеличить урон в 5 раз. ",
 	"Донесите дерево с полным здоровьем, чтобы обучиться парированию. ",
-	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
+	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий. ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убивайте волков, чтобы получить шапку волка. ",
-	"Поймайте щитом камни голема ",
+	"Поймайте щитом камни големов. ",
 	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
@@ -167,7 +167,7 @@ function PerkButtonLineNonLocal(k, lang)
 		BlzFrameSetTooltip(faceHover, tooltip)
 		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
 		BlzFrameSetSize(tooltip, 0.15, 0.08)
-		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "|cffffff00"..Name[i].."|r") --|cffffff00AAAA|r
 		BlzFrameSetText(UpDest, description[i])
 		BlzFrameSetValue(buttonIconFrame, 0)
 		local cdtext = BlzGetFrameByName("MyBarText", 0)
@@ -187,7 +187,7 @@ function PerkButtonLineNonLocal(k, lang)
 		BlzFrameSetSize(lock, 0.04, 0.04)
 		--BlzFrameSetSize(lock, 0, 0)
 		BlzFrameSetTexture(lock, "close", 0, true)
-		BlzFrameSetAlpha(lock, 230)
+		BlzFrameSetAlpha(lock, 170)
 
 		--выделение Хейтовские
 		local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
@@ -289,7 +289,7 @@ function PerkButtonLineNonLocal(k, lang)
 						end
 					else
 						BlzFrameSetTexture(data.ReloadIco[i], "btngathergoldON", 0, true)
-						BlzFrameSetText(data.PekFrame[i], "Метает 1 огненный шар в указанном направлении. Увеличивает урона в" .. "|cffffff00" .. "5 раз|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Метает огненный шар, который наносит " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.UnitHero, 0)*5).."|r".." ед. урона в небольшой области") --|cffffff00AAAA|r
 						if lang == 1 then
 							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Hot|r")
 						end

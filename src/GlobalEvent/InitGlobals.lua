@@ -71,7 +71,7 @@ function InitGameCore()
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
-
+		CreateLocalImages()
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
 	--TestFrame()
@@ -175,6 +175,10 @@ function InitGameCore()
 			VisualSelectorFrame = {},
 			ReloadIco={},
 			HeroIco=nil,
+			CircleImage=nil,
+			cx=0,
+			cy=0,
+			ShowSplat=false,
 		}
 
 		if HERO[i] then
@@ -951,8 +955,23 @@ function InitGameCore()
 			if UnitAlive(hero) then
 				SetUnitPositionSmooth(hero, newPos.x, newPos.y)
 				--Синхронизация ног
-				SetUnitX(data.legs, newPos.x)
-				SetUnitY(data.legs, newPos.y)
+				SetUnitX(data.legs, GetUnitX(hero))
+				SetUnitY(data.legs, GetUnitY(hero))
+
+				-- УБерсплаты
+				if data.CircleImage then --есть уберсплат
+					data.cx,data.cy=GetUnitX(hero)-64-16,GetUnitY(hero)-64-16
+					--local angleSplat=data.LastTurn
+					data.cx,data.cy=MoveXY(data.cx,data.cy,70,GetUnitFacing(hero))
+					SetImagePosition(data.CircleImage,data.cx,data.cy,0)
+					if GetLocalPlayer()==p then
+						if  data.ShowSplat then
+							ShowImage(data.CircleImage,true)
+						else
+							ShowImage(data.CircleImage,false)
+						end
+					end
+				end
 			end
 			-- карт сзади юнита
 			if data.CartUnit then

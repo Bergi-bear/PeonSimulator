@@ -23,6 +23,7 @@ function HideEverything()
 	BlzFrameSetSize(map, 0.35, 0.35)
 	BlzFrameSetAbsPoint(map,FRAMEPOINT_CENTER,0.3,0.4)
 	BlzFrameSetVisible(map, false)
+
 	MiniMap[0]=map
 	MiniMap[1]=map
 	MiniMap[2]=map

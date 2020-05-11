@@ -29,6 +29,7 @@ gg_snd_SaveKodo = nil
 gg_trg_In = nil
 gg_trg_Out = nil
 gg_trg_Gandicap = nil
+gg_trg_Splat = nil
 gg_trg_GuiInit = nil
 gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
@@ -467,8 +468,8 @@ function CreateRegions()
     EnableWeatherEffect(we, true)
     gg_rct_Region_016 = Rect(3456.0, -2400.0, 4064.0, -2080.0)
     gg_rct_EnterCave = Rect(2912.0, 1312.0, 3072.0, 1440.0)
-    gg_rct_EnterTown = Rect(11360.0, 4736.0, 11552.0, 4896.0)
-    gg_rct_Region_019 = Rect(11328.0, 4928.0, 11584.0, 5088.0)
+    gg_rct_EnterTown = Rect(11488.0, 192.0, 11808.0, 448.0)
+    gg_rct_Region_019 = Rect(11360.0, 448.0, 11840.0, 704.0)
     gg_rct_Region_020 = Rect(2880.0, 1120.0, 3072.0, 1216.0)
 end
 
@@ -1311,6 +1312,7 @@ function HideEverything()
 	BlzFrameSetSize(map, 0.35, 0.35)
 	BlzFrameSetAbsPoint(map,FRAMEPOINT_CENTER,0.3,0.4)
 	BlzFrameSetVisible(map, false)
+
 	MiniMap[0]=map
 	MiniMap[1]=map
 	MiniMap[2]=map
@@ -1890,7 +1892,7 @@ Name = { --Определяет количество талантов
 	"Лесной Болван",
 	"Вкус крови",
 	"Ученик Тора",
-	"Ожирение 0 степени",
+	"Ожирение",
 	"Толстокожий друг",
 	"Калёная кирка", --9
 	"Правила ТБ",
@@ -1922,20 +1924,20 @@ NameENG = { --Определяет количество талантов
 	"Dash", --17
 }
 description = {
-	"Принесите 25 дерева, чтобы удвоить его добычу ",
-	"Ничего не делайте в течении 300 сек, чтобы поднять бунт ",
-	"Умрите 15 раз, чтобы получить +100 к здоровью ",
-	"Пробегите расстояние в 200000 метров, чтобы стать на 50% быстрее ",
-	"Убивайте врагов, чтобы увеличить свой урон в 2 раза ",
-	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе ",
-	"Получите лечение в объёме 1000 ед, чтобы получить +7 к регенерации ",
-	"Приручите кодоя, чтобы получить 10 ед брони ",
-	"Накалите кирку до красна, чтобы увеличить урон в 5 раз ",
+	"Принесите 25 дерева, чтобы удвоить его добычу. ",
+	"Ничего не делайте в течении 300 сек, чтобы поднять бунт. ",
+	"Умрите 15 раз, чтобы получить +100 к здоровью. ",
+	"Пробегите расстояние в 200000 метров, чтобы стать на 50% быстрее. ",
+	"Убивайте врагов, чтобы увеличить свой урон в 2 раза. ",
+	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе. ",
+	"Исцелитесть в объёме 1000 ед, чтобы получить +7 к регенерации. ",
+	"Приручите кодоя, чтобы получить 10 ед брони. ",
+	"Накалите кирку до красна, чтобы увеличить урон в 5 раз. ",
 	"Донесите дерево с полным здоровьем, чтобы обучиться парированию. ",
-	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий ",
+	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий. ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убивайте волков, чтобы получить шапку волка. ",
-	"Поймайте щитом камни голема ",
+	"Поймайте щитом камни големов. ",
 	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
@@ -2007,7 +2009,7 @@ function PerkButtonLineNonLocal(k, lang)
 		BlzFrameSetTooltip(faceHover, tooltip)
 		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
 		BlzFrameSetSize(tooltip, 0.15, 0.08)
-		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "|cffffff00"..Name[i].."|r") --|cffffff00AAAA|r
 		BlzFrameSetText(UpDest, description[i])
 		BlzFrameSetValue(buttonIconFrame, 0)
 		local cdtext = BlzGetFrameByName("MyBarText", 0)
@@ -2027,7 +2029,7 @@ function PerkButtonLineNonLocal(k, lang)
 		BlzFrameSetSize(lock, 0.04, 0.04)
 		--BlzFrameSetSize(lock, 0, 0)
 		BlzFrameSetTexture(lock, "close", 0, true)
-		BlzFrameSetAlpha(lock, 230)
+		BlzFrameSetAlpha(lock, 170)
 
 		--выделение Хейтовские
 		local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
@@ -2129,7 +2131,7 @@ function PerkButtonLineNonLocal(k, lang)
 						end
 					else
 						BlzFrameSetTexture(data.ReloadIco[i], "btngathergoldON", 0, true)
-						BlzFrameSetText(data.PekFrame[i], "Метает 1 огненный шар в указанном направлении. Увеличивает урона в" .. "|cffffff00" .. "5 раз|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Метает огненный шар, который наносит " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.UnitHero, 0)*5).."|r".." ед. урона в небольшой области") --|cffffff00AAAA|r
 						if lang == 1 then
 							BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Hot|r")
 						end
@@ -3458,7 +3460,7 @@ function InitGameCore()
 	end)
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
-
+		CreateLocalImages()
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
 	--TestFrame()
@@ -3562,6 +3564,10 @@ function InitGameCore()
 			VisualSelectorFrame = {},
 			ReloadIco={},
 			HeroIco=nil,
+			CircleImage=nil,
+			cx=0,
+			cy=0,
+			ShowSplat=false,
 		}
 
 		if HERO[i] then
@@ -4338,8 +4344,23 @@ function InitGameCore()
 			if UnitAlive(hero) then
 				SetUnitPositionSmooth(hero, newPos.x, newPos.y)
 				--Синхронизация ног
-				SetUnitX(data.legs, newPos.x)
-				SetUnitY(data.legs, newPos.y)
+				SetUnitX(data.legs, GetUnitX(hero))
+				SetUnitY(data.legs, GetUnitY(hero))
+
+				-- УБерсплаты
+				if data.CircleImage then --есть уберсплат
+					data.cx,data.cy=GetUnitX(hero)-64-16,GetUnitY(hero)-64-16
+					--local angleSplat=data.LastTurn
+					data.cx,data.cy=MoveXY(data.cx,data.cy,70,GetUnitFacing(hero))
+					SetImagePosition(data.CircleImage,data.cx,data.cy,0)
+					if GetLocalPlayer()==p then
+						if  data.ShowSplat then
+							ShowImage(data.CircleImage,true)
+						else
+							ShowImage(data.CircleImage,false)
+						end
+					end
+				end
 			end
 			-- карт сзади юнита
 			if data.CartUnit then
@@ -6258,18 +6279,17 @@ wGeometry = wGeometryInit()
 function AfterAttack(hero, delay)
 	local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 	local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+
 	local damage=BlzGetUnitBaseDamage(hero,0)--*50
 	TimerStart(CreateTimer(), delay, false, function()
 
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
 
+			if not OnAttack and not data.Perk16  then -- нет уберсплата в дальнем бою
+				data.ShowSplat=true
+			end
 			if OnAttack then
 				data.RevoltSec=0
 			end
@@ -6315,6 +6335,7 @@ function AfterAttack(hero, delay)
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
 			data.Reflection=false
+			data.ShowSplat=false
 			DestroyTimer(GetExpiredTimer())
 		end)
 		DestroyTimer(GetExpiredTimer())
@@ -6659,6 +6680,20 @@ function ResetPeonAnimation (hero)
 		SetUnitAnimationByIndex(hero,13)
 	elseif ra==4 then
 		SetUnitAnimationByIndex(hero,14)
+	end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 11.05.2020 9:42
+---
+
+function CreateLocalImages()
+	for i=0,3 do
+		local data=HERO[i]
+		data.CircleImage=CreateImage("circ.blp",128,128,128,4000,4000,0,0,0,0,4)
+		SetImageRenderAlways(data.CircleImage, true)
+		ShowImage(data.CircleImage,false)
 	end
 end
 ---
@@ -7354,6 +7389,17 @@ function InitTrig_Gandicap()
     TriggerAddAction(gg_trg_Gandicap, Trig_Gandicap_Actions)
 end
 
+function Trig_Splat_Actions()
+    CreateImageBJ("circ.blp", 256, Location(0, 0), 0, 4)
+    DisplayTextToForce(GetPlayersAll(), "TRIGSTR_092")
+    SetImageRenderAlways(GetLastCreatedImage(), true)
+end
+
+function InitTrig_Splat()
+    gg_trg_Splat = CreateTrigger()
+    TriggerAddAction(gg_trg_Splat, Trig_Splat_Actions)
+end
+
 function Trig_GuiInit_Func003A()
     IssueTargetDestructableOrder(GetEnumUnit(), "harvest", gg_dest_LTlt_0364)
 end
@@ -7433,6 +7479,7 @@ function InitCustomTriggers()
     InitTrig_In()
     InitTrig_Out()
     InitTrig_Gandicap()
+    InitTrig_Splat()
     InitTrig_GuiInit()
     InitTrig_Open()
     InitTrig_DeadHumanLumber()
@@ -7532,15 +7579,15 @@ function InitCustomTeams()
 end
 
 function InitAllyPriorities()
-    SetStartLocPrioCount(0, 2)
-    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_LOW)
+    SetStartLocPrioCount(0, 3)
+    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrioCount(1, 2)
-    SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_LOW)
-    SetStartLocPrio(1, 1, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(0, 2, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrioCount(1, 1)
+    SetStartLocPrio(1, 0, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(2, 2)
-    SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(2, 0, 1, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(3, 2)
     SetStartLocPrio(3, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(3, 1, 2, MAP_LOC_PRIO_LOW)
@@ -7582,7 +7629,7 @@ function config()
     SetPlayers(6)
     SetTeams(6)
     SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
-    DefineStartLocation(0, -128.0, -192.0)
+    DefineStartLocation(0, 11008.0, 1664.0)
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)

@@ -6,18 +6,17 @@
 function AfterAttack(hero, delay)
 	local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),70,GetUnitFacing(hero))
 	local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
+
 	local damage=BlzGetUnitBaseDamage(hero,0)--*50
 	TimerStart(CreateTimer(), delay, false, function()
 
 		data.Reflection=true
 		if not data.ReleaseLMB and data.ReleaseRMB and UnitAlive(hero) then
 			local OnAttack,CUnit= UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
-			--OnAttack,CUnit=UnitDamageArea(hero,damage,x,y,70)
 
+			if not OnAttack and not data.Perk16  then -- нет уберсплата в дальнем бою
+				data.ShowSplat=true
+			end
 			if OnAttack then
 				data.RevoltSec=0
 			end
@@ -63,6 +62,7 @@ function AfterAttack(hero, delay)
 		end
 		TimerStart(CreateTimer(), 0.2, false, function()
 			data.Reflection=false
+			data.ShowSplat=false
 			DestroyTimer(GetExpiredTimer())
 		end)
 		DestroyTimer(GetExpiredTimer())

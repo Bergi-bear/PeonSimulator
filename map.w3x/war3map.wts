@@ -496,3 +496,20 @@ STRING 89
 Замедление от тора
 }
 
+STRING 90
+// Doodads: D005 (R1), Name (Name)
+{
+R1
+}
+
+STRING 91
+// Doodads: D006 (R2), Name (Name)
+{
+R2
+}
+
+STRING 92
+{
+123
+}
+
