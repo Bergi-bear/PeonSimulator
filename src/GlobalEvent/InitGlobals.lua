@@ -180,6 +180,9 @@ function InitGameCore()
 			cy=0,
 			ShowSplat=false,
 			Wagon=nil,
+			Compass=nil,
+			CompassX=0,
+			CompassY=0,
 		}
 
 		if HERO[i] then
@@ -1051,6 +1054,8 @@ function InitGameCore()
 					end
 					if cy<=4541-70 and cy>=1630+70 then
 						SetUnitY(data.Wagon,cy)
+					else
+
 					end
 					--print(GetUnitX(data.Wagon))
 					SetUnitX(data.Wagon,11532.25+5)
@@ -1062,6 +1067,20 @@ function InitGameCore()
 					data.Wagon = nil
 				end
 			end--конец блока вагонетка
+
+			if data.Compass then
+				local z=GetUnitZ(hero)
+				local xc,yc=GetUnitX(hero),GetUnitY(hero)
+				local Angle=AngleBetweenXY(xc,yc,data.CompassX,data.CompassY)
+				BlzSetSpecialEffectPosition(data.Compass,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+50)
+				BlzSetSpecialEffectYaw(data.Compass,Angle)
+
+				if IsUnitInRangeXY(hero,data.CompassX,data.CompassY,300) then
+					--DestroyTimer(GetExpiredTimer())
+					DestroyEffect(data.Compass)
+					data.Compass=nil
+				end
+			end
 
 			if UnitAlive(hero) then
 				SetUnitFacing(hero, turn)

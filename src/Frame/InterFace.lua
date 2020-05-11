@@ -6,6 +6,10 @@ function HideEverything()
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
 	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,0.2)
 
+	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_CHAT_MSG, 0), FRAMEPOINT_BOTTOMLEFT, 0.1 ,0.15)
+	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_MSG, 0), FRAMEPOINT_BOTTOMLEFT, 0.15 ,0.05)
+
+	--ORIGIN_FRAME_TOP_MSG
 	for i = 1,11 do
 		BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
 	end
@@ -16,8 +20,10 @@ function HideEverything()
 	BlzFrameSetAllPoints(WORLD_FRAME, GAME_UI)
 	--BlzFrameSetVisible(BlzGetFrameByName("CinematicPortrait", 0), false)
 	--скрываем по одиночке
+	--BlzFrameSetParent(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0),GAME_UI)
 	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), true)
 	local map=BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0)
+	--SetMap
 	BlzFrameClearAllPoints(map)
 	BlzFrameSetVisible(map, true)
 	BlzFrameSetSize(map, 0.35, 0.35)
@@ -148,7 +154,7 @@ function MoveWoodAsFarm(hero,k)
 				--end
 			end
 			--print(GTotalWood)
-			if GTotalWood==100 or GTotalWood==101 then
+			if GTotalWood==100 or GTotalWood==101  then--or GTotalWood==1
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				if BlzGetLocale()=="ruRU" then

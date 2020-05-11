@@ -6,7 +6,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 	local x,y=GetUnitX(hero),GetUnitY(hero)
 	local model="AneuCaster"
 	local player=GetOwningPlayer(hero)
-
+	local data=HERO[GetPlayerId(player)]
 
 	if GetLocalPlayer()~=player then
 		model=""
@@ -18,25 +18,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 	BlzSetSpecialEffectPitch(QuestPointer,math.rad(-90))--/bj_DEGTORAD
 
 	if compas==true then
-		TimerStart(CreateTimer(), 0.01, true, function()
-			local z=GetUnitZ(hero)
-			local xc,yc=GetUnitX(hero),GetUnitY(hero)
-			if questendunit~=nil then
-				qx,qy=GetUnitX(questendunit),GetUnitY(questendunit)
-			end
-			local Angle=AngleBetweenXY(xc,yc,qx,qy)
-			BlzSetSpecialEffectPosition(QuestPointer,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+50)
-			BlzSetSpecialEffectYaw(QuestPointer,Angle)
-
-			--if data.isend==true then
-			if IsUnitInRangeXY(hero,qx,qy,300) then
-				if GetLocalPlayer()==player then
-					StartSound(bj_questCompletedSound)
-				end
-				DestroyTimer(GetExpiredTimer())
-				DestroyEffect(QuestPointer)
-				--print("квест выполнен, даём награду")
-			end
-		end)
+		data.Compass=QuestPointer
+		data.CompassX,data.CompassY=qx,qy
 	end
 end

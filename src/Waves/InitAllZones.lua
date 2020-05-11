@@ -18,4 +18,6 @@ function InitAllZones()
 	AutoCollectLumber(2)
 	--Normadia()--Высадка пехотинцев в самом начале игры для тестов
 	StartWolfBossAI()
+	StartHealerCamp()
+	--StartZombies()
 end

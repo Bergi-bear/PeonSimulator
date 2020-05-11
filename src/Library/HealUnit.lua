@@ -19,7 +19,8 @@ function HealUnit(hero,amount,flag)
 		if not data.Perk7 then
 			if data.Heals>=1000 then
 				data.Perk7=true
-				UnitAddAbility(hero,FourCC('A004'))-- переделать на триггерное лечение может быть когда нибудь.. не столь важное
+				--UnitAddAbility(hero,FourCC('A004'))-- переделать на триггерное лечение может быть когда нибудь.. не столь важное
+				AddAutoHeal(hero,7)
 				PerkUnlocker(data,7)
 			end
 		end

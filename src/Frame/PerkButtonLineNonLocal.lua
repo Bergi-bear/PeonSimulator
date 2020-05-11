@@ -126,7 +126,7 @@ function PerkButtonLineNonLocal(k, lang)
 	else
 		lang = 0
 	end
-	--lang=0
+	lang=0
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -251,7 +251,7 @@ function PerkButtonLineNonLocal(k, lang)
 				end
 			elseif i == 6 then
 				if data.Perk6 then
-					BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " доп. урона|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Наносит " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. "|r".." доп. урона и замедляет врагов в области 150") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " damage|r")
 					end
@@ -335,7 +335,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk13 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.WolfCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. " .. "|cffffff00" .. "Автономен и неуязвим|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. Текущий урона волка " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.WolfHelper, 0)).. "|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Summon spirit wolf. " .. "|cffffff00" .. "Offline and invulnerable|r") --|cffffff00AAAA|r
 					end

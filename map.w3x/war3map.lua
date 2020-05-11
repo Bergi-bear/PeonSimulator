@@ -22,6 +22,8 @@ gg_rct_EnterTown = nil
 gg_rct_Region_019 = nil
 gg_rct_Region_020 = nil
 gg_rct_CartStart = nil
+gg_rct_Dang1 = nil
+gg_rct_DieZombies = nil
 gg_snd_Load = nil
 gg_snd_Reflect = nil
 gg_snd_Saw = nil
@@ -35,6 +37,8 @@ gg_trg_GuiInit = nil
 gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
 gg_trg_DontMove = nil
+gg_trg_ZombiesDie = nil
+gg_trg_StartMiniGame = nil
 gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_unit_n006_0217 = nil
@@ -474,6 +478,8 @@ function CreateRegions()
     gg_rct_Region_019 = Rect(11360.0, 448.0, 11840.0, 704.0)
     gg_rct_Region_020 = Rect(2880.0, 1120.0, 3072.0, 1216.0)
     gg_rct_CartStart = Rect(11392.0, 1600.0, 11552.0, 1728.0)
+    gg_rct_Dang1 = Rect(9600.0, 1184.0, 11840.0, 4800.0)
+    gg_rct_DieZombies = Rect(11776.0, 1216.0, 11968.0, 4928.0)
 end
 
 --CUSTOM_CODE
@@ -933,7 +939,7 @@ local boss=FindUnitOfType(FourCC('nwwd'))--id босса
 		end
 
 		local hero=this[GetRandomInt(1,#this)]
-		if hero then
+		if hero and GetUnitTypeId() then
 			--print("Нападаем на "..GetUnitName(hero))
 			local angle= math.deg(AngleBetweenXY(GetUnitX(boss), GetUnitY(boss), GetUnitX(hero), GetUnitY(hero)))
 			BlzSetUnitFacingEx(boss,angle)
@@ -941,6 +947,11 @@ local boss=FindUnitOfType(FourCC('nwwd'))--id босса
 		end
 		if not UnitAlive(boss) then
 			DestroyTimer(GetExpiredTimer())
+			for _=1,10 do
+				local r=GetRandomInt(-100,100)
+				local r2=GetRandomInt(-100,100)
+				CreateFreeWood(x+r,y+r2)
+			end
 		end
 	end)
 end
@@ -1298,6 +1309,10 @@ function HideEverything()
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
 	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,0.2)
 
+	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_CHAT_MSG, 0), FRAMEPOINT_BOTTOMLEFT, 0.1 ,0.15)
+	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_MSG, 0), FRAMEPOINT_BOTTOMLEFT, 0.15 ,0.05)
+
+	--ORIGIN_FRAME_TOP_MSG
 	for i = 1,11 do
 		BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
 	end
@@ -1308,8 +1323,10 @@ function HideEverything()
 	BlzFrameSetAllPoints(WORLD_FRAME, GAME_UI)
 	--BlzFrameSetVisible(BlzGetFrameByName("CinematicPortrait", 0), false)
 	--скрываем по одиночке
+	--BlzFrameSetParent(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0),GAME_UI)
 	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), true)
 	local map=BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0)
+	--SetMap
 	BlzFrameClearAllPoints(map)
 	BlzFrameSetVisible(map, true)
 	BlzFrameSetSize(map, 0.35, 0.35)
@@ -1440,7 +1457,7 @@ function MoveWoodAsFarm(hero,k)
 				--end
 			end
 			--print(GTotalWood)
-			if GTotalWood==100 or GTotalWood==101 then
+			if GTotalWood==100 or GTotalWood==101  then--or GTotalWood==1
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				if BlzGetLocale()=="ruRU" then
@@ -1971,7 +1988,7 @@ function PerkButtonLineNonLocal(k, lang)
 	else
 		lang = 0
 	end
-	--lang=0
+	lang=0
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -2096,7 +2113,7 @@ function PerkButtonLineNonLocal(k, lang)
 				end
 			elseif i == 6 then
 				if data.Perk6 then
-					BlzFrameSetText(data.PekFrame[i], "Наносит дополнительный урон и замедляет врагов в области 150. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " доп. урона|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Наносит " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. "|r".." доп. урона и замедляет врагов в области 150") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " damage|r")
 					end
@@ -2180,7 +2197,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk13 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.WolfCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. " .. "|cffffff00" .. "Автономен и неуязвим|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. Текущий урона волка " .. "|cffffff00" ..(BlzGetUnitBaseDamage(data.WolfHelper, 0)).. "|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Summon spirit wolf. " .. "|cffffff00" .. "Offline and invulnerable|r") --|cffffff00AAAA|r
 					end
@@ -2271,7 +2288,7 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 	local x,y=GetUnitX(hero),GetUnitY(hero)
 	local model="AneuCaster"
 	local player=GetOwningPlayer(hero)
-
+	local data=HERO[GetPlayerId(player)]
 
 	if GetLocalPlayer()~=player then
 		model=""
@@ -2283,28 +2300,11 @@ function AddQuest(compas,hero,qx,qy,questendunit)
 	BlzSetSpecialEffectPitch(QuestPointer,math.rad(-90))--/bj_DEGTORAD
 
 	if compas==true then
-		TimerStart(CreateTimer(), 0.01, true, function()
-			local z=GetUnitZ(hero)
-			local xc,yc=GetUnitX(hero),GetUnitY(hero)
-			if questendunit~=nil then
-				qx,qy=GetUnitX(questendunit),GetUnitY(questendunit)
-			end
-			local Angle=AngleBetweenXY(xc,yc,qx,qy)
-			BlzSetSpecialEffectPosition(QuestPointer,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+50)
-			BlzSetSpecialEffectYaw(QuestPointer,Angle)
-
-			--if data.isend==true then
-			if IsUnitInRangeXY(hero,qx,qy,300) then
-				if GetLocalPlayer()==player then
-					StartSound(bj_questCompletedSound)
-				end
-				DestroyTimer(GetExpiredTimer())
-				DestroyEffect(QuestPointer)
-				--print("квест выполнен, даём награду")
-			end
-		end)
+		data.Compass=QuestPointer
+		data.CompassX,data.CompassY=qx,qy
 	end
 end
+
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -3572,6 +3572,9 @@ function InitGameCore()
 			cy=0,
 			ShowSplat=false,
 			Wagon=nil,
+			Compass=nil,
+			CompassX=0,
+			CompassY=0,
 		}
 
 		if HERO[i] then
@@ -4443,6 +4446,8 @@ function InitGameCore()
 					end
 					if cy<=4541-70 and cy>=1630+70 then
 						SetUnitY(data.Wagon,cy)
+					else
+
 					end
 					--print(GetUnitX(data.Wagon))
 					SetUnitX(data.Wagon,11532.25+5)
@@ -4454,6 +4459,20 @@ function InitGameCore()
 					data.Wagon = nil
 				end
 			end--конец блока вагонетка
+
+			if data.Compass then
+				local z=GetUnitZ(hero)
+				local xc,yc=GetUnitX(hero),GetUnitY(hero)
+				local Angle=AngleBetweenXY(xc,yc,data.CompassX,data.CompassY)
+				BlzSetSpecialEffectPosition(data.Compass,MoveX(xc,130,Angle/bj_DEGTORAD),MoveY(yc,130,Angle/bj_DEGTORAD),z+50)
+				BlzSetSpecialEffectYaw(data.Compass,Angle)
+
+				if IsUnitInRangeXY(hero,data.CompassX,data.CompassY,300) then
+					--DestroyTimer(GetExpiredTimer())
+					DestroyEffect(data.Compass)
+					data.Compass=nil
+				end
+			end
 
 			if UnitAlive(hero) then
 				SetUnitFacing(hero, turn)
@@ -4925,7 +4944,8 @@ function HealUnit(hero,amount,flag)
 		if not data.Perk7 then
 			if data.Heals>=1000 then
 				data.Perk7=true
-				UnitAddAbility(hero,FourCC('A004'))-- переделать на триггерное лечение может быть когда нибудь.. не столь важное
+				--UnitAddAbility(hero,FourCC('A004'))-- переделать на триггерное лечение может быть когда нибудь.. не столь важное
+				AddAutoHeal(hero,7)
 				PerkUnlocker(data,7)
 			end
 		end
@@ -6779,6 +6799,8 @@ function InitAllZones()
 	AutoCollectLumber(2)
 	--Normadia()--Высадка пехотинцев в самом начале игры для тестов
 	StartWolfBossAI()
+	StartHealerCamp()
+	--StartZombies()
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -6848,6 +6870,43 @@ function FarmOfPig()
 		local hp=200+mf
 		BlzSetUnitMaxHP(new,hp)
 		HealUnit(new,hp)
+	end)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 11.05.2020 16:10
+---
+function StartHealerCamp()
+	local camp=FindUnitOfType(FourCC('n003'))
+	TimerStart(CreateTimer(), 2, true, function()
+		--print("масс")
+		HealAreaPercent(camp,300,5)
+		if not UnitAlive(camp) then
+			DestroyTimer(GetExpiredTimer())
+		end
+	end)
+end
+
+function HealAreaPercent(hero,range,amount)
+	local x,y=GetUnitXY(hero)
+	local e=nil
+	GroupEnumUnitsInRange(perebor,x,y,range,nil)
+	while true do
+		e = FirstOfGroup(perebor)
+
+		if e == nil then break end
+		if UnitAlive(e) and IsUnitAlly(e,GetOwningPlayer(hero))  then
+			local amountHeal=BlzGetUnitMaxHP(e)*amount/100
+			--print("лечение "..amountHeal)
+			HealUnit(e,amountHeal)
+		end
+		GroupRemoveUnit(perebor,e)
+	end
+end
+function AddAutoHeal(hero,amount)
+	TimerStart(CreateTimer(), 1, true, function()
+		HealUnit(hero,amount)
 	end)
 end
 ---
@@ -7400,6 +7459,26 @@ function WaveAttack(delay)
 	--RemoveLocation(loc)
 end
 
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 11.05.2020 14:19
+---
+
+function StartZombies()
+	local sPozX={9795,9660,9794,9989}
+	local sPozY={4379,3307,2302,1426}
+	local xEnd=12000
+	local id={FourCC('n009'),FourCC('n00B'),FourCC('n00A')}
+	AllZombiesCount=CreateGroup()
+	TimerStart(CreateTimer(), 1, true, function()
+		local rPoz=GetRandomInt(1,#sPozX)
+		local new=CreateUnit(Player(14),id[GetRandomInt(1,3)],sPozX[rPoz],sPozY[rPoz],0)
+		GroupAddUnit(AllZombiesCount,new)
+		SetUnitMoveSpeed(new,100)
+		IssuePointOrder(new,"attack",xEnd,sPozY[rPoz])
+	end)
+end
 --CUSTOM_CODE
 function Trig_In_Conditions()
     if (not (IsUnitType(GetTriggerUnit(), UNIT_TYPE_HERO) == true)) then
@@ -7540,6 +7619,42 @@ function InitTrig_DontMove()
     TriggerAddAction(gg_trg_DontMove, Trig_DontMove_Actions)
 end
 
+function Trig_ZombiesDie_Conditions()
+    if (not (GetOwningPlayer(GetTriggerUnit()) == Player(14))) then
+        return false
+    end
+    return true
+end
+
+function Trig_ZombiesDie_Actions()
+    ExplodeUnitBJ(GetTriggerUnit())
+end
+
+function InitTrig_ZombiesDie()
+    gg_trg_ZombiesDie = CreateTrigger()
+    TriggerRegisterEnterRectSimple(gg_trg_ZombiesDie, gg_rct_DieZombies)
+    TriggerAddCondition(gg_trg_ZombiesDie, Condition(Trig_ZombiesDie_Conditions))
+    TriggerAddAction(gg_trg_ZombiesDie, Trig_ZombiesDie_Actions)
+end
+
+function Trig_StartMiniGame_Conditions()
+    if (not (GetOwningPlayer(GetTriggerUnit()) == Player(14))) then
+        return false
+    end
+    return true
+end
+
+function Trig_StartMiniGame_Actions()
+    ExplodeUnitBJ(GetTriggerUnit())
+end
+
+function InitTrig_StartMiniGame()
+    gg_trg_StartMiniGame = CreateTrigger()
+    TriggerRegisterEnterRectSimple(gg_trg_StartMiniGame, gg_rct_DieZombies)
+    TriggerAddCondition(gg_trg_StartMiniGame, Condition(Trig_StartMiniGame_Conditions))
+    TriggerAddAction(gg_trg_StartMiniGame, Trig_StartMiniGame_Actions)
+end
+
 function InitCustomTriggers()
     InitTrig_In()
     InitTrig_Out()
@@ -7549,6 +7664,8 @@ function InitCustomTriggers()
     InitTrig_Open()
     InitTrig_DeadHumanLumber()
     InitTrig_DontMove()
+    InitTrig_ZombiesDie()
+    InitTrig_StartMiniGame()
 end
 
 function RunInitializationTriggers()
@@ -7644,15 +7761,15 @@ function InitCustomTeams()
 end
 
 function InitAllyPriorities()
-    SetStartLocPrioCount(0, 3)
-    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrioCount(0, 2)
+    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_LOW)
     SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrio(0, 2, 3, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrioCount(1, 1)
-    SetStartLocPrio(1, 0, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrioCount(1, 2)
+    SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(1, 1, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(2, 2)
-    SetStartLocPrio(2, 0, 1, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_LOW)
     SetStartLocPrioCount(3, 2)
     SetStartLocPrio(3, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(3, 1, 2, MAP_LOC_PRIO_LOW)
@@ -7694,7 +7811,7 @@ function config()
     SetPlayers(6)
     SetTeams(6)
     SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
-    DefineStartLocation(0, 11008.0, 1664.0)
+    DefineStartLocation(0, -128.0, -192.0)
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)
