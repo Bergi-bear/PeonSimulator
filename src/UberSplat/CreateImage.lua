@@ -11,4 +11,11 @@ function CreateLocalImages()
 		SetImageRenderAlways(data.CircleImage, true)
 		ShowImage(data.CircleImage,false)
 	end
+	ConeImage=CreateImage("Konus.blp",1280,1280,1280,4000,4000,0,0,0,0,4)
+	SetImageColor(ConeImage,0,255,0,255)
+	SetImageRenderAlways(ConeImage, true)
+	if not ConeImage then
+		print("errorRRRR")
+	end
+
 end

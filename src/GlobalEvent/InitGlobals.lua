@@ -12,6 +12,7 @@ do
 	function InitGlobals()
 		InitGlobalsOrigin() -- вызываем оригинальную InitGlobals из переменной
 		perebor=CreateGroup()
+		ConeImage=nil
 		InitGameCore()
 		InitMouseMoveTrigger()
 		InitDamage()
@@ -182,6 +183,7 @@ function InitGameCore()
 			Wagon=nil,
 			Turret=nil,
 			TurretArrow=nil,
+			EnterInTurret=false,
 			Compass=nil,
 			CompassX=0,
 			CompassY=0,
@@ -537,6 +539,7 @@ function InitGameCore()
 				--	print("2 x="..x.." y= "..y)
 					turn = AngleBetweenXY(x, y, GetPlayerMouseX[id], GetPlayerMouseY[id]) / bj_DEGTORAD
 				--	print(3)
+					--print(turn)
 				end
 
 				if data.LastMouseX == GetPlayerMouseX[id] then
@@ -670,8 +673,17 @@ function InitGameCore()
 				--print("да")
 				if turn < 0 and turn > -180 then
 					turn = turn + 360
-					data.LastTurn = turn
 				end
+				if data.EnterInTurret then
+					if turn<=150 then
+						turn=150
+					end
+					if turn>=210 then
+						turn=210
+					end
+				end
+				--print(turn)
+				data.LastTurn = turn
 			else
 				turn = data.LastTurn
 				--print("нет")
@@ -959,7 +971,7 @@ function InitGameCore()
 
 			end
 
-			if UnitAlive(hero) then
+			if UnitAlive(hero) and not data.EnterInTurret then
 				SetUnitPositionSmooth(hero, newPos.x, newPos.y)
 				--Синхронизация ног
 				SetUnitX(data.legs, GetUnitX(hero))
@@ -1022,26 +1034,27 @@ function InitGameCore()
 				end
 			end
 
-			if data.Wagon then -- вагонетка
+			if data.Wagon then -- вагонетка с турелью
 
 				local rangeCart = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon))
 				--print(rangeCart)
 				local range=110
 				if rangeCart >= range then
-					--print("угол пеона ="..angle.." тележки "..data.CartAngle)
-
-
-					--data.CartAngle = -180 + AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
-					--local cx, cy = 0,0
-					--cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), -80, data.CartAngle)
-
-
-					--SetUnitPositionSmooth(data.Wagon, GetUnitX(data.Wagon), cy)
-					--SetUnitY(data.Wagon,cy)
-					--print(GetUnitX(data.Wagon))
-					--SetUnitX(data.Wagon,11532.25)
+					--print("пеон выходит из тележки тележки")
 
 				else --толкаем
+
+
+					if  GetUnitX(hero)>=11600 and data.ReleaseA and not data.EnterInTurret then-- МОМЕНТ ВХОДА В ТЕЛЕЖКУ
+						data.EnterInTurret=true
+						--ShowUnit(hero,false)
+						--ShowUnit(data.legs,false)
+						--SetUnitX(hero)
+						SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
+						data.Wagon = nil
+						StartTurretMoving(data)
+						--print("вход в тележку "..GetUnitX(hero))
+					end
 					local cx,cy=0,0
 					BlzSetUnitFacingEx(data.Wagon,90)
 					if GetUnitY(hero)>= GetUnitY(data.Wagon) then
@@ -1069,8 +1082,8 @@ function InitGameCore()
 				if rangeCart >= 115 or not UnitAlive(hero) then
 					--print("отрыв вагонетки")
 					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
-					SetUnitAnimationByIndex(data.CartUnit, 0)
 					data.Wagon = nil
+					--SetUnitAnimationByIndex(data.CartUnit, 0)
 					data.Turret = nil
 				end
 			end--конец блока вагонетка

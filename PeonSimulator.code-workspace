@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"Lua.workspace.preloadFileSize": 600,
+		"Lua.diagnostics.globals": ["FourCC",
+			"gg_snd_Load","gg_snd_SaveKodo","gg_snd_Saw","gg_rct_Saws","gg_rct_WalkSpawnZone","gg_rct_TrentZone","gg_snd_Reflect","gg_rct_KodoZone",
+			"gg_rct_StoneZoneS","gg_rct_Lava","gg_rct_Workers","gg_rct_SheepZone","gg_rct_Morlok","gg_snd_Unlock","gg_rct_Winter"],
+		"Lua.workspace.ignoreDir": [
+			"map.w3x",
+			"api",
+			"Pattern",
+			".idea"
+		],
+		"Lua.workspace.library": {
+			"api":true
+		},
+	}
+}

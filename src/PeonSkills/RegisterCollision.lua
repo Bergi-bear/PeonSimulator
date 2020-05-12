@@ -31,13 +31,15 @@ function RegisterCollision(hero)
 					data.Wagon=CollisionUnit
 
 					local Turret=FindUnitOfType(FourCC('o00A'),300,GetUnitXY(CollisionUnit))
+					--ShowUnit(Turret,false)
+					BlzPauseUnitEx(Turret,true)
 					SetUnitInvulnerable(Turret,true)
-					SetUnitZ(Turret,220)
+					SetUnitZ(Turret,205)
 					data.Turret=Turret
 
 					--Элементы для входа
 					if not data.TurretArrow and Turret then
-						--print("Первое появление")
+						print("Первое появление")
 						local x,y=GetUnitXY(CollisionUnit)
 						local model="AneuCaster"
 						local player=GetOwningPlayer(hero)

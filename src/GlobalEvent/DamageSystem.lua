@@ -180,8 +180,8 @@ function OnPostDamage()
 				end
 			end)
 		end
-		TimerStart(CreateTimer(), 2, false, function()
-			IssueImmediateOrder(target,"stop")
+		TimerStart(CreateTimer(), 3, false, function()
+			IssueImmediateOrder(target,"stop")-- стоп кодоя
 			DestroyTimer(GetExpiredTimer())
 		end)
 

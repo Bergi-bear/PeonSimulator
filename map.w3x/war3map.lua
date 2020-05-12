@@ -1357,14 +1357,14 @@ function CreateWoodFrame ()
 	BlzFrameSetAllPoints(faceHover, wood) --faceHover copies the size and position of face.
 	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
-	BlzFrameSetSize(tooltip, 0.18, 0.18)
-	if BlzGetLocale()=="ruRU" then
+	BlzFrameSetSize(tooltip, 0.18, 0.20)
+	--if BlzGetLocale()=="ruRU" then
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "|cffffff00".."Общая древесина".."|r")
 		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля и победы. Потеря лесопилки приведёт к поражению всех игроков")
-	else
-		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
-		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
-	end
+	--else
+	--	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
+	--	BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
+	--end
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -3114,8 +3114,8 @@ function OnPostDamage()
 				end
 			end)
 		end
-		TimerStart(CreateTimer(), 2, false, function()
-			IssueImmediateOrder(target,"stop")
+		TimerStart(CreateTimer(), 3, false, function()
+			IssueImmediateOrder(target,"stop")-- стоп кодоя
 			DestroyTimer(GetExpiredTimer())
 		end)
 
@@ -3405,6 +3405,7 @@ do
 	function InitGlobals()
 		InitGlobalsOrigin() -- вызываем оригинальную InitGlobals из переменной
 		perebor=CreateGroup()
+		ConeImage=nil
 		InitGameCore()
 		InitMouseMoveTrigger()
 		InitDamage()
@@ -3575,6 +3576,7 @@ function InitGameCore()
 			Wagon=nil,
 			Turret=nil,
 			TurretArrow=nil,
+			EnterInTurret=false,
 			Compass=nil,
 			CompassX=0,
 			CompassY=0,
@@ -3930,6 +3932,7 @@ function InitGameCore()
 				--	print("2 x="..x.." y= "..y)
 					turn = AngleBetweenXY(x, y, GetPlayerMouseX[id], GetPlayerMouseY[id]) / bj_DEGTORAD
 				--	print(3)
+					--print(turn)
 				end
 
 				if data.LastMouseX == GetPlayerMouseX[id] then
@@ -4063,8 +4066,17 @@ function InitGameCore()
 				--print("да")
 				if turn < 0 and turn > -180 then
 					turn = turn + 360
-					data.LastTurn = turn
 				end
+				if data.EnterInTurret then
+					if turn<=150 then
+						turn=150
+					end
+					if turn>=210 then
+						turn=210
+					end
+				end
+				--print(turn)
+				data.LastTurn = turn
 			else
 				turn = data.LastTurn
 				--print("нет")
@@ -4352,7 +4364,7 @@ function InitGameCore()
 
 			end
 
-			if UnitAlive(hero) then
+			if UnitAlive(hero) and not data.EnterInTurret then
 				SetUnitPositionSmooth(hero, newPos.x, newPos.y)
 				--Синхронизация ног
 				SetUnitX(data.legs, GetUnitX(hero))
@@ -4415,26 +4427,27 @@ function InitGameCore()
 				end
 			end
 
-			if data.Wagon then -- вагонетка
+			if data.Wagon then -- вагонетка с турелью
 
 				local rangeCart = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon))
 				--print(rangeCart)
 				local range=110
 				if rangeCart >= range then
-					--print("угол пеона ="..angle.." тележки "..data.CartAngle)
-
-
-					--data.CartAngle = -180 + AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon)) / bj_DEGTORAD
-					--local cx, cy = 0,0
-					--cx,cy=MoveXY(GetUnitX(hero), GetUnitY(hero), -80, data.CartAngle)
-
-
-					--SetUnitPositionSmooth(data.Wagon, GetUnitX(data.Wagon), cy)
-					--SetUnitY(data.Wagon,cy)
-					--print(GetUnitX(data.Wagon))
-					--SetUnitX(data.Wagon,11532.25)
+					--print("пеон выходит из тележки тележки")
 
 				else --толкаем
+
+
+					if  GetUnitX(hero)>=11600 and data.ReleaseA and not data.EnterInTurret then-- МОМЕНТ ВХОДА В ТЕЛЕЖКУ
+						data.EnterInTurret=true
+						--ShowUnit(hero,false)
+						--ShowUnit(data.legs,false)
+						--SetUnitX(hero)
+						SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
+						data.Wagon = nil
+						StartTurretMoving(data)
+						--print("вход в тележку "..GetUnitX(hero))
+					end
 					local cx,cy=0,0
 					BlzSetUnitFacingEx(data.Wagon,90)
 					if GetUnitY(hero)>= GetUnitY(data.Wagon) then
@@ -4462,8 +4475,8 @@ function InitGameCore()
 				if rangeCart >= 115 or not UnitAlive(hero) then
 					--print("отрыв вагонетки")
 					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
-					SetUnitAnimationByIndex(data.CartUnit, 0)
 					data.Wagon = nil
+					--SetUnitAnimationByIndex(data.CartUnit, 0)
 					data.Turret = nil
 				end
 			end--конец блока вагонетка
@@ -6486,13 +6499,15 @@ function RegisterCollision(hero)
 					data.Wagon=CollisionUnit
 
 					local Turret=FindUnitOfType(FourCC('o00A'),300,GetUnitXY(CollisionUnit))
+					--ShowUnit(Turret,false)
+					BlzPauseUnitEx(Turret,true)
 					SetUnitInvulnerable(Turret,true)
-					SetUnitZ(Turret,220)
+					SetUnitZ(Turret,205)
 					data.Turret=Turret
 
 					--Элементы для входа
 					if not data.TurretArrow and Turret then
-						--print("Первое появление")
+						print("Первое появление")
 						local x,y=GetUnitXY(CollisionUnit)
 						local model="AneuCaster"
 						local player=GetOwningPlayer(hero)
@@ -6812,7 +6827,15 @@ function CreateLocalImages()
 		SetImageRenderAlways(data.CircleImage, true)
 		ShowImage(data.CircleImage,false)
 	end
+	ConeImage=CreateImage("Konus.blp",1280,1280,1280,4000,4000,0,0,0,0,4)
+	SetImageColor(ConeImage,0,255,0,255)
+	SetImageRenderAlways(ConeImage, true)
+	if not ConeImage then
+		print("errorRRRR")
+	end
+
 end
+
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -7496,6 +7519,42 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 12.05.2020 23:10
+---
+function StartTurretMoving(data)
+
+	local AnotherWagon=FindUnitOfType(FourCC('o009'))
+	SetUnitPathing(data.UnitHero,false)
+	UnitCollisionOFF(data.UnitHero)
+	BlzSetSpecialEffectYaw(data.TurretArrow,math.rad(0))
+
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		local hero=data.UnitHero
+		local x,y=GetUnitXY(AnotherWagon)
+		SetUnitX(hero,x)
+		SetUnitY(hero,y)
+		SetUnitX(data.legs,x)
+		SetUnitY(data.legs,y)
+		SetUnitZ(data.legs,170)
+		SetUnitZ(hero,170)
+		UnitCollisionOFF(data.UnitHero)
+		local imageX,imageY=GetUnitXY(hero)
+		SetImagePosition(ConeImage,imageX-1280,imageY-1280/2,0)
+		if data.ReleaseD then --момент выхода из тележки
+			BlzSetSpecialEffectYaw(data.TurretArrow,math.rad(180))
+			SetUnitX(hero,GetUnitX(hero)+50)
+			DestroyTimer(GetExpiredTimer())
+			data.EnterInTurret=false
+			SetUnitZ(data.legs,0)
+			SetUnitZ(hero,0)
+		end
+	end)
+
+
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 11.05.2020 14:19
 ---
 
@@ -7765,15 +7824,15 @@ function InitCustomTeams()
 end
 
 function InitAllyPriorities()
-    SetStartLocPrioCount(0, 2)
-    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_LOW)
+    SetStartLocPrioCount(0, 3)
+    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrioCount(1, 2)
-    SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_LOW)
-    SetStartLocPrio(1, 1, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(0, 2, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrioCount(1, 1)
+    SetStartLocPrio(1, 0, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(2, 2)
-    SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(2, 0, 1, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(3, 2)
     SetStartLocPrio(3, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(3, 1, 2, MAP_LOC_PRIO_LOW)
@@ -7797,12 +7856,12 @@ function main()
 end
 
 function config()
-    SetMapName("")
-    SetMapDescription("")
+    SetMapName("TRIGSTR_096")
+    SetMapDescription("TRIGSTR_098")
     SetPlayers(4)
     SetTeams(4)
     SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
-    DefineStartLocation(0, -128.0, -192.0)
+    DefineStartLocation(0, 11072.0, 1536.0)
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)
