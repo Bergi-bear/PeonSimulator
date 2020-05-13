@@ -6,10 +6,12 @@
 function StartTurretMoving(data)
 
 	local AnotherWagon=FindUnitOfType(FourCC('o009'))
-	SetUnitPathing(data.UnitHero,true)
-	UnitCollisionOFF(data.UnitHero)
+	--SetUnitPathing(data.UnitHero,true)
+	--UnitCollisionOFF(data.UnitHero)
 	BlzSetSpecialEffectYaw(data.TurretArrow,math.rad(0))
+	BlzPauseUnitEx(data.UnitHero,true)
 
+	local isAttack=false
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local hero=data.UnitHero
 		local x,y=GetUnitXY(AnotherWagon)
@@ -19,10 +21,32 @@ function StartTurretMoving(data)
 		SetUnitY(data.legs,y)
 		SetUnitZ(data.legs,170)
 		SetUnitZ(hero,170)
-		UnitCollisionOFF(data.UnitHero)
 		local imageX,imageY=GetUnitXY(hero)
-		SetImagePosition(ConeImage,imageX-1280,imageY-1280/2,0)
+		SetImagePosition(ConeImage,imageX-1280/1.05,imageY-1280/2,0)
+		--Стрельба
+		local angle=data.LastTurn
+		SetUnitFacing(data.Turret,angle)
+		if data.ReleaseRMB then
+			isAttack=true
+			SingleCannon(hero,GetUnitFacing(data.Turret),"Bullets/Konstrukt_SubmachinegunMissile",1)
+		else
+			isAttack=false
+		end
+
+		if isAttack then
+			SetUnitAnimation(data.Turret,"attack")
+			SetUnitTimeScale(data.Turret,10)
+		else
+			SetUnitAnimation(data.Turret,"stand")
+			SetUnitTimeScale(data.Turret,1)
+		end
+
+
+		if GetLocalPlayer()==GetOwningPlayer(hero) then
+			ShowImage(ConeImage,true)
+		end
 		if data.ReleaseD then --момент выхода из тележки
+			ShowImage(ConeImage,false)
 			BlzSetSpecialEffectYaw(data.TurretArrow,math.rad(180))
 			SetUnitX(hero,GetUnitX(hero)+50)
 			DestroyTimer(GetExpiredTimer())

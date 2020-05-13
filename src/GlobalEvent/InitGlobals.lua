@@ -22,6 +22,7 @@ do
 		HeroEnterSaws()
 		InitTrig_Entire()
 		InitSpellTrigger()
+
 		--Trig_Nahkampf_Initialisierung_Actions()
 		InitCDSystem()
 		--StartFrameCD(10)
@@ -60,6 +61,7 @@ function InitGameCore()
 	--EnableDragSelect(false, false)
 	CreateWoodFrame()
 	HideEverything()
+	--DontMove()
 	TimerStart(CreateTimer(), 0.5, false, function()
 		--ButtonPress()
 		--CreateLanguageDialog()
@@ -159,7 +161,7 @@ function InitGameCore()
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
-			Perk17 = false, --Рывок
+			Perk17 = true, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -195,6 +197,7 @@ function InitGameCore()
 			RegisterCollision(hero)
 			MakeUnitAllAlly(hero)
 			HealthBarAdd(hero)
+			BlzPauseUnitEx(hero,true)
 			AddSpecialEffectTarget("GeneralHeroGlow", hero, "origin")
 			SetUnitColor(hero, ConvertPlayerColor(i))
 			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
@@ -616,6 +619,7 @@ function InitGameCore()
 			end
 
 			local aSpeed = 0.7
+			if data.EnterInTurret then aSpeed=999999 end
 			data.AttackTime = data.AttackTime + TIMER_PERIOD
 			if data.AttackTime >= aSpeed then
 				data.AttackTime = 0

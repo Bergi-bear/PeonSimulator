@@ -19,7 +19,7 @@ function RegisterCollision(hero)
 		--Общее условие
 		if UnitAlive(CollisionUnit) then
 
-			if GetUnitTypeId(CollisionUnit)==FourCC('o009') and not data.Wagon  then --вагонетка
+			if GetUnitTypeId(CollisionUnit)==FourCC('o009') and not data.Wagon  then --вагонетка с турелью
 				--print("вагонетка прилипает")
 
 
@@ -34,12 +34,13 @@ function RegisterCollision(hero)
 					--ShowUnit(Turret,false)
 					BlzPauseUnitEx(Turret,true)
 					SetUnitInvulnerable(Turret,true)
-					SetUnitZ(Turret,205)
+					SetUnitZ(Turret,160)
 					data.Turret=Turret
 
 					--Элементы для входа
 					if not data.TurretArrow and Turret then
-						print("Первое появление")
+						--print("Первое появление")
+						StartZombies()
 						local x,y=GetUnitXY(CollisionUnit)
 						local model="AneuCaster"
 						local player=GetOwningPlayer(hero)

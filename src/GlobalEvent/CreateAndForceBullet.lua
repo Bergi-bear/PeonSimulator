@@ -28,6 +28,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 		dist = dist + speed
 		local x, y, z = BlzGetLocalSpecialEffectX(bullet), BlzGetLocalSpecialEffectY(bullet), BlzGetLocalSpecialEffectZ(bullet)
 		local zGround = GetTerrainZ(MoveX(x, speed * 2, angleCurrent), MoveY(y, speed * 2, angleCurrent))
+		BlzSetSpecialEffectYaw(bullet,math.rad(angleCurrent))
 		if GetUnitTypeId(heroCurrent) == FourCC('e009') then
 			-- у горного великана тиника нет потери высоты
 			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z)

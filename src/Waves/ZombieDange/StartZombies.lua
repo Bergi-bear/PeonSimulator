@@ -11,7 +11,7 @@ function StartZombies()
 	local id={FourCC('n009'),FourCC('n00B'),FourCC('n00A')}
 	AllZombiesCount=CreateGroup()
 	TimerStart(CreateTimer(), 1, true, function()
-		local rPoz=GetRandomInt(1,#sPozX)
+		local rPoz=GetRandomInt(4,#sPozX)
 		local new=CreateUnit(Player(14),id[GetRandomInt(1,3)],sPozX[rPoz],sPozY[rPoz],0)
 		GroupAddUnit(AllZombiesCount,new)
 		SetUnitMoveSpeed(new,100)
