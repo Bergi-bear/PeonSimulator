@@ -75,6 +75,7 @@ function InitGameCore()
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
 		CreateLocalImages()
+		--PlayerPlaying()
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
 	--TestFrame()
