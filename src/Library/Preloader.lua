@@ -7,7 +7,7 @@
 function PlayerPlaying()
 	print("preloading")
 	Preload("".."\\\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")
-	PreloadGenEnd("\\\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")--НЕ РАБОТАЕТ
-	PreloadGenEnd("save\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")-- РАБОТАЕТ
+	PreloadGenEnd("\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")--НЕ РАБОТАЕТ
+	--PreloadGenEnd("save\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")-- РАБОТАЕТ
 	print("END".."\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")
 end

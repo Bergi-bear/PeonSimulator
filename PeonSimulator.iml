@@ -6,6 +6,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/Pattern" />
+      <excludeFolder url="file://$MODULE_DIR$/Tools" />
       <excludeFolder url="file://$MODULE_DIR$/api" />
       <excludeFolder url="file://$MODULE_DIR$/map.w3x" />
     </content>

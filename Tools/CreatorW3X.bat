@@ -9,6 +9,6 @@ cd %w3xdir%
 dir /b>%curdir%list.txt
 
 for /f "usebackq tokens=*" %%a in ("%curdir%list.txt") do (%mpq% add %OutPlaing% %w3xdir%%%~a "%%~a")
+rem %mpq% add %OutPlaing% list %curdir%list.txt
 
-rem %mpq% add %OutPlaing% %w3xdir%%%~a "%%~a"
 
