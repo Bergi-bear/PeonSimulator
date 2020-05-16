@@ -2350,7 +2350,8 @@ function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
 	BlzFrameSetValue(data.ReloadIco[index], 100)
-	FrameBigSize(data.SelfFrame[index],0.2)
+	--FrameBigSize(data.SelfFrame[index],0.2,index)
+	--FrameBigSize(data.VisualSelectorFrame[index],0.2,index)
 	--BlzFrameSetSize(data.SelfFrame[index],0.05,0.05)
 	local tl = Location(GetUnitXY(data.UnitHero))
 	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
@@ -2370,14 +2371,16 @@ function PerkUnlocker(data, index)
 	end)
 end
 
-function FrameBigSize(fh,sh)
+function FrameBigSize(fh,sh,index)
 	local size=0
 	local sec=0
 	local i=1
 	local turn=true
+	local next = 0.039
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		sec=sec+TIMER_PERIOD
 		size=size+(i*0.005)
+
 		--print(sec)
 		if sec>=sh and turn then
 			--print("off")
@@ -2386,8 +2389,11 @@ function FrameBigSize(fh,sh)
 		end
 		if size<=0 then
 			DestroyTimer(GetExpiredTimer())
+			size=0
 		end
-		BlzFrameSetSize(fh,0.04+size,0.04+size)
+
+		BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.1 + next * (index - 1), 0.02+size/4)
+		--BlzFrameSetSize(fh,0.04+size,0.04+size)
 	end)
 end
 
@@ -3086,8 +3092,9 @@ function OnPostDamage()
 		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
 			UnitRemoveAbility(target,FourCC('BPSE'))
 			BlzSetEventDamage(0)
-			if data.ReleaseLMB then
+			if data.ReleaseLMB  and not data.Perk14A then
 				data.StoneCount=data.StoneCount+1
+				FrameBigSize(data.SelfFrame[14],0.2,14)
 				if data.StoneCount==5 then
 					data.Perk14A=true
 					PerkUnlocker(data,14)
@@ -3314,8 +3321,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			end
 			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
-					data.FireCount=data.FireCount+1
 					if not data.Perk9 then
+					data.FireCount=data.FireCount+1
+					FrameBigSize(data.SelfFrame[9],0.2,9)
 						if data.FireCount>=5 then
 							data.Perk9=true
 							--print("разблокировка перка")
@@ -3331,6 +3339,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if not data.OnCharge and data.ShieldForce then-- нельзя чинить при рывке щита и при толчке щитом
 					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 					data.Repairs=data.Repairs+heal
+					if heal>0 then
+						FrameBigSize(data.SelfFrame[6],0.2,6)
+					end
 					data.RevoltSec=0
 					if not data.Perk6 then
 						if data.Repairs>=1000 then
@@ -4127,6 +4138,9 @@ function InitGameCore()
 
 			-- таланты просчеты
 			data.RevoltSec = data.RevoltSec + TIMER_PERIOD-- считаем бездействие
+			if data.RevoltSec>=200 then
+				FrameBigSize(data.SelfFrame[2],0.2,2)
+			end
 			if not data.Perk2 then
 				if data.RevoltSec >= 300 then
 					data.Perk2 = true
@@ -4819,6 +4833,7 @@ function InitUnitDeath()
 				UnitDamageArea(DeadUnit,200,x,y,250)
 			end
 			data.Dies=data.Dies+1
+			FrameBigSize(data.SelfFrame[3],0.2,3)
 			if data.Dies==15 then
 				if not data.Perk3 then
 					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+100)
@@ -4876,6 +4891,7 @@ function InitUnitDeath()
 
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
+			FrameBigSize(data.SelfFrame[5],0.2,5)
 			if data.Kills==5 then
 				if not data.Perk5 then
 					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
@@ -4887,20 +4903,23 @@ function InitUnitDeath()
 					--перенесено в спеллкаст
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы овца
-
-				data.SheepCount=data.SheepCount+1
-				if data.SheepCount==40 then
-					data.Perk15=true
-					UnitAddAbility(Killer,FourCC('A00J'))
-					PerkUnlocker(data,15)
+				if not data.Perk15 then
+					data.SheepCount=data.SheepCount+1
+					FrameBigSize(data.SelfFrame[15],0.2,15)
+					if data.SheepCount==40 then
+						data.Perk15=true
+						UnitAddAbility(Killer,FourCC('A00J'))
+						PerkUnlocker(data,15)
+					end
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('e001') then-- убил энта
 				CreateFreeWood(GetUnitXY(DeadUnit))
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
+				if not data.Perk13 then
 				data.WolfCount=data.WolfCount+1
-
+				FrameBigSize(data.SelfFrame[13],0.2,13)
 				--FrameBigSize(data.SelfFrame[13],0.2)
 
 				if data.WolfCount==5 then
@@ -4908,12 +4927,8 @@ function InitUnitDeath()
 					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
 					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
 					UnitAddAbility(data.WolfHelper,FourCC('Aloc'))
-
-					if not data.Perk13 then
-						data.Perk13=true
-						PerkUnlocker(data,13)
-					end
-
+					data.Perk13=true
+					PerkUnlocker(data,13)
 					TimerStart(CreateTimer(), 1, true, function()
 						local x,y=GetUnitXY(Killer)
 						local distance=DistanceBetweenXY(x,y,GetUnitX(data.WolfHelper),GetUnitY(data.WolfHelper))
@@ -4930,6 +4945,9 @@ function InitUnitDeath()
 							end
 						end
 					end)
+				end
+
+
 
 
 					--if GetLocalPlayer()==PD and GetLocalON then
@@ -5096,6 +5114,9 @@ function HealUnit(hero,amount,flag)
 	if IsUnitType(hero,UNIT_TYPE_HERO) then
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 		data.Heals=data.Heals+TotalHeal
+		if TotalHeal>1 then
+			FrameBigSize(data.SelfFrame[7],0.2,7)
+		end
 		if not data.Perk7 then
 			if data.Heals>=1000 then
 				data.Perk7=true
@@ -6795,6 +6816,7 @@ function RegisterCollision(hero)
 					if GetLosingHP(hero)<=5 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
+						FrameBigSize(data.SelfFrame[10],0.2,10)
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
 							PerkUnlocker(data,10)
@@ -6803,7 +6825,7 @@ function RegisterCollision(hero)
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 					data.SingleWoodCount=data.SingleWoodCount+k
-					FrameBigSize(data.SelfFrame[1],0.1)
+					FrameBigSize(data.SelfFrame[1],0.2,1)
 					--print("дерево в личном зачете "..data.SingleWoodCount)
 					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true
@@ -6824,6 +6846,7 @@ function RegisterCollision(hero)
 					if GetLosingHP(hero)<=5 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
+						FrameBigSize(data.SelfFrame[10],0.2,10)
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
 							PerkUnlocker(data,10)
@@ -6838,6 +6861,7 @@ function RegisterCollision(hero)
 						MoveWoodAsFarm(hero,k)
 						data.SingleWoodCount=data.SingleWoodCount+k
 						--print("дерево в личном зачете "..data.SingleWoodCount)
+						FrameBigSize(data.SelfFrame[1],0.2,1)
 						if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 							data.Perk1=true
 							BlzFrameSetVisible(data.LockFrame[1],false)
@@ -7062,6 +7086,7 @@ function AutoCollectLumber(period)
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 					data.SingleWoodCount=data.SingleWoodCount+k
+					FrameBigSize(data.SelfFrame[1],0.2,1)
 					--print("дерево в личном зачете "..data.SingleWoodCount)
 					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true

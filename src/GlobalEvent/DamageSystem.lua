@@ -32,8 +32,9 @@ function OnPostDamage()
 		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
 			UnitRemoveAbility(target,FourCC('BPSE'))
 			BlzSetEventDamage(0)
-			if data.ReleaseLMB then
+			if data.ReleaseLMB  and not data.Perk14A then
 				data.StoneCount=data.StoneCount+1
+				FrameBigSize(data.SelfFrame[14],0.2,14)
 				if data.StoneCount==5 then
 					data.Perk14A=true
 					PerkUnlocker(data,14)
@@ -260,8 +261,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 			end
 			if DistanceBetweenXY(GetUnitX(u),GetUnitY(u),GetUnitXY(e))<=200 and (IsUnitType(e,UNIT_TYPE_STRUCTURE) or IsUnitType(e,UNIT_TYPE_MECHANICAL)) then
 				if GetUnitTypeId(e)==FourCC('n003') then-- костер
-					data.FireCount=data.FireCount+1
 					if not data.Perk9 then
+					data.FireCount=data.FireCount+1
+					FrameBigSize(data.SelfFrame[9],0.2,9)
 						if data.FireCount>=5 then
 							data.Perk9=true
 							--print("разблокировка перка")
@@ -277,6 +279,9 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if not data.OnCharge and data.ShieldForce then-- нельзя чинить при рывке щита и при толчке щитом
 					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 					data.Repairs=data.Repairs+heal
+					if heal>0 then
+						FrameBigSize(data.SelfFrame[6],0.2,6)
+					end
 					data.RevoltSec=0
 					if not data.Perk6 then
 						if data.Repairs>=1000 then

@@ -33,6 +33,7 @@ function InitUnitDeath()
 				UnitDamageArea(DeadUnit,200,x,y,250)
 			end
 			data.Dies=data.Dies+1
+			FrameBigSize(data.SelfFrame[3],0.2,3)
 			if data.Dies==15 then
 				if not data.Perk3 then
 					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+100)
@@ -90,31 +91,37 @@ function InitUnitDeath()
 
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
-			if data.Kills==5 then
-				if not data.Perk5 then
-					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
+			if not data.Perk5 then
+				FrameBigSize(data.SelfFrame[5],0.2,5)
+				if data.Kills==5 then
+					if not data.Perk5 then
+						BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
+					end
+					data.Perk5=true
+					PerkUnlocker(data,5)
 				end
-				data.Perk5=true
-				PerkUnlocker(data,5)
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
 					--перенесено в спеллкаст
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n001') then--овцы овца
-
-				data.SheepCount=data.SheepCount+1
-				if data.SheepCount==40 then
-					data.Perk15=true
-					UnitAddAbility(Killer,FourCC('A00J'))
-					PerkUnlocker(data,15)
+				if not data.Perk15 then
+					data.SheepCount=data.SheepCount+1
+					FrameBigSize(data.SelfFrame[15],0.2,15)
+					if data.SheepCount==40 then
+						data.Perk15=true
+						UnitAddAbility(Killer,FourCC('A00J'))
+						PerkUnlocker(data,15)
+					end
 				end
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('e001') then-- убил энта
 				CreateFreeWood(GetUnitXY(DeadUnit))
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
+				if not data.Perk13 then
 				data.WolfCount=data.WolfCount+1
-
+				FrameBigSize(data.SelfFrame[13],0.2,13)
 				--FrameBigSize(data.SelfFrame[13],0.2)
 
 				if data.WolfCount==5 then
@@ -122,12 +129,8 @@ function InitUnitDeath()
 					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")
 					data.WolfHelper=CreateUnit(PD,FourCC('o006'),GetUnitX(Killer),GetUnitY(Killer),0)
 					UnitAddAbility(data.WolfHelper,FourCC('Aloc'))
-
-					if not data.Perk13 then
-						data.Perk13=true
-						PerkUnlocker(data,13)
-					end
-
+					data.Perk13=true
+					PerkUnlocker(data,13)
 					TimerStart(CreateTimer(), 1, true, function()
 						local x,y=GetUnitXY(Killer)
 						local distance=DistanceBetweenXY(x,y,GetUnitX(data.WolfHelper),GetUnitY(data.WolfHelper))
@@ -144,6 +147,9 @@ function InitUnitDeath()
 							end
 						end
 					end)
+				end
+
+
 
 
 					--if GetLocalPlayer()==PD and GetLocalON then

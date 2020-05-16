@@ -16,6 +16,9 @@ function HealUnit(hero,amount,flag)
 	if IsUnitType(hero,UNIT_TYPE_HERO) then
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 		data.Heals=data.Heals+TotalHeal
+		if TotalHeal>1 then
+			FrameBigSize(data.SelfFrame[7],0.2,7)
+		end
 		if not data.Perk7 then
 			if data.Heals>=1000 then
 				data.Perk7=true

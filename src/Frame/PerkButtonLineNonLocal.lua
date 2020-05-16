@@ -399,7 +399,8 @@ function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
 	BlzFrameSetValue(data.ReloadIco[index], 100)
-	FrameBigSize(data.SelfFrame[index],0.2)
+	--FrameBigSize(data.SelfFrame[index],0.2,index)
+	--FrameBigSize(data.VisualSelectorFrame[index],0.2,index)
 	--BlzFrameSetSize(data.SelfFrame[index],0.05,0.05)
 	local tl = Location(GetUnitXY(data.UnitHero))
 	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
@@ -419,14 +420,16 @@ function PerkUnlocker(data, index)
 	end)
 end
 
-function FrameBigSize(fh,sh)
+function FrameBigSize(fh,sh,index)
 	local size=0
 	local sec=0
 	local i=1
 	local turn=true
+	local next = 0.039
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		sec=sec+TIMER_PERIOD
 		size=size+(i*0.005)
+
 		--print(sec)
 		if sec>=sh and turn then
 			--print("off")
@@ -435,8 +438,11 @@ function FrameBigSize(fh,sh)
 		end
 		if size<=0 then
 			DestroyTimer(GetExpiredTimer())
+			size=0
 		end
-		BlzFrameSetSize(fh,0.04+size,0.04+size)
+
+		BlzFrameSetAbsPoint(fh, FRAMEPOINT_CENTER, 0.1 + next * (index - 1), 0.02+size/4)
+		--BlzFrameSetSize(fh,0.04+size,0.04+size)
 	end)
 end
 

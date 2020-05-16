@@ -614,6 +614,9 @@ function InitGameCore()
 
 			-- таланты просчеты
 			data.RevoltSec = data.RevoltSec + TIMER_PERIOD-- считаем бездействие
+			if data.RevoltSec>=200 then
+				FrameBigSize(data.SelfFrame[2],0.2,2)
+			end
 			if not data.Perk2 then
 				if data.RevoltSec >= 300 then
 					data.Perk2 = true

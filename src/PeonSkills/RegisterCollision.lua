@@ -158,6 +158,7 @@ function RegisterCollision(hero)
 					if GetLosingHP(hero)<=5 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
+						FrameBigSize(data.SelfFrame[10],0.2,10)
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
 							PerkUnlocker(data,10)
@@ -166,7 +167,7 @@ function RegisterCollision(hero)
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 					data.SingleWoodCount=data.SingleWoodCount+k
-					FrameBigSize(data.SelfFrame[1],0.2)
+					FrameBigSize(data.SelfFrame[1],0.2,1)
 					--print("дерево в личном зачете "..data.SingleWoodCount)
 					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true
@@ -187,6 +188,7 @@ function RegisterCollision(hero)
 					if GetLosingHP(hero)<=5 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
+						FrameBigSize(data.SelfFrame[10],0.2,10)
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
 							data.Perk10=true
 							PerkUnlocker(data,10)
@@ -201,6 +203,7 @@ function RegisterCollision(hero)
 						MoveWoodAsFarm(hero,k)
 						data.SingleWoodCount=data.SingleWoodCount+k
 						--print("дерево в личном зачете "..data.SingleWoodCount)
+						FrameBigSize(data.SelfFrame[1],0.2,1)
 						if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 							data.Perk1=true
 							BlzFrameSetVisible(data.LockFrame[1],false)
