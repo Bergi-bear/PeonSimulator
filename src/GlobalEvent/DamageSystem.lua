@@ -31,8 +31,9 @@ function OnPostDamage()
 
 		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
 			UnitRemoveAbility(target,FourCC('BPSE'))
-			BlzSetEventDamage(0)
+
 			if data.ReleaseLMB  and not data.Perk14A then
+				BlzSetEventDamage(0)
 				data.StoneCount=data.StoneCount+1
 				FrameBigSize(data.SelfFrame[14],0.2,14)
 				if data.StoneCount==5 then
@@ -60,13 +61,26 @@ function OnPostDamage()
 		end
 
 
-		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит --Prometheus Прометей
+		if data.ReleaseLMB and data.Perk14 and not data.ShieldOnCD then  -- Зажата левая кнопка мыши и есть щит --Prometheus Прометей
 			if dist >=25 then dist=25 end
 			if 0 < dot then
 				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
 				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 				DestroyEffect(eff)
 				UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
+				local cd=5
+				if damage>=500 then
+					StartFrameCD(cd,data,14)
+					data.ShieldOnCD=true
+					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),"Broken",GetOwningPlayer(target))
+				end
+				TimerStart(CreateTimer(), cd, false, function()
+					data.ShieldOnCD=false
+					BlzPauseUnitEx(caster, false)
+					DestroyTimer(GetExpiredTimer())
+				end)
+
+
 				if data.Perk14A then
 					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage),GetOwningPlayer(target))
 					BlzSetEventDamage(0)
@@ -279,7 +293,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if not data.OnCharge and data.ShieldForce then-- нельзя чинить при рывке щита и при толчке щитом
 					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 					data.Repairs=data.Repairs+heal
-					if heal>0 then
+					if heal>0 and not data.Perk6  then
 						FrameBigSize(data.SelfFrame[6],0.2,6)
 					end
 					data.RevoltSec=0

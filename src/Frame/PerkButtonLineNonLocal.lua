@@ -234,6 +234,8 @@ function PerkButtonLineNonLocal(k, lang)
 
 				if data.Perk1 then
 					BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r")
+					--StartFrameCD()
+					BlzFrameSetValue(data.ReloadIco[1], 0)
 				else
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.SingleWoodCount .. "/25|r") --|cffffff00AAAA|r
 				end
@@ -260,7 +262,7 @@ function PerkButtonLineNonLocal(k, lang)
 				end
 			elseif i == 6 then
 				if data.Perk6 then
-					BlzFrameSetText(data.PekFrame[i], "Наносит " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. "|r".." доп. урона и замедляет врагов в области 150") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Наносит " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. "|r".." доп. урона и замедляет врагов в области ".."|cffffff00150|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " damage|r")
 					end
@@ -353,7 +355,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk14A then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100%% |r" .. " урона ") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100%% |r" .. " урона Ломается, если урон больше 500. Перезарядка: ".."|cffffff00" .. "5|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100%% |r" .. " damage ") --|cffffff00AAAA|r
 					end
@@ -374,7 +376,7 @@ function PerkButtonLineNonLocal(k, lang)
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Search beyond the volcano|r")
 					end
 				else
-					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой, увеличивает урон в " .. "|cffffff00" .. "5 раз |r" .. " и оглушает на |cffffff00 0,5 сек. |r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой и оглушает на |cffffff00 0,5 сек. |r".."Перезарядка:|cffffff00".."5 |r".."секунд") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], " 1000 Range Attack damage multiplier" .. "|cffffff00" .. "x 5 |r" .. " and stun|cffffff00 0,5 sec |r")
 					end
@@ -383,7 +385,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk17 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. GTotalWood .. "/50|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: " .. "|cffffff00" .. "2 сек |r" .. "") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Активация: ПКМ+ЛКМ. Презезарядка: " .. "|cffffff002|r" .. ". Урон: ".."|cffffff00"..(BlzGetUnitBaseDamage(data.UnitHero,0)*4).." |r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "When hold RMB, press LMB. Reload: " .. "|cffffff00" .. "2 sec |r" .. "")
 					end

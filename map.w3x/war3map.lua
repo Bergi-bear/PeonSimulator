@@ -474,8 +474,8 @@ function CreateRegions()
     EnableWeatherEffect(we, true)
     gg_rct_Region_016 = Rect(3456.0, -2400.0, 4064.0, -2080.0)
     gg_rct_EnterCave = Rect(2912.0, 1312.0, 3072.0, 1440.0)
-    gg_rct_EnterTown = Rect(11488.0, 192.0, 11808.0, 448.0)
-    gg_rct_Region_019 = Rect(11360.0, 448.0, 11840.0, 704.0)
+    gg_rct_EnterTown = Rect(11488.0, 416.0, 11808.0, 672.0)
+    gg_rct_Region_019 = Rect(11552.0, 192.0, 12032.0, 448.0)
     gg_rct_Region_020 = Rect(2880.0, 1120.0, 3072.0, 1216.0)
     gg_rct_CartStart = Rect(11392.0, 1600.0, 11552.0, 1728.0)
     gg_rct_Dang1 = Rect(9600.0, 1184.0, 11840.0, 4800.0)
@@ -1637,155 +1637,7 @@ function VisualUnlock()
 	end)
 end
 
-function PerkButtonLine()
-	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
-	local next=0.039
-	for i=1,#Name do -- число талантов
-		local face = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-		BlzFrameSetAbsPoint(face, FRAMEPOINT_CENTER, 0.1+next*(i-1), 0.02)
-		BlzFrameSetSize(face, 0.04, 0.04)
-		local  buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", face, "", 0)
-		BlzFrameSetAllPoints(buttonIconFrame, face)
-		BlzFrameSetTexture(buttonIconFrame, texture[i],0, true)
-		local faceHover = BlzCreateFrameByType("FRAME", "FaceFrame", face,"", 0)
-		local tooltip = BlzCreateFrame("BoxedText", face, 0, 0)
-		local UpDest=BlzGetFrameByName("BoxedTextValue", 0)
-		BlzFrameSetAllPoints(faceHover, face)
-		BlzFrameSetTooltip(faceHover, tooltip)
-		BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, face, FRAMEPOINT_TOP, 0.0, 0.0)
-		BlzFrameSetSize(tooltip, 0.15, 0.08)
-		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), Name[i])
-		BlzFrameSetText(UpDest, description[i])
-
-		local lock=BlzCreateFrameByType("BACKDROP", "Face",face, "", 0)--замочек
-		BlzFrameSetPoint(lock, FRAMEPOINT_CENTER, face, FRAMEPOINT_CENTER, 0.,0.)
-		BlzFrameSetSize(lock, 0.04, 0.04)
-		BlzFrameSetTexture(lock, "close",0, true)
-
-		--выделение Хейтовские
-		local buttonsprite = BlzCreateFrameByType("SPRITE", "justAName", face, "WarCraftIIILogo", 0)
-		BlzFrameSetPoint(buttonsprite, FRAMEPOINT_BOTTOMLEFT, face, FRAMEPOINT_BOTTOMLEFT, 0.02, 0.02)
-		BlzFrameSetSize(buttonsprite, 1., 1.)
-		BlzFrameSetScale(buttonsprite, 1.)
-		BlzFrameSetModel(buttonsprite, "selecter1.mdx", 0)
-		BlzFrameSetVisible(buttonsprite,false)
-		--глобалки
-		FrameSelecter[i]=buttonsprite
-		PerkIsLock[i]=lock --замочек
-		PerkToolTip[i]=UpDest -- тултип в описании]]
-	end
-
-
-	--обновление текста
-	TimerStart(CreateTimer(), 1, true, function()
-		for i=0,3 do
-			local data=HERO[i]
-			if GetLocalPlayer()==Player(i) then-- используется другой элемент
-				for k=1,#Name  do
-					--print(#Name)
-					if k==1 then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SingleWoodCount.."/25|r" ) --|cffffff00AAAA|r
-					elseif k==2  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.RevoltSec).."/300|r" ) --|cffffff00AAAA|r
-					elseif k==3  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Dies.."/15|r" ) --|cffffff00AAAA|r
-					elseif k==4  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.TotalWay).."/200000|r" ) --|cffffff00AAAA|r
-					elseif k==5  then
-						if  data.Perk5 then
-							BlzFrameSetText(PerkToolTip[k],"Урон увеличен, текущий урон: ".."|cffffff00"..BlzGetUnitBaseDamage(data.UnitHero,0).."|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.Kills.."/5|r" ) --|cffffff00AAAA|r
-						end
-					elseif k==6  then
-						if  data.Perk6 then
-							BlzFrameSetText(PerkToolTip[k],"Наносит дополнительный и замедляет врагов в области 150. ".."|cffffff00".."90 доп. урона|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Repairs).."/1000|r" ) --|cffffff00AAAA|r
-						end
-					elseif k==7  then
-						if  data.Perk7 then
-							if data.Perk7A then
-								BlzFrameSetText(PerkToolTip[k],"Восстанавливает ".."|cffffff00".."3 %|r".." от максимального ХП при убийстве врагов в ближнем бою" ) --|cffffff00AAAA|r
-							else
-								BlzFrameSetText(PerkToolTip[k],"Продолжайте правильно питаться и овладеете вампиризмом. ".."|cffffff00"..R2I(data.Heals).."/5000|r" ) --|cffffff00AAAA|r
-							end
-						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.Heals).."/1000|r" ) --|cffffff00AAAA|r
-						end
-
-					elseif k==8  then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.KodoCount.."/1|r" ) --|cffffff00AAAA|r
-					elseif k==9  then
-						if not data.Perk9 then
-						BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.FireCount.."/5|r" ) --|cffffff00AAAA|r
-						else
-							if not data.HaveAFire then
-								BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Обычная|r" ) --|cffffff00AAAA|r
-							else
-								BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Калёная|r" ) --|cffffff00AAAA|r
-							end
-						end
-					elseif k==10  then --техника безопусноти
-						if  data.Perk10 then
-							BlzFrameSetText(PerkToolTip[k],"Парирует урон при совершении атаки в первые ".."|cffffff00".."0,4 секунды|r".." после замаха" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.TreeCountOnTB.."/10|r" ) --|cffffff00AAAA|r
-						end
-					elseif k==11  then -- погром
-						--print(k)
-						if  data.Perk11 then
-							--print("0")
-							BlzFrameSetText(PerkToolTip[k],"Автоматически чинит союзные здания и технику в ридиусе 400. ".."|cffffff00".."10 ед. в секунду|r" ) --|cffffff00AAAA|r
-						else
-							--print("2")
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."0/1|r" ) --|cffffff00AAAA|r
-							--print("3")
-						end
-						--print(k.."end")
-					elseif k==12  then -- ледяной щит
-						--print("жвенадцать")
-						if  data.Perk12 then
-							BlzFrameSetText(PerkToolTip[k],"При поглощении урона в щит враги замораживаются на ".."|cffffff00".."3 секунды|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..R2I(data.FrozenShield).."/60|r" ) --|cffffff00AAAA|r
-						end
-					elseif k==13  then
-						if not data.Perk13 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.WolfCount.."/5|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],"Призывает волка, который будет вам помогать. ".."|cffffff00".."Автономен и неуязвим|r" ) --|cffffff00AAAA|r
-						end
-					elseif k==14  then
-						if not data.Perk14A then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.StoneCount.."/1|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],"Поглощает ".."|cffffff00".."100% |r".." урона " ) --|cffffff00AAAA|r
-						end
-					elseif k==15  then
-						if not data.Perk15 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..data.SheepCount.."/40|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],"Герой взрывается при смерти нанося урон и каждую ".."|cffffff002|r".." смерть воскресает" ) --|cffffff00AAAA|r
-						end
-					elseif k==16  then
-						if not data.Perk16 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00".."Ищите за вулканом|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],"Даёт дальний бой, увеличивает урон в ".."|cffffff00".."5 раз |r".." и оглушает на |cffffff00 0,5 сек. |r" ) --|cffffff00AAAA|r
-						end
-					elseif k==17  then
-						if not data.Perk17 then
-							BlzFrameSetText(PerkToolTip[k],description[k].."|cffffff00"..GTotalWood.."/50|r" ) --|cffffff00AAAA|r
-						else
-							BlzFrameSetText(PerkToolTip[k],"Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: ".."|cffffff00".."2 сек |r".."" ) --|cffffff00AAAA|r
-						end
-					end
-				end
-			end
-		end
-	end)
-end
+--удалил старый блок
 
 function CreateMouseHelper()
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
@@ -2185,6 +2037,8 @@ function PerkButtonLineNonLocal(k, lang)
 
 				if data.Perk1 then
 					BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r")
+					--StartFrameCD()
+					BlzFrameSetValue(data.ReloadIco[1], 0)
 				else
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.SingleWoodCount .. "/25|r") --|cffffff00AAAA|r
 				end
@@ -2211,7 +2065,7 @@ function PerkButtonLineNonLocal(k, lang)
 				end
 			elseif i == 6 then
 				if data.Perk6 then
-					BlzFrameSetText(data.PekFrame[i], "Наносит " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. "|r".." доп. урона и замедляет врагов в области 150") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Наносит " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. "|r".." доп. урона и замедляет врагов в области ".."|cffffff00150|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Deal addition damage in area 150 and slow enemy. " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * .5) .. " damage|r")
 					end
@@ -2304,7 +2158,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk14A then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона ") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона. Ломается, если урон больше 500. Перезарядка: ".."|cffffff00" .. "5|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100% |r" .. " damage ") --|cffffff00AAAA|r
 					end
@@ -2325,7 +2179,7 @@ function PerkButtonLineNonLocal(k, lang)
 						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. "Search beyond the volcano|r")
 					end
 				else
-					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой, увеличивает урон в " .. "|cffffff00" .. "5 раз |r" .. " и оглушает на |cffffff00 0,5 сек. |r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой и оглушает на |cffffff00 0,5 сек. |r".."Перезарядка:|cffffff00".."5 |r".."секунд") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], " 1000 Range Attack damage multiplier" .. "|cffffff00" .. "x 5 |r" .. " and stun|cffffff00 0,5 sec |r")
 					end
@@ -2334,7 +2188,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk17 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. GTotalWood .. "/50|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Активация: удержимая ПКМ (щит), используйте удар (ЛКМ). Презезарядка: " .. "|cffffff00" .. "2 сек |r" .. "") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Активация: ПКМ+ЛКМ. Презезарядка: " .. "|cffffff002|r" .. ". Урон: ".."|cffffff00"..(BlzGetUnitBaseDamage(data.UnitHero,0)*4).." |r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "When hold RMB, press LMB. Reload: " .. "|cffffff00" .. "2 sec |r" .. "")
 					end
@@ -3091,8 +2945,9 @@ function OnPostDamage()
 
 		if GetUnitAbilityLevel(target,FourCC('BPSE'))>0 then  -- голем валун
 			UnitRemoveAbility(target,FourCC('BPSE'))
-			BlzSetEventDamage(0)
+
 			if data.ReleaseLMB  and not data.Perk14A then
+				BlzSetEventDamage(0)
 				data.StoneCount=data.StoneCount+1
 				FrameBigSize(data.SelfFrame[14],0.2,14)
 				if data.StoneCount==5 then
@@ -3120,13 +2975,26 @@ function OnPostDamage()
 		end
 
 
-		if data.ReleaseLMB and data.Perk14 then  -- Зажата левая кнопка мыши и есть щит --Prometheus Прометей
+		if data.ReleaseLMB and data.Perk14 and not data.ShieldOnCD then  -- Зажата левая кнопка мыши и есть щит --Prometheus Прометей
 			if dist >=25 then dist=25 end
 			if 0 < dot then
 				local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
 				BlzSetSpecialEffectYaw(eff,math.rad(AngleSource-180))
 				DestroyEffect(eff)
 				UnitAddVectorForce(target, AngleSource, dist / 3, dist, false)  -- отталкивание
+				local cd=5
+				if damage>=500 then
+					StartFrameCD(cd,data,14)
+					data.ShieldOnCD=true
+					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),"Broken",GetOwningPlayer(target))
+				end
+				TimerStart(CreateTimer(), 3, false, function()
+					data.ShieldOnCD=false
+					BlzPauseUnitEx(caster, false)
+					DestroyTimer(GetExpiredTimer())
+				end)
+
+
 				if data.Perk14A then
 					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),R2I(damage),GetOwningPlayer(target))
 					BlzSetEventDamage(0)
@@ -3339,7 +3207,7 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 				if not data.OnCharge and data.ShieldForce then-- нельзя чинить при рывке щита и при толчке щитом
 					local heal=HealUnit(e,BlzGetUnitBaseDamage(u,0))
 					data.Repairs=data.Repairs+heal
-					if heal>0 then
+					if heal>0 and not data.Perk6  then
 						FrameBigSize(data.SelfFrame[6],0.2,6)
 					end
 					data.RevoltSec=0
@@ -3647,6 +3515,7 @@ function InitGameCore()
 			ReviveOnStay = false,
 			ReviveOnBase = true,
 			ShieldForce = true, -- толчек щитом
+			ShieldOnCD=false,
 			PlayerIsLeave = false,
 			--ChargeEff=nil,
 			---накопление перков
@@ -4891,13 +4760,15 @@ function InitUnitDeath()
 
 			data.Kills=data.Kills+1
 			data.RevoltSec=0
-			FrameBigSize(data.SelfFrame[5],0.2,5)
-			if data.Kills==5 then
-				if not data.Perk5 then
-					BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
+			if not data.Perk5 then
+				FrameBigSize(data.SelfFrame[5],0.2,5)
+				if data.Kills==5 then
+					if not data.Perk5 then
+						BlzSetUnitBaseDamage(Killer,BlzGetUnitBaseDamage(Killer,0)*2,0)
+					end
+					data.Perk5=true
+					PerkUnlocker(data,5)
 				end
-				data.Perk5=true
-				PerkUnlocker(data,5)
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n002') then--голем
 					--перенесено в спеллкаст
@@ -5114,7 +4985,7 @@ function HealUnit(hero,amount,flag)
 	if IsUnitType(hero,UNIT_TYPE_HERO) then
 		local data=HERO[GetPlayerId(GetOwningPlayer(hero))]
 		data.Heals=data.Heals+TotalHeal
-		if TotalHeal>1 then
+		if TotalHeal>1 and UnitAlive(hero) then
 			FrameBigSize(data.SelfFrame[7],0.2,7)
 		end
 		if not data.Perk7 then
@@ -5470,7 +5341,8 @@ function FlyTextTagHealXY(x,y, text, player)
 end
 
 function FlyTextTagShieldXY(x,y, text, player)--™
-	return FlyTextTag(""..text, 0.018, x, y, 150, 128, 128, 128, 255, 0, 0.03, 1, 3, player)
+	local xr=GetRandomReal(-0.05,0,05)
+	return FlyTextTag(""..text, 0.018, x, y, 150, 128, 128, 128, 255, xr, 0.03, 1, 3, player)
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -6585,10 +6457,14 @@ function AfterAttack(hero, delay)
 					DestroyTimer(GetExpiredTimer())
 					return
 				end
-				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
-				if (data.HaveAFire and data.Perk16)  then
-					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
-					SingleCannon(hero,GetUnitFacing(hero)+15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				if data.HaveAFire then
+					SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				else
+					SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage)
+				end
+				if (data.HaveAFire and data.Perk16)  then --тройной выстрел
+					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage)
+					SingleCannon(hero,GetUnitFacing(hero)+15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage)
 				end
 				if not data.Perk16 then
 					data.HaveAFire=false

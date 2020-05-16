@@ -29,10 +29,14 @@ function AfterAttack(hero, delay)
 					DestroyTimer(GetExpiredTimer())
 					return
 				end
-				SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
-				if (data.HaveAFire and data.Perk16)  then
-					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
-					SingleCannon(hero,GetUnitFacing(hero)+15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				if data.HaveAFire then
+					SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage*5)
+				else
+					SingleCannon(hero,GetUnitFacing(hero),"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage)
+				end
+				if (data.HaveAFire and data.Perk16)  then --тройной выстрел
+					SingleCannon(hero,GetUnitFacing(hero)-15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage)
+					SingleCannon(hero,GetUnitFacing(hero)+15,"Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl",damage)
 				end
 				if not data.Perk16 then
 					data.HaveAFire=false

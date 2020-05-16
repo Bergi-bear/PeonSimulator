@@ -123,6 +123,7 @@ function InitGameCore()
 			ReviveOnStay = false,
 			ReviveOnBase = true,
 			ShieldForce = true, -- толчек щитом
+			ShieldOnCD=false,
 			PlayerIsLeave = false,
 			--ChargeEff=nil,
 			---накопление перков
