@@ -8,7 +8,7 @@ function HideOriginFrameCustom()
 	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), false) --портрет
 	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, 0), false) -- командная панель?
 	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR, 0), false) --хз наверное иконка героя
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR , 0), false) --хз
+	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR , 0), false) --не работает
 	--BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL , 0), false)--КРАШ
 	BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarFrame", 0), false)
 	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0), false)  --// F10 (Menu)
@@ -22,6 +22,11 @@ end
 
 function HideEverything()
 	BlzHideOriginFrames(true)
+	BlzEnableUIAutoPosition ( false )
+
+	local GAME_UI     = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+	local WORLD_FRAME = BlzGetOriginFrame(ORIGIN_FRAME_WORLD_FRAME, 0)
+	BlzFrameSetAllPoints(WORLD_FRAME, GAME_UI)
 	--BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop",0), false)
 
 		--	// Hide Inventory Cover
@@ -29,12 +34,12 @@ function HideEverything()
 
 			--// Show Minimap
 	 BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0),false)
-			--// Show 3D Face
-	 BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), true)
+
+
 		--	// Show Inventory, without unitInfo
 	 BlzFrameSetVisible(BlzFrameGetParent(BlzGetOriginFrame(ORIGIN_FRAME_ITEM_BUTTON, 0)), true)
 			--// Show UnitInfos parent to show inventory and unit info
-	 BlzFrameSetVisible(BlzFrameGetParent(BlzGetFrameByName("SimpleInfoPanelUnitDetail",0)),true)
+	--BlzFrameSetVisible(BlzFrameGetParent(BlzGetFrameByName("SimpleInfoPanelUnitDetail",0)),true) --Панель юнита
 			--// Show Hero Icons at the left top of the screen
 	 BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR,0), false)
 		--	//  //Quests, Menu, Allies, Log
@@ -43,37 +48,108 @@ function HideEverything()
 	 BlzFrameSetVisible(BlzGetFrameByName("ResourceBarFrame",0),true)
 
 
-	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
-	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,0.2)
+	--Вернуть F10
+	local f10=BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0), true) --не не работает
+	BlzFrameClearAllPoints(f10)
+	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.4 ,0.4)
+
+
+	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)-- черная рамка
+	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,0.2) --для смещения бага некликабельности в нижнем правом углу
 
 	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_CHAT_MSG, 0), FRAMEPOINT_BOTTOMLEFT, 0.1 ,0.15)
 	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_MSG, 0), FRAMEPOINT_BOTTOMLEFT, 0.15 ,0.05)
+
+	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), true)
 
 	local fps=BlzGetFrameByName("ResourceBarFrame",0)
 	BlzFrameClearAllPoints(fps)
 	BlzFrameSetAbsPoint(fps, FRAMEPOINT_CENTER, 0.9 ,0.61)
 
+	local infoPanel=BlzFrameGetParent(BlzGetFrameByName("SimpleInfoPanelUnitDetail",0)) -- панель стат героя
+	BlzFrameClearAllPoints(infoPanel)
+	BlzFrameSetVisible(infoPanel,true)
+	BlzFrameSetAbsPoint(infoPanel, FRAMEPOINT_CENTER, 0.115 ,0.625) --0,9 чтобы полностью убрать
+	--убираем всю инфопанель кроме статуса
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconHeroStrengthLabel",6), FRAMEPOINT_CENTER, 0.9 ,5)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconHeroStrengthValue",6), FRAMEPOINT_CENTER, 0.9 ,5)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconHeroIntellectLabel",6), FRAMEPOINT_CENTER, 0.9 ,5)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconHeroIntellectValue",6), FRAMEPOINT_CENTER, 0.9 ,5)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconHeroAgilityLabel",6), FRAMEPOINT_CENTER, 0.9 ,5)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconHeroAgilityValue",6), FRAMEPOINT_CENTER, 0.9 ,5)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconBackdrop",0), FRAMEPOINT_CENTER, 0.9 ,0.9)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconBackdrop",1), FRAMEPOINT_CENTER, 0.9 ,0.9)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconBackdrop",2), FRAMEPOINT_CENTER, 0.9 ,0.9)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconBackdrop",3), FRAMEPOINT_CENTER, 0.9 ,0.9)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconBackdrop",4), FRAMEPOINT_CENTER, 0.9 ,0.9)
+	BlzFrameSetAbsPoint(BlzGetFrameByName("InfoPanelIconBackdrop",5), FRAMEPOINT_CENTER, 0.9 ,0.9)
 
+
+	--FrameGe
+
+
+
+	--BlzFrameSetVisible(BlzGetFrameByName("SimpleBuildTimeIndicator",0),false)
+	--BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR , 0), false)
+	--
 	--ORIGIN_FRAME_TOP_MSG
+	--ПРЕДЕТЫ но не работают
+	local InvBackdrop = {}
+	local InfoBackdrop     = BlzCreateFrame('Steel-Backdrop', WORLD_FRAME, 0, 0)
+	for i = 0, 5 do
+		--[[InvBackdrop[i] = BlzCreateFrame('Item-Backdrop', WORLD_FRAME, 0, 0)
+		BlzFrameSetSize(InvBackdrop[i], 0.034, 0.034)
+		if i == 0 then
+			BlzFrameSetPoint(InvBackdrop[i], FRAMEPOINT_TOPLEFT, InfoBackdrop, FRAMEPOINT_TOPRIGHT, 0, 0)
+		elseif i < 2 then
+			BlzFrameSetPoint(InvBackdrop[i], FRAMEPOINT_LEFT, InvBackdrop[i - 1], FRAMEPOINT_RIGHT, -0.001, 0)
+		else
+			BlzFrameSetPoint(InvBackdrop[i], FRAMEPOINT_TOP, InvBackdrop[i - 2], FRAMEPOINT_BOTTOM, 0, 0.001)
+		end]]
+		local item = BlzGetOriginFrame(ORIGIN_FRAME_ITEM_BUTTON, i)
+		BlzFrameSetVisible(item, true)
+		BlzFrameClearAllPoints(item)
+		BlzFrameSetSize(item, 0.026, 0.026)
+		BlzFrameSetAbsPoint(item, FRAMEPOINT_CENTER, 0.095+0.026*i ,0.54)
+	end
+
+	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0)) -- ПОдсказка при наведении на дефолт фреймы
+	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), FRAMEPOINT_CENTER, 0.2 ,0.45)
+
+
+
 	for i = 1,11 do
 		BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
 	end
 	BlzFrameSetSize(BlzGetFrameByName("CommandButton_0", 0),0,0)--сколлапсировал в точку
-	local GAME_UI     = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-	local WORLD_FRAME = BlzGetOriginFrame(ORIGIN_FRAME_WORLD_FRAME, 0)
-	--BlzHideOriginFrames(true)--скрыть всё
-	--HideOriginFrameCustom()
-	BlzFrameSetAllPoints(WORLD_FRAME, GAME_UI)
-
-	--BlzFrameSetVisible(BlzGetFrameByName('Steel-Backdrop',0), false)
-	--local StatusBackdrop = BlzCreateFrame('Steel-Backdrop', WORLD_FRAME, 0, 0)
-	--BlzFrameSetAbsPoint(StatusBackdrop,FRAMEPOINT_CENTER,0.3,0.4)
-	--BlzFrameSetVisible(BlzGetFrameByName("CinematicPortrait", 0), false)
-	--скрываем по одиночке
-	--BlzFrameSetParent(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0),GAME_UI)
-	--BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), true)
 end
 
+function HealthBarAdd(u) --Код Сиренчика
+	BlzLoadTOCFile("Main.toc")
+	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
+	BlzFrameSetVisible(bar,false)
+
+	--Моделька пеона же
+
+
+	if GetLocalPlayer()==GetOwningPlayer(u) and GetLocalON then -- хп бары, они точно в норме
+		BlzFrameSetVisible(bar,true)
+		--BlzFrameSetVisible(heroico,true)
+	end
+	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
+	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
+	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u).." ‡")--‡ Сердце ™ щит
+	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
+	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
+	local function on_timer()
+
+		BlzFrameSetValue(bar, GetUnitLifePercent(u))
+		BlzFrameSetText(lefttext, R2I(GetWidgetLife(u)))
+		BlzFrameSetText(righttext, R2I(BlzGetUnitMaxHP(u)))
+	end
+	TimerStart(CreateTimer(),0.5,true, on_timer)
+	BlzFrameSetAbsPoint(bar, FRAMEPOINT_LEFT, 0.08, 0.564)
+end
 GTotalWood=0
 Ending=false
 function CreateWoodFrame ()
@@ -233,32 +309,7 @@ function MoveWoodAsFarm(hero,k)
 
 end
 
-function HealthBarAdd(u) --Код Сиренчика
-	BlzLoadTOCFile("Main.toc")
-	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-	BlzFrameSetVisible(bar,false)
 
-	--Моделька пеона же
-
-
-	if GetLocalPlayer()==GetOwningPlayer(u) and GetLocalON then -- хп бары, они точно в норме
-		BlzFrameSetVisible(bar,true)
-		--BlzFrameSetVisible(heroico,true)
-	end
-	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
-	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"MyBarBorder.blp", 0, true)
-	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), GetHeroProperName(u).." ‡")--‡ Сердце ™ щит
-	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
-	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
-	local function on_timer()
-
-		BlzFrameSetValue(bar, GetUnitLifePercent(u))
-		BlzFrameSetText(lefttext, R2I(GetWidgetLife(u)))
-		BlzFrameSetText(righttext, R2I(BlzGetUnitMaxHP(u)))
-	end
-	TimerStart(CreateTimer(),0.5,true, on_timer)
-	BlzFrameSetAbsPoint(bar, FRAMEPOINT_LEFT, 0.08, 0.58)
-end
 
 
 

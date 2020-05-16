@@ -68,7 +68,7 @@ function InitGameCore()
 		for i=0,3 do
 			--if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
 				PerkButtonLineNonLocal(i,0)
-				CreateStatusBar(i)
+				--CreateStatusBar(i)
 		--	end
 		end
 	end)
@@ -202,6 +202,12 @@ function InitGameCore()
 			AddSpecialEffectTarget("GeneralHeroGlow", hero, "origin")
 			SetUnitColor(hero, ConvertPlayerColor(i))
 			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
+			--UnitAddItemById(hero,FourCC('I002'))
+			--UnitAddItemById(hero,FourCC('I002'))
+			--UnitAddItemById(hero,FourCC('I002'))
+			--UnitAddItemById(hero,FourCC('I002'))
+			--UnitAddItemById(hero,FourCC('I002'))
+			--UnitAddItemById(hero,FourCC('I002'))
 
 			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
 				StartPeonAI(hero)

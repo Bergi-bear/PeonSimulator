@@ -134,21 +134,30 @@ function PerkButtonLineNonLocal(k, lang)
 	local data = HERO[k]
 
 	--Иконка пеона
-	local heroico = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
-	BlzFrameSetSize(heroico, 0.04, 0.04)
-	BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT, 0.04, 0.6 - 0.03)
-	BlzFrameSetVisible(heroico, true)
-	BlzFrameSetValue(heroico, 100)
-	local cdtext1 = BlzGetFrameByName("MyBarText", 0)
-	BlzFrameSetText(cdtext1, "")
-	local cdICO1 = BlzGetFrameByName("MyBarBackground", 0)
-	BlzFrameSetTexture(cdICO1, "ReplaceableTextures\\CommandButtons\\btnchaospeon", 0, true) --красная
-	BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true) -- зелёная
+	if false then
+		local heroico = BlzCreateSimpleFrame("MyBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
+		BlzFrameSetSize(heroico, 0.04, 0.04)
+		BlzFrameSetAbsPoint(heroico, FRAMEPOINT_LEFT, 0.04, 0.6 - 0.03)
+		BlzFrameSetVisible(heroico, true)
+		BlzFrameSetValue(heroico, 100)
+		local cdtext1 = BlzGetFrameByName("MyBarText", 0)
+		BlzFrameSetText(cdtext1, "")
+		local cdICO1 = BlzGetFrameByName("MyBarBackground", 0)
+		BlzFrameSetTexture(cdICO1, "ReplaceableTextures\\CommandButtons\\btnchaospeon", 0, true) --красная
+		BlzFrameSetTexture(heroico, "ReplaceableTextures\\CommandButtons\\BTNPeon", 0, true) -- зелёная
+		data.HeroIco = heroico
+	end
+
+	local Portrait = BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0)
+	BlzFrameClearAllPoints(Portrait)
+	BlzFrameSetAbsPoint(Portrait, FRAMEPOINT_LEFT, 0.13, 0.6 - 0.04)
+	BlzFrameSetSize(Portrait,0.03,0.03)
+
 
 	if GetLocalPlayer() ~= Player(k) and GetLocalON then
 		BlzFrameSetVisible(heroico, false)
 	end
-	data.HeroIco = heroico
+
 
 	for i = 1, #Name do
 		-- число талантов
