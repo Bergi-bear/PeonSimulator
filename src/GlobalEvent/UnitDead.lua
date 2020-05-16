@@ -115,6 +115,8 @@ function InitUnitDeath()
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
 				data.WolfCount=data.WolfCount+1
 
+				--FrameBigSize(data.SelfFrame[13],0.2)
+
 				if data.WolfCount==5 then
 					--UnitAddAbility(Killer,FourCC('A007'))
 					AddSpecialEffectTarget("Wolf Cap by Sunchips",Killer,"head")

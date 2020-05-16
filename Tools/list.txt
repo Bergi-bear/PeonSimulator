@@ -32,6 +32,7 @@ MySimpleButton.fdf
 MySimpleButton.toc
 OrbFireX.mdx
 peon.mdx
+peon_portrait.mdx
 pila2.blp
 Point Target.mdx
 RMB.dds

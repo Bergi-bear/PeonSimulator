@@ -178,6 +178,7 @@ function InitGameCore()
 			LockFrame = {},
 			VisualSelectorFrame = {},
 			ReloadIco={},
+			SelfFrame={},
 			HeroIco=nil,
 			CircleImage=nil,
 			cx=0,

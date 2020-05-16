@@ -1417,7 +1417,7 @@ function HideEverything()
 	end
 
 	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0)) -- ПОдсказка при наведении на дефолт фреймы
-	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), FRAMEPOINT_CENTER, 0.15 ,0.45)
+	BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), FRAMEPOINT_CENTER, 0.2 ,0.45)
 
 
 
@@ -2165,12 +2165,12 @@ function PerkButtonLineNonLocal(k, lang)
 		end
 		--глобалки
 
-		data.ToolTip[i] = UpDest
-		data.LockFrame[i] = lock
-		data.VisualSelectorFrame[i] = buttonsprite
-		data.PekFrame[i] = UpDest
-		data.ReloadIco[i] = buttonIconFrame
-
+		data.ToolTip[i] = UpDest --Описание старое
+		data.LockFrame[i] = lock --замочек
+		data.VisualSelectorFrame[i] = buttonsprite -- выделяющая моделька
+		data.PekFrame[i] = UpDest -- Описание новое
+		data.ReloadIco[i] = buttonIconFrame -- иконка
+		data.SelfFrame[i] = face-- сам фрейм для увеличения
 	end
 	--end
 	--print("end")
@@ -2350,7 +2350,8 @@ function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
 	BlzFrameSetValue(data.ReloadIco[index], 100)
-
+	FrameBigSize(data.SelfFrame[index],0.2)
+	--BlzFrameSetSize(data.SelfFrame[index],0.05,0.05)
 	local tl = Location(GetUnitXY(data.UnitHero))
 	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
 	if GetLocalON then
@@ -2366,6 +2367,27 @@ function PerkUnlocker(data, index)
 	RemoveLocation(tl)
 	TimerStart(CreateTimer(), 10, true, function()
 		BlzFrameSetVisible(data.VisualSelectorFrame[index], false)
+	end)
+end
+
+function FrameBigSize(fh,sh)
+	local size=0
+	local sec=0
+	local i=1
+	local turn=true
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		sec=sec+TIMER_PERIOD
+		size=size+(i*0.005)
+		--print(sec)
+		if sec>=sh and turn then
+			--print("off")
+			turn=false
+			i=i*(-1)
+		end
+		if size<=0 then
+			DestroyTimer(GetExpiredTimer())
+		end
+		BlzFrameSetSize(fh,0.04+size,0.04+size)
 	end)
 end
 
@@ -3153,7 +3175,7 @@ function OnPostDamage()
 
 	if GetUnitTypeId(target)==FourCC('e009')  then --урон по тинику
 		--local x,y=GetUnitXY()
-		BlzSetEventDamage(damage*0.1)-- тини получает 10% урона
+		BlzSetEventDamage(damage*0.01)-- тини получает 1% урона
 		if damage>10 then
 			local AngleSource = math.deg(AngleBetweenXY(GetUnitX(caster), GetUnitY(caster), GetUnitX(target), GetUnitY(target)))
 			local eff=AddSpecialEffect("DefendCaster",GetUnitXY(target))
@@ -3669,6 +3691,7 @@ function InitGameCore()
 			LockFrame = {},
 			VisualSelectorFrame = {},
 			ReloadIco={},
+			SelfFrame={},
 			HeroIco=nil,
 			CircleImage=nil,
 			cx=0,
@@ -4877,6 +4900,8 @@ function InitUnitDeath()
 			end
 			if GetUnitTypeId(DeadUnit)==FourCC('n000') then--волк
 				data.WolfCount=data.WolfCount+1
+
+				--FrameBigSize(data.SelfFrame[13],0.2)
 
 				if data.WolfCount==5 then
 					--UnitAddAbility(Killer,FourCC('A007'))
@@ -6778,6 +6803,7 @@ function RegisterCollision(hero)
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 					data.SingleWoodCount=data.SingleWoodCount+k
+					FrameBigSize(data.SelfFrame[1],0.1)
 					--print("дерево в личном зачете "..data.SingleWoodCount)
 					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true

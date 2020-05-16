@@ -166,6 +166,7 @@ function RegisterCollision(hero)
 					data.IsWood=false
 					--рывок перемещён в другое место в интерфейс
 					data.SingleWoodCount=data.SingleWoodCount+k
+					FrameBigSize(data.SelfFrame[1],0.2)
 					--print("дерево в личном зачете "..data.SingleWoodCount)
 					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true

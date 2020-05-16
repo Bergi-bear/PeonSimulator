@@ -214,12 +214,12 @@ function PerkButtonLineNonLocal(k, lang)
 		end
 		--глобалки
 
-		data.ToolTip[i] = UpDest
-		data.LockFrame[i] = lock
-		data.VisualSelectorFrame[i] = buttonsprite
-		data.PekFrame[i] = UpDest
-		data.ReloadIco[i] = buttonIconFrame
-
+		data.ToolTip[i] = UpDest --Описание старое
+		data.LockFrame[i] = lock --замочек
+		data.VisualSelectorFrame[i] = buttonsprite -- выделяющая моделька
+		data.PekFrame[i] = UpDest -- Описание новое
+		data.ReloadIco[i] = buttonIconFrame -- иконка
+		data.SelfFrame[i] = face-- сам фрейм для увеличения
 	end
 	--end
 	--print("end")
@@ -399,7 +399,8 @@ function PerkUnlocker(data, index)
 	BlzFrameSetVisible(data.LockFrame[index], false)
 	BlzFrameSetVisible(data.VisualSelectorFrame[index], true)
 	BlzFrameSetValue(data.ReloadIco[index], 100)
-
+	FrameBigSize(data.SelfFrame[index],0.2)
+	--BlzFrameSetSize(data.SelfFrame[index],0.05,0.05)
 	local tl = Location(GetUnitXY(data.UnitHero))
 	--PlaySoundAtPointBJ( gg_snd_Unlock, 100, tl, 0 )
 	if GetLocalON then
@@ -415,6 +416,27 @@ function PerkUnlocker(data, index)
 	RemoveLocation(tl)
 	TimerStart(CreateTimer(), 10, true, function()
 		BlzFrameSetVisible(data.VisualSelectorFrame[index], false)
+	end)
+end
+
+function FrameBigSize(fh,sh)
+	local size=0
+	local sec=0
+	local i=1
+	local turn=true
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		sec=sec+TIMER_PERIOD
+		size=size+(i*0.005)
+		--print(sec)
+		if sec>=sh and turn then
+			--print("off")
+			turn=false
+			i=i*(-1)
+		end
+		if size<=0 then
+			DestroyTimer(GetExpiredTimer())
+		end
+		BlzFrameSetSize(fh,0.04+size,0.04+size)
 	end)
 end
 
