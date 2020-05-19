@@ -6,11 +6,11 @@
 
 
 ---CreateVisualPointerForUnit
----@param hero герой
----@param flag Параметры_завершения
----@param long Число_блоков
----@param step Ширина_блока
----@param minlong Милимальное_число_отображаемых_блоков
+---@param hero "герой"
+---@param flag "Параметры_завершения"
+---@param long "Число_блоков"
+---@param step "Ширина_блока"
+---@param minlong "Милимальное_число_отображаемых_блоков"
 function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 	local effMain={}
 	local pid=GetPlayerId(GetOwningPlayer(hero))
