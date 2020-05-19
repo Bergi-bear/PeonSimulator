@@ -343,7 +343,8 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), 2804.5, -4072.4, 122.875, FourCC("nmrr"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3871.1, 2147.1, 322.052, FourCC("nmrl"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3880.7, 3318.2, 164.163, FourCC("nmrl"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3197.8, 4392.6, 350.639, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 2836.1, 4706.1, 350.639, FourCC("nmrm"))
+    SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 589.3, 4615.5, 83.718, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), -395.8, 4371.1, 349.903, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrr"), -1774.2, 4251.7, 88.168, FourCC("nmrr"))
@@ -369,13 +370,17 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), 3745.1, 2131.8, 283.467, FourCC("nmrl"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3744.8, 2281.8, 59.383, FourCC("nmrm"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3950.4, 2020.1, 250.035, FourCC("nmrm"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3882.3, 3675.0, 287.005, FourCC("nmrm"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3417.6, 4246.7, 253.352, FourCC("nmrm"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 4037.9, 3743.5, 287.000, FourCC("nmrm"))
+    SetUnitAcquireRange(u, 200.0)
+    u = BlzCreateUnitWithSkin(p, FourCC("nmrm"), 3008.7, 4758.0, 253.352, FourCC("nmrm"))
+    SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("nscb"), 4010.7, -2813.4, 208.747, FourCC("nscb"))
     u = BlzCreateUnitWithSkin(p, FourCC("nsc3"), 3856.9, -3222.4, 25.467, FourCC("nsc3"))
     u = BlzCreateUnitWithSkin(p, FourCC("nsc2"), 3433.4, -3761.4, 112.679, FourCC("nsc2"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 3966.9, 2463.8, 8.262, FourCC("nmsc"))
-    u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 3137.7, 4722.5, 351.738, FourCC("nmsc"))
+    u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 2887.2, 4865.8, 351.738, FourCC("nmsc"))
+    SetUnitState(u, UNIT_STATE_MANA, 0)
+    SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("nmsc"), 1859.7, 4589.0, 165.272, FourCC("nmsc"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmrv"), 2058.3, 4568.0, 93.178, FourCC("nmrv"))
     u = BlzCreateUnitWithSkin(p, FourCC("nmsn"), 827.3, 4452.1, 134.455, FourCC("nmsn"))
@@ -400,6 +405,15 @@ function CreateUnitsForPlayer11()
     u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), -3865.8, 4660.1, 108.460, FourCC("ncrb"))
     u = BlzCreateUnitWithSkin(p, FourCC("ncrb"), -4505.3, 4342.2, 209.593, FourCC("ncrb"))
     u = BlzCreateUnitWithSkin(p, FourCC("nhmc"), 1247.3, -4112.5, 276.666, FourCC("nhmc"))
+end
+
+function CreateNeutralHostile()
+    local p = Player(PLAYER_NEUTRAL_AGGRESSIVE)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("n00D"), 4731.2, 8038.2, 271.560, FourCC("n00D"))
 end
 
 function CreateNeutralPassiveBuildings()
@@ -447,6 +461,7 @@ end
 function CreateAllUnits()
     CreateNeutralPassiveBuildings()
     CreatePlayerBuildings()
+    CreateNeutralHostile()
     CreateNeutralPassive()
     CreatePlayerUnits()
 end
@@ -2038,7 +2053,7 @@ function PerkButtonLineNonLocal(k, lang)
 					if not data.Perk1A then
 						BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r" .. ". Принесите ещё древисины для автоматизации " .. "|cffffff00" .. data.SingleWoodCount .. "/50|r")
 					else
-						BlzFrameSetText(data.PekFrame[i], "Автодобыча,".."|cffffff00" .. "1" .. "|r".." ед. дерева, каждые ".."|cffffff00" .. "60" .. "|r".." секунд")
+						BlzFrameSetText(data.PekFrame[i], "Автодобыча, ".."|cffffff00" .. "1" .. "|r".." ед. дерева, каждые ".."|cffffff00" .. "60" .. "|r".." секунд")
 					end
 					--StartFrameCD()
 					--BlzFrameSetValue(data.ReloadIco[1], 0)
@@ -2191,7 +2206,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk17 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. GTotalWood .. "/50|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Активация: ПКМ+ЛКМ. Презезарядка: " .. "|cffffff002|r" .. ". Урон: " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * 4) .. " |r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Активация: ПКМ+ЛКМ. Перезарядка: " .. "|cffffff002|r" .. "\nУрон: " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * 4) .. " |r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "When hold RMB, press LMB. Reload: " .. "|cffffff00" .. "2 sec |r" .. "")
 					end
@@ -3390,9 +3405,12 @@ function InitMouseMoveTrigger()
 			--print("x="..BlzGetTriggerPlayerMouseX().." y="..BlzGetTriggerPlayerMouseY())
 			local id=GetPlayerId(GetTriggerPlayer())
 			HERO[id].IsMouseMove=true
+			local xs,ys=GetUnitXY(HERO[id].UnitHero)
 			--HERO[id].LastMouseX=BlzGetTriggerPlayerMouseX()
 			GetPlayerMouseX[id]=BlzGetTriggerPlayerMouseX()
 			GetPlayerMouseY[id]=BlzGetTriggerPlayerMouseY()
+			HERO[id].AngleMouse=AngleBetweenXY(xs, ys, GetPlayerMouseX[id], GetPlayerMouseY[id])/bj_DEGTORAD
+
 		end)
 end
 ---
@@ -3523,6 +3541,7 @@ function InitGameCore()
 			ShieldForce = true, -- толчек щитом
 			ShieldOnCD=false,
 			PlayerIsLeave = false,
+			AngleMouse=0,
 			--ChargeEff=nil,
 			---накопление перков
 			SingleWoodCount = 0,
@@ -3612,7 +3631,7 @@ function InitGameCore()
 			--UnitAddItemById(hero,FourCC('I002'))
 			--UnitAddItemById(hero,FourCC('I002'))
 
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER or GetPlayerSlotState(GetOwningPlayer(hero)) ~= PLAYER_SLOT_STATE_PLAYING  then
 				StartPeonAI(hero)
 			end
 
@@ -4111,7 +4130,7 @@ function InitGameCore()
 				--print("нет")
 			end
 
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER or data.PlayerIsLeave then
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER or data.PlayerIsLeave or GetPlayerSlotState(GetOwningPlayer(hero)) ~= PLAYER_SLOT_STATE_PLAYING then
 				angle = data.LastTurn
 				if data.RangeDesMove > 100 then
 					IiMoving = true
@@ -4969,9 +4988,9 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 
 	for i=1,long do
 		if i==long then
-			effMain[i]=AddSpecialEffect(arrowname,0,0)
+			effMain[i]=AddSpecialEffect(arrowname,5000,5000)
 		else
-			effMain[i]=AddSpecialEffect(blockname,0,0)
+			effMain[i]=AddSpecialEffect(blockname,5000,5000)
 		end
 		--print(size)
 		--Does the BlzSetSpecialEffectMatrixScale function work?
@@ -4985,7 +5004,25 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 	local distance=0
 	local mouseMoving=false
 	local savedDistance=0
+	local lastAngle=0
+	local delta=0
+	local angle=0
+	local function Destroy()
+		DestroyTimer(GetExpiredTimer())
+		data.FirePointer=false
+		--print("destroy")
+		for i=1,#effMain do
+			BlzSetSpecialEffectPosition(effMain[i],6000,6000,0)
+			DestroyEffect(effMain[i])
+		end
+	end
+
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		angle=GetUnitFacing(hero)
+		--local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
+		local xs,ys=GetUnitXY(hero)
+		--angle=data.AngleMouse--AngleBetweenXY(xs, ys, GetPlayerMouseX[pid], GetPlayerMouseY[pid])/bj_DEGTORAD
+
 		if LastMouseX == GetPlayerMouseX[pid] then
 			mouseMoving=false
 			--savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
@@ -4994,10 +5031,14 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 			--print("движется")
 		end
 		LastMouseX = GetPlayerMouseX[pid]
+		delta=angle-lastAngle
+		lastAngle=angle
 
-		local angle=GetUnitFacing(hero)
-		local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
 
+		--angle=data.LastTurn--/bj_DEGTORAD
+
+
+		--print(delta)
 		if mouseMoving then
 			distance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
 			savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
@@ -5035,13 +5076,7 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 
 		if flag==1 then
 			if not data.HaveAFire then
-				DestroyTimer(GetExpiredTimer())
-				data.FirePointer=false
-				--print("destroy")
-				for i=1,#effMain do
-					BlzSetSpecialEffectPosition(effMain[i],6000,6000,0)
-					DestroyEffect(effMain[i])
-				end
+				Destroy()
 			end
 		end
 	end)
@@ -6565,15 +6600,19 @@ function AddAxe(data)
 		if lock<=0 then
 			local nx,ny=MoveXY(x,y,80,angle)
 			BlzSetSpecialEffectPosition(eff,nx,ny,GetUnitZ(data.UnitHero)+60)
-			IsDamage,CollisionUnit= UnitDamageArea(data.UnitHero,10,nx,ny,40,90,"Bullets\\Bullet1")
+			IsDamage,CollisionUnit= UnitDamageArea(data.UnitHero,10,nx,ny,40)
 			tempUnit=CollisionUnit
 		else
 			lock=lock-1
-			DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			if IsUnitEnemy(data.UnitHero,GetOwningPlayer(tempUnit)) then
+				DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			end
 		end
 		if CollisionUnit then
 			lock=4
-			DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			if IsUnitEnemy(data.UnitHero,GetOwningPlayer(tempUnit)) then
+				DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			end
 		end
 		if angle==360 then
 			angle=0
@@ -6879,16 +6918,16 @@ function RegisterCollision(hero)
 					data.SingleWoodCount=data.SingleWoodCount+k
 					FrameBigSize(data.SelfFrame[1],0.2,1)
 					--print("дерево в личном зачете "..data.SingleWoodCount)
-					if data.SingleWoodCount>=2  and not data.Perk1 then -- Перкс работник месяца
+					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true
 						PerkUnlocker(data,1)
 					end
 
-					if data.SingleWoodCount>=5  and data.Perk1 and not data.Perk1A then
+					if data.SingleWoodCount>=50  and data.Perk1 and not data.Perk1A then
 						data.Perk1A=true
-						print("Включение автодобычи")
-						TimerStart(CreateTimer(), 6, true, function()
-							StartFrameCD(6,data,1)
+						local cd=60
+						TimerStart(CreateTimer(), cd, true, function()
+							StartFrameCD(cd,data,1)
 							MoveWoodAsFarm(hero,1)
 						end)
 					end
@@ -6929,6 +6968,14 @@ function RegisterCollision(hero)
 							BlzFrameSetVisible(data.VisualSelectorFrame[1],true)
 							TimerStart(CreateTimer(), 10, true, function()
 								BlzFrameSetVisible(data.VisualSelectorFrame[1],false)
+							end)
+						end
+						if data.SingleWoodCount>=50  and data.Perk1 and not data.Perk1A then
+							data.Perk1A=true
+							local cd=60
+							TimerStart(CreateTimer(), cd, true, function()
+								StartFrameCD(cd,data,1)
+								MoveWoodAsFarm(hero,1)
 							end)
 						end
 						data.RevoltSec=0
@@ -7152,6 +7199,14 @@ function AutoCollectLumber(period)
 					if data.SingleWoodCount>=25  and not data.Perk1 then -- Перкс работник месяца
 						data.Perk1=true
 						PerkUnlocker(data,1)
+					end
+					if data.SingleWoodCount>=50  and data.Perk1 and not data.Perk1A then
+						data.Perk1A=true
+						local cd=60
+						TimerStart(CreateTimer(), cd, true, function()
+							StartFrameCD(cd,data,1)
+							MoveWoodAsFarm(hero,1)
+						end)
 					end
 					--print(data.SingleWoodCount)
 
@@ -8103,22 +8158,22 @@ function InitCustomTeams()
 end
 
 function InitAllyPriorities()
-    SetStartLocPrioCount(0, 2)
-    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_LOW)
+    SetStartLocPrioCount(0, 3)
+    SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrioCount(1, 2)
-    SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_LOW)
-    SetStartLocPrio(1, 1, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(0, 2, 3, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrioCount(1, 1)
+    SetStartLocPrio(1, 0, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(2, 2)
-    SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_HIGH)
-    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_LOW)
+    SetStartLocPrio(2, 0, 1, MAP_LOC_PRIO_HIGH)
+    SetStartLocPrio(2, 1, 3, MAP_LOC_PRIO_HIGH)
     SetStartLocPrioCount(3, 2)
     SetStartLocPrio(3, 0, 1, MAP_LOC_PRIO_HIGH)
     SetStartLocPrio(3, 1, 2, MAP_LOC_PRIO_LOW)
 end
 
 function main()
-    SetCameraBounds(-6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 16640.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 5632.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 5632.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 16640.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
+    SetCameraBounds(-6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 16640.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 9728.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 9728.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 16640.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
     SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
     NewSoundEnvironment("Default")
     SetAmbientDaySound("LordaeronSummerDay")
@@ -8140,7 +8195,7 @@ function config()
     SetPlayers(4)
     SetTeams(4)
     SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
-    DefineStartLocation(0, -128.0, -192.0)
+    DefineStartLocation(0, 4672.0, 5568.0)
     DefineStartLocation(1, -128.0, 0.0)
     DefineStartLocation(2, 0.0, -192.0)
     DefineStartLocation(3, 0.0, 0.0)

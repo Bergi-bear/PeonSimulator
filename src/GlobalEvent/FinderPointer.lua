@@ -18,8 +18,11 @@ function InitMouseMoveTrigger()
 			--print("x="..BlzGetTriggerPlayerMouseX().." y="..BlzGetTriggerPlayerMouseY())
 			local id=GetPlayerId(GetTriggerPlayer())
 			HERO[id].IsMouseMove=true
+			local xs,ys=GetUnitXY(HERO[id].UnitHero)
 			--HERO[id].LastMouseX=BlzGetTriggerPlayerMouseX()
 			GetPlayerMouseX[id]=BlzGetTriggerPlayerMouseX()
 			GetPlayerMouseY[id]=BlzGetTriggerPlayerMouseY()
+			HERO[id].AngleMouse=AngleBetweenXY(xs, ys, GetPlayerMouseX[id], GetPlayerMouseY[id])/bj_DEGTORAD
+
 		end)
 end

@@ -126,6 +126,7 @@ function InitGameCore()
 			ShieldForce = true, -- толчек щитом
 			ShieldOnCD=false,
 			PlayerIsLeave = false,
+			AngleMouse=0,
 			--ChargeEff=nil,
 			---накопление перков
 			SingleWoodCount = 0,
@@ -215,7 +216,7 @@ function InitGameCore()
 			--UnitAddItemById(hero,FourCC('I002'))
 			--UnitAddItemById(hero,FourCC('I002'))
 
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER then
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER or GetPlayerSlotState(GetOwningPlayer(hero)) ~= PLAYER_SLOT_STATE_PLAYING  then
 				StartPeonAI(hero)
 			end
 
@@ -714,7 +715,7 @@ function InitGameCore()
 				--print("нет")
 			end
 
-			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER or data.PlayerIsLeave then
+			if GetPlayerController(GetOwningPlayer(hero)) == MAP_CONTROL_COMPUTER or data.PlayerIsLeave or GetPlayerSlotState(GetOwningPlayer(hero)) ~= PLAYER_SLOT_STATE_PLAYING then
 				angle = data.LastTurn
 				if data.RangeDesMove > 100 then
 					IiMoving = true

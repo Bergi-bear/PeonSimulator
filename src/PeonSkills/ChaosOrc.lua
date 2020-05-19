@@ -19,15 +19,19 @@ function AddAxe(data)
 		if lock<=0 then
 			local nx,ny=MoveXY(x,y,80,angle)
 			BlzSetSpecialEffectPosition(eff,nx,ny,GetUnitZ(data.UnitHero)+60)
-			IsDamage,CollisionUnit= UnitDamageArea(data.UnitHero,10,nx,ny,40,90,"Bullets\\Bullet1")
+			IsDamage,CollisionUnit= UnitDamageArea(data.UnitHero,10,nx,ny,40)
 			tempUnit=CollisionUnit
 		else
 			lock=lock-1
-			DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			if IsUnitEnemy(data.UnitHero,GetOwningPlayer(tempUnit)) then
+				DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			end
 		end
 		if CollisionUnit then
 			lock=4
-			DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			if IsUnitEnemy(data.UnitHero,GetOwningPlayer(tempUnit)) then
+				DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+			end
 		end
 		if angle==360 then
 			angle=0

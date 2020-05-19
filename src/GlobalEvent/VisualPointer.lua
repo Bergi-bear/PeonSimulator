@@ -29,9 +29,9 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 
 	for i=1,long do
 		if i==long then
-			effMain[i]=AddSpecialEffect(arrowname,0,0)
+			effMain[i]=AddSpecialEffect(arrowname,5000,5000)
 		else
-			effMain[i]=AddSpecialEffect(blockname,0,0)
+			effMain[i]=AddSpecialEffect(blockname,5000,5000)
 		end
 		--print(size)
 		--Does the BlzSetSpecialEffectMatrixScale function work?
@@ -45,7 +45,25 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 	local distance=0
 	local mouseMoving=false
 	local savedDistance=0
+	local lastAngle=0
+	local delta=0
+	local angle=0
+	local function Destroy()
+		DestroyTimer(GetExpiredTimer())
+		data.FirePointer=false
+		--print("destroy")
+		for i=1,#effMain do
+			BlzSetSpecialEffectPosition(effMain[i],6000,6000,0)
+			DestroyEffect(effMain[i])
+		end
+	end
+
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		angle=GetUnitFacing(hero)
+		--local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
+		local xs,ys=GetUnitXY(hero)
+		--angle=data.AngleMouse--AngleBetweenXY(xs, ys, GetPlayerMouseX[pid], GetPlayerMouseY[pid])/bj_DEGTORAD
+
 		if LastMouseX == GetPlayerMouseX[pid] then
 			mouseMoving=false
 			--savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
@@ -54,10 +72,14 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 			--print("движется")
 		end
 		LastMouseX = GetPlayerMouseX[pid]
+		delta=angle-lastAngle
+		lastAngle=angle
 
-		local angle=GetUnitFacing(hero)
-		local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
 
+		--angle=data.LastTurn--/bj_DEGTORAD
+
+
+		--print(delta)
 		if mouseMoving then
 			distance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
 			savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
@@ -95,13 +117,7 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 
 		if flag==1 then
 			if not data.HaveAFire then
-				DestroyTimer(GetExpiredTimer())
-				data.FirePointer=false
-				--print("destroy")
-				for i=1,#effMain do
-					BlzSetSpecialEffectPosition(effMain[i],6000,6000,0)
-					DestroyEffect(effMain[i])
-				end
+				Destroy()
 			end
 		end
 	end)

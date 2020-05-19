@@ -387,7 +387,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk17 then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. GTotalWood .. "/50|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Активация: ПКМ+ЛКМ. Презезарядка: " .. "|cffffff002|r" .. ". Урон: " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * 4) .. " |r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Активация: ПКМ+ЛКМ. Перезарядка: " .. "|cffffff002|r" .. "\nУрон: " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.UnitHero, 0) * 4) .. " |r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "When hold RMB, press LMB. Reload: " .. "|cffffff00" .. "2 sec |r" .. "")
 					end
