@@ -148,7 +148,8 @@ function InitGameCore()
 			Thor=true,
 			FBIsReady=true,
 			---открытие перков
-			Perk1 = false, --Работник
+			Perk1 = false, --Работник месяца
+			Perk1A = false, -- Автоматическая добычка
 			Perk2 = false, -- Бунт
 			Perk3 =  false, -- Суицидник
 			Perk4 = false, -- Лесной болван

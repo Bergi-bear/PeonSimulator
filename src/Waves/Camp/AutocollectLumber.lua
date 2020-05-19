@@ -36,6 +36,14 @@ function AutoCollectLumber(period)
 						data.Perk1=true
 						PerkUnlocker(data,1)
 					end
+					if data.SingleWoodCount>=50  and data.Perk1 and not data.Perk1A then
+						data.Perk1A=true
+						local cd=60
+						TimerStart(CreateTimer(), cd, true, function()
+							StartFrameCD(cd,data,1)
+							MoveWoodAsFarm(hero,1)
+						end)
+					end
 					--print(data.SingleWoodCount)
 
 					HealUnit(hero,1000)
