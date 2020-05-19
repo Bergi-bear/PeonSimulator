@@ -4,7 +4,7 @@
 --- DateTime: 06.02.2020 12:47
 ---
 function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
-	local CollisionRange = 100
+	local CollisionRange = 80
 	if not damage then
 		damage = 200
 	end
@@ -55,17 +55,17 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 				HealUnit(DamagingUnit,-10)
 			end
 		end
-		CollisisonDestr = PointContentDestructable(x, y, 100, false)
+		CollisisonDestr = PointContentDestructable(x, y, CollisionRange, false)
 		local PerepadZ = zGround - z
 		if dist > 1000 or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit, UNIT_TYPE_STRUCTURE) or PerepadZ > 20 then
 			--or zGround+z>=-70+z --z<=147
-			PointContentDestructable(x, y, 100, true)
+			PointContentDestructable(x, y, CollisionRange, true)
 			if z <= -90 then
 				--CreateTorrent(x,y)
 				--BlzSetSpecialEffectPosition(bullet,4000,4000,0)
 			end
 			--print("Условие урона прошло")
-			UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
+			UnitDamageArea(hero,CollisionRange,x,y,CollisionRange,ZBullet)
 			if IsUnitType(hero, UNIT_TYPE_HERO) then
 				local data = HERO[GetPlayerId(GetOwningPlayer(hero))]
 				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit and data.FBIsReady then

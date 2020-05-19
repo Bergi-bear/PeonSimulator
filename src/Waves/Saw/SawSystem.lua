@@ -4,7 +4,7 @@
 --- DateTime: 21.02.2020 23:45
 ---
 
-SawDiskModel="Chakram_04"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
+SawDiskModel="Chakram_05"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
 SawChainModel="abilities\\weapons\\wyvernspear\\wyvernspearmissile.mdl"
 CollisionEffect="Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl"
 function CreateRoundSawZ(hero,ChainCount,angle,z)

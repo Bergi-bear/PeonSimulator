@@ -61,7 +61,7 @@ function InitGameCore()
 	--EnableDragSelect(false, false)
 	CreateWoodFrame()
 	HideEverything()
-	--DontMove()
+	DontMove()
 	TimerStart(CreateTimer(), 0.5, false, function()
 		--ButtonPress()
 		--CreateLanguageDialog()
@@ -75,6 +75,7 @@ function InitGameCore()
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
 		CreateLocalImages()
+		--CreateVisualPointer()
 		--PlayerPlaying()
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
@@ -129,6 +130,7 @@ function InitGameCore()
 			---накопление перков
 			SingleWoodCount = 0,
 			RevoltSec = 0,
+			temRevolt=0,
 			Dies = 0,
 			TotalWay = 0,
 			Kills = 0,
@@ -137,6 +139,7 @@ function InitGameCore()
 			KodoCount = 0,
 			FireCount = 0,
 			HaveAFire = false,
+			FirePointer=false,
 			StoneCount = 0,
 			WolfCount = 0,
 			WolfHelper = nil,
@@ -147,7 +150,7 @@ function InitGameCore()
 			---открытие перков
 			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
-			Perk3 = false, -- Суицидник
+			Perk3 =  false, -- Суицидник
 			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
 			Perk6 = false, -- Ученика кузнеца
@@ -518,6 +521,7 @@ function InitGameCore()
 	--local sec=0
 	--local sec2=0
 	--local secattack=0
+	--local temRevolt=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		--for i, data in pairs(HERO) do
 		for i=0,3 do
@@ -615,14 +619,18 @@ function InitGameCore()
 
 			-- таланты просчеты
 			data.RevoltSec = data.RevoltSec + TIMER_PERIOD-- считаем бездействие
-			if data.RevoltSec>=200 then
-				FrameBigSize(data.SelfFrame[2],0.2,2)
+			data.temRevolt=data.temRevolt+TIMER_PERIOD
+
+			if data.temRevolt>=10 then
+				data.temRevolt=0
+				FrameBigSize(data.SelfFrame[2],0.2,2) --это надо делать каждую целую секунду
 			end
 			if not data.Perk2 then
-				if data.RevoltSec >= 300 then
+				if data.RevoltSec >= 100 then --Вернуть 100
 					data.Perk2 = true
 					PerkUnlocker(data, 2)
 					--print("Рабочий поднял бунт")
+					AddAxe(data)
 					MakeUnitAllEnemy(hero)
 				end
 			end
@@ -1116,6 +1124,11 @@ function InitGameCore()
 					DestroyEffect(data.Compass)
 					data.Compass=nil
 				end
+			end
+
+			if data.HaveAFire and not data.FirePointer then
+				data.FirePointer=true
+				CreateVisualPointerForUnit(hero,1,14,80,14)
 			end
 
 			if UnitAlive(hero) then

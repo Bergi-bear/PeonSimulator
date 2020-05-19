@@ -19,7 +19,7 @@ function AutoCollectLumber(period)
 				end
 				if data.IsWood then
 					--print("Автосбор древисины")
-					if GetLosingHP(hero)<=5 then-- Техника безопасности
+					if GetLosingHP(hero)<=5 and not data.Perk10 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						if data.TreeCountOnTB>=10 and not data.Perk10 then

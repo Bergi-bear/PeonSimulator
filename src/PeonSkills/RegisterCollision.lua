@@ -155,7 +155,7 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-					if GetLosingHP(hero)<=5 then-- Техника безопасности
+					if GetLosingHP(hero)<=5 and not data.Perk10 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						FrameBigSize(data.SelfFrame[10],0.2,10)
@@ -185,7 +185,7 @@ function RegisterCollision(hero)
 					local wc=GetUnitUserData(data.CartUnit)
 					--k=wc*k
 
-					if GetLosingHP(hero)<=5 then-- Техника безопасности
+					if GetLosingHP(hero)<=5 and not data.Perk10 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						FrameBigSize(data.SelfFrame[10],0.2,10)

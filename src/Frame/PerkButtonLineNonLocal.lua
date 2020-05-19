@@ -4,7 +4,7 @@
 --- DateTime: 26.04.2020 23:44
 texture = {
 	"ReplaceableTextures\\CommandButtons\\BTNPeasant",
-	"ReplaceableTextures\\CommandButtons\\BTNChaosPeon",
+	"ReplaceableTextures\\CommandButtons\\btnchaospeon",
 	"ReplaceableTextures\\CommandButtons\\BTNGoblinSapper",
 	"ReplaceableTextures\\CommandButtons\\BTNBoots",
 	"ReplaceableTextures\\CommandButtons\\BTNBloodLust",
@@ -26,7 +26,7 @@ texture = {
 
 DISBTNTexture = {
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPeasant",
-	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNChaosPeon",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPeon",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGoblinSapper",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBoots",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBloodLust",
@@ -83,8 +83,8 @@ NameENG = { --Определяет количество талантов
 }
 description = {
 	"Принесите 25 дерева, чтобы удвоить его добычу. ",
-	"Ничего не делайте в течении 300 сек, чтобы поднять бунт. ",
-	"Умрите 15 раз, чтобы получить +100 к здоровью. ",
+	"Ничего не делайте, чтобы поднять бунт. ",
+	"Умрите 15 раз, чтобы получить +200 к здоровью. ",
 	"Пробегите расстояние в 200000 метров, чтобы стать на 50%% быстрее. ",
 	"Убивайте врагов, чтобы увеличить свой урон в 2 раза. ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе. ",
@@ -95,7 +95,7 @@ description = {
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий. ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убивайте волков, чтобы получить шапку волка. ",
-	"Поймайте щитом камни големов. ",
+	"Поймайте щитом камни големов, чтобы улучшить щит. ",
 	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
@@ -241,10 +241,10 @@ function PerkButtonLineNonLocal(k, lang)
 				end
 			elseif i == 2 then
 				if data.Perk2 then
-					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти" .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r")
+					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти " .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r")
 				else
-					BlzFrameSetValue(data.HeroIco, 100-R2I(data.RevoltSec/3) )
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r") --|cffffff00AAAA|r
+					BlzFrameSetValue(data.ReloadIco[i], R2I(data.RevoltSec) ) --Было 100-R2I
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r") --|cffffff00AAAA|r
 				end
 
 			elseif i == 3 then

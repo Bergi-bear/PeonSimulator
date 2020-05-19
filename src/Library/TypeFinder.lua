@@ -9,6 +9,7 @@ function FindUnitOfType(id,flag,x,y)
 	local e=nil
 	local k=0
 	--print("ищем")
+	local rg={}
 	if not flag then
 		GroupEnumUnitsInRect(perebor,bj_mapInitialPlayableArea,nil)
 		while true do
@@ -29,6 +30,7 @@ function FindUnitOfType(id,flag,x,y)
 			if e == nil then break end
 			if UnitAlive(e) and GetUnitTypeId(e)==id then
 				k=k+1
+				rg[k]=e
 				unit=e
 			end
 			GroupRemoveUnit(perebor,e)
@@ -38,6 +40,9 @@ function FindUnitOfType(id,flag,x,y)
 
 	if k>1 then
 	--	print("Ошибка получено "..k.." юнитов")
+	end
+	if k>2 then
+		unit=rg[GetRandomInt(1,#rg)]
 	end
 	if unit==nil then
 	--	print("Не найдено живых юнитов данного типа")

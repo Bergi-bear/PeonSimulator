@@ -32,11 +32,14 @@ function InitUnitDeath()
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 				UnitDamageArea(DeadUnit,200,x,y,250)
 			end
+
 			data.Dies=data.Dies+1
-			FrameBigSize(data.SelfFrame[3],0.2,3)
+			if not not data.Perk3 then
+				FrameBigSize(data.SelfFrame[3],0.2,3)
+			end
 			if data.Dies==15 then
 				if not data.Perk3 then
-					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+100)
+					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+200)
 				end
 				data.Perk3=true
 				PerkUnlocker(data,3)
@@ -162,7 +165,7 @@ function InitUnitDeath()
 		---FourCC('e003')
 		--break --[[
 		--Humans=CreateGroup()
-		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин
+		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин рабочий
 		--	print("Погиб крестьянин")
 			local x,y=GetUnitXY(DeadUnit)
 			local lum=FindUnitOfType(FourCC('hlum'),1200,x,y)
@@ -175,6 +178,11 @@ function InitUnitDeath()
 					DestroyTimer(GetExpiredTimer())
 				end)
 			end
+		end
+		if GetUnitTypeId(DeadUnit)==FourCC('hctw') or GetUnitTypeId(DeadUnit)==FourCC('hwtw') then --Орудийная башня или любая
+			--print("Погибла башня")
+			local x,y=GetUnitXY(DeadUnit)
+			AnyHPEARandomBuild(x,y)
 
 		end
 		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево, , большой энт

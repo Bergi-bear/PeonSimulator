@@ -32,12 +32,12 @@ gg_snd_SaveKodo = nil
 gg_trg_In = nil
 gg_trg_Out = nil
 gg_trg_Gandicap = nil
-gg_trg_Splat = nil
 gg_trg_GuiInit = nil
 gg_trg_Open = nil
 gg_trg_DeadHumanLumber = nil
 gg_trg_ZombiesDie = nil
 gg_trg_StartMiniGame = nil
+gg_trg_Build = nil
 gg_unit_o001_0001 = nil
 gg_unit_hlum_0057 = nil
 gg_unit_n006_0217 = nil
@@ -249,7 +249,7 @@ function CreateUnitsForPlayer10()
     IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -691.2, -2196.4, 121.765, FourCC("hpea"))
     IssueImmediateOrder(u, "repairon")
-    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.876, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -794.0, -2109.9, 270.880, FourCC("hpea"))
     IssueImmediateOrder(u, "repairon")
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2984.2, 796.5, 196.738, FourCC("e001"))
     u = BlzCreateUnitWithSkin(p, FourCC("e001"), -2519.4, 1437.1, 196.738, FourCC("e001"))
@@ -279,8 +279,6 @@ function CreateUnitsForPlayer10()
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2677.1, -757.8, 171.590, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2233.8, -460.7, 171.590, FourCC("n001"))
     u = BlzCreateUnitWithSkin(p, FourCC("n001"), -2154.6, -799.6, 171.590, FourCC("n001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("n000"), 1184.5, 583.6, 219.649, FourCC("n000"))
-    SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("n000"), 3041.0, 1410.4, 204.109, FourCC("n000"))
     SetUnitAcquireRange(u, 200.0)
     u = BlzCreateUnitWithSkin(p, FourCC("nwwd"), 3605.3, 1216.6, 249.420, FourCC("nwwd"))
@@ -419,6 +417,9 @@ function CreateNeutralPassive()
     local unitID
     local t
     local life
+    u = BlzCreateUnitWithSkin(p, FourCC("n00C"), -3140.9, 3001.9, 338.160, FourCC("n00C"))
+    life = GetUnitState(u, UNIT_STATE_LIFE)
+    SetUnitState(u, UNIT_STATE_LIFE, 0.10 * life)
     u = BlzCreateUnitWithSkin(p, FourCC("e005"), 1563.7, -2290.8, 102.630, FourCC("e005"))
     u = BlzCreateUnitWithSkin(p, FourCC("e009"), 177.5, 2181.5, 342.921, FourCC("e009"))
     u = BlzCreateUnitWithSkin(p, FourCC("o005"), -3028.9, 2146.6, 359.290, FourCC("o005"))
@@ -1807,7 +1808,7 @@ end
 --- DateTime: 26.04.2020 23:44
 texture = {
 	"ReplaceableTextures\\CommandButtons\\BTNPeasant",
-	"ReplaceableTextures\\CommandButtons\\BTNChaosPeon",
+	"ReplaceableTextures\\CommandButtons\\btnchaospeon",
 	"ReplaceableTextures\\CommandButtons\\BTNGoblinSapper",
 	"ReplaceableTextures\\CommandButtons\\BTNBoots",
 	"ReplaceableTextures\\CommandButtons\\BTNBloodLust",
@@ -1829,7 +1830,7 @@ texture = {
 
 DISBTNTexture = {
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPeasant",
-	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNChaosPeon",
+	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNPeon",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNGoblinSapper",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBoots",
 	"ReplaceableTextures\\CommandButtonsDisabled\\DISBTNBloodLust",
@@ -1886,8 +1887,8 @@ NameENG = { --Определяет количество талантов
 }
 description = {
 	"Принесите 25 дерева, чтобы удвоить его добычу. ",
-	"Ничего не делайте в течении 300 сек, чтобы поднять бунт. ",
-	"Умрите 15 раз, чтобы получить +100 к здоровью. ",
+	"Ничего не делайте, чтобы поднять бунт. ",
+	"Умрите 15 раз, чтобы получить +200 к здоровью. ",
 	"Пробегите расстояние в 200000 метров, чтобы стать на 50% быстрее. ",
 	"Убивайте врагов, чтобы увеличить свой урон в 2 раза. ",
 	"Почините здания на 1000 единиц, чтобы замедлять врагов при ударе. ",
@@ -1898,7 +1899,7 @@ description = {
 	"Сломайте лесопилку людей, чтобы получить ауру ремонта зданий. ",
 	"Пробудьте на холоде, чтобы заморозить щит. ",
 	"Убивайте волков, чтобы получить шапку волка. ",
-	"Поймайте щитом камни големов. ",
+	"Поймайте щитом камни големов, чтобы улучшить щит. ",
 	"Убивайте или умирайте от овец, чтобы заболеть взрывной болезнью. ",
 	"Найдите сферу, чтобы научиться метать огненные шары. ",
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
@@ -2044,10 +2045,10 @@ function PerkButtonLineNonLocal(k, lang)
 				end
 			elseif i == 2 then
 				if data.Perk2 then
-					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти" .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r")
+					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти " .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r")
 				else
-					BlzFrameSetValue(data.HeroIco, 100-R2I(data.RevoltSec/3) )
-					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/300|r") --|cffffff00AAAA|r
+					BlzFrameSetValue(data.ReloadIco[i], R2I(data.RevoltSec) ) --Было 100-R2I
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r") --|cffffff00AAAA|r
 				end
 
 			elseif i == 3 then
@@ -2158,7 +2159,7 @@ function PerkButtonLineNonLocal(k, lang)
 				if not data.Perk14A then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона. Ломается, если урон больше 500. Перезарядка: ".."|cffffff00" .. "5|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона Ломается, если урон больше 500. Перезарядка: ".."|cffffff00" .. "5|r") --|cffffff00AAAA|r
 					if lang == 1 then
 						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100% |r" .. " damage ") --|cffffff00AAAA|r
 					end
@@ -2373,7 +2374,7 @@ end
 --- DateTime: 06.02.2020 12:47
 ---
 function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
-	local CollisionRange = 100
+	local CollisionRange = 80
 	if not damage then
 		damage = 200
 	end
@@ -2424,17 +2425,17 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage)
 				HealUnit(DamagingUnit,-10)
 			end
 		end
-		CollisisonDestr = PointContentDestructable(x, y, 100, false)
+		CollisisonDestr = PointContentDestructable(x, y, CollisionRange, false)
 		local PerepadZ = zGround - z
 		if dist > 1000 or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit, UNIT_TYPE_STRUCTURE) or PerepadZ > 20 then
 			--or zGround+z>=-70+z --z<=147
-			PointContentDestructable(x, y, 100, true)
+			PointContentDestructable(x, y, CollisionRange, true)
 			if z <= -90 then
 				--CreateTorrent(x,y)
 				--BlzSetSpecialEffectPosition(bullet,4000,4000,0)
 			end
 			--print("Условие урона прошло")
-			UnitDamageArea(hero,100,x,y,CollisionRange,ZBullet)
+			UnitDamageArea(hero,CollisionRange,x,y,CollisionRange,ZBullet)
 			if IsUnitType(hero, UNIT_TYPE_HERO) then
 				local data = HERO[GetPlayerId(GetOwningPlayer(hero))]
 				if data.Perk16 and IsUnitEnemy(hero, GetOwningPlayer(DamagingUnit)) and DamagingUnit and data.FBIsReady then
@@ -2988,7 +2989,7 @@ function OnPostDamage()
 					data.ShieldOnCD=true
 					FlyTextTagShieldXY(GetUnitX(target),GetUnitY(target),"Broken",GetOwningPlayer(target))
 				end
-				TimerStart(CreateTimer(), 3, false, function()
+				TimerStart(CreateTimer(), cd, false, function()
 					data.ShieldOnCD=false
 					BlzPauseUnitEx(caster, false)
 					DestroyTimer(GetExpiredTimer())
@@ -3147,10 +3148,10 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		if UnitAlive(e) and UnitAlive(u) and IsUnitEnemy(e,GetOwningPlayer(u))  and true then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
 			--print("вызов проблемной функции "..GetPlayerName(GetOwningPlayer(u)).." "..GetUnitName(u).." "..damage)
 			if EffectModel~=nil then
-				--print("эффеет")
-				--local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
-				--BlzSetSpecialEffectZ(DE,ZDamageSource)
-				--DestroyEffect(DE)
+				--print("эффект"..EffectModel)
+				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
+				BlzSetSpecialEffectZ(DE,ZDamageSource)
+				DestroyEffect(DE)
 			end
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
@@ -3194,13 +3195,15 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					FrameBigSize(data.SelfFrame[9],0.2,9)
 						if data.FireCount>=5 then
 							data.Perk9=true
-							--print("разблокировка перка")
+							--print("разблокировка перка огонька")
 							PerkUnlocker(data,9)
 						end
 					end
-					if data.Perk9 then
+					if data.Perk9 and GetUnitAbilityLevel(u,FourCC('A006'))==0 then
 						UnitAddAbility(u,FourCC('A006'))
+						--print("добавлен огонёк")
 						data.HaveAFire=true
+
 					end
 				end
 				--print("лечим")
@@ -3453,7 +3456,7 @@ function InitGameCore()
 	--EnableDragSelect(false, false)
 	CreateWoodFrame()
 	HideEverything()
-	--DontMove()
+	DontMove()
 	TimerStart(CreateTimer(), 0.5, false, function()
 		--ButtonPress()
 		--CreateLanguageDialog()
@@ -3467,6 +3470,7 @@ function InitGameCore()
 	TimerStart(CreateTimer(), 1, false, function()
 		CreateMouseHelper()
 		CreateLocalImages()
+		--CreateVisualPointer()
 		--PlayerPlaying()
 		--PerkButtonLineNonLocal()-- табличка перков новая
 	end)
@@ -3521,6 +3525,7 @@ function InitGameCore()
 			---накопление перков
 			SingleWoodCount = 0,
 			RevoltSec = 0,
+			temRevolt=0,
 			Dies = 0,
 			TotalWay = 0,
 			Kills = 0,
@@ -3529,6 +3534,7 @@ function InitGameCore()
 			KodoCount = 0,
 			FireCount = 0,
 			HaveAFire = false,
+			FirePointer=false,
 			StoneCount = 0,
 			WolfCount = 0,
 			WolfHelper = nil,
@@ -3539,7 +3545,7 @@ function InitGameCore()
 			---открытие перков
 			Perk1 = false, --Работник
 			Perk2 = false, -- Бунт
-			Perk3 = false, -- Суицидник
+			Perk3 =  false, -- Суицидник
 			Perk4 = false, -- Лесной болван
 			Perk5 = false, -- Убийца
 			Perk6 = false, -- Ученика кузнеца
@@ -3910,6 +3916,7 @@ function InitGameCore()
 	--local sec=0
 	--local sec2=0
 	--local secattack=0
+	--local temRevolt=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		--for i, data in pairs(HERO) do
 		for i=0,3 do
@@ -4007,14 +4014,18 @@ function InitGameCore()
 
 			-- таланты просчеты
 			data.RevoltSec = data.RevoltSec + TIMER_PERIOD-- считаем бездействие
-			if data.RevoltSec>=200 then
-				FrameBigSize(data.SelfFrame[2],0.2,2)
+			data.temRevolt=data.temRevolt+TIMER_PERIOD
+
+			if data.temRevolt>=10 then
+				data.temRevolt=0
+				FrameBigSize(data.SelfFrame[2],0.2,2) --это надо делать каждую целую секунду
 			end
 			if not data.Perk2 then
-				if data.RevoltSec >= 300 then
+				if data.RevoltSec >= 100 then --Вернуть 100
 					data.Perk2 = true
 					PerkUnlocker(data, 2)
 					--print("Рабочий поднял бунт")
+					AddAxe(data)
 					MakeUnitAllEnemy(hero)
 				end
 			end
@@ -4510,6 +4521,11 @@ function InitGameCore()
 				end
 			end
 
+			if data.HaveAFire and not data.FirePointer then
+				data.FirePointer=true
+				CreateVisualPointerForUnit(hero,1,14,80,14)
+			end
+
 			if UnitAlive(hero) then
 				SetUnitFacing(hero, turn)
 			else
@@ -4701,11 +4717,14 @@ function InitUnitDeath()
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 				UnitDamageArea(DeadUnit,200,x,y,250)
 			end
+
 			data.Dies=data.Dies+1
-			FrameBigSize(data.SelfFrame[3],0.2,3)
+			if not not data.Perk3 then
+				FrameBigSize(data.SelfFrame[3],0.2,3)
+			end
 			if data.Dies==15 then
 				if not data.Perk3 then
-					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+100)
+					BlzSetUnitMaxHP(DeadUnit,GetUnitState(DeadUnit,UNIT_STATE_MAX_LIFE)+200)
 				end
 				data.Perk3=true
 				PerkUnlocker(data,3)
@@ -4831,7 +4850,7 @@ function InitUnitDeath()
 		---FourCC('e003')
 		--break --[[
 		--Humans=CreateGroup()
-		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин
+		if GetUnitTypeId(DeadUnit)==FourCC('hpea') then--Крестьянин рабочий
 		--	print("Погиб крестьянин")
 			local x,y=GetUnitXY(DeadUnit)
 			local lum=FindUnitOfType(FourCC('hlum'),1200,x,y)
@@ -4844,6 +4863,11 @@ function InitUnitDeath()
 					DestroyTimer(GetExpiredTimer())
 				end)
 			end
+		end
+		if GetUnitTypeId(DeadUnit)==FourCC('hctw') or GetUnitTypeId(DeadUnit)==FourCC('hwtw') then --Орудийная башня или любая
+			--print("Погибла башня")
+			local x,y=GetUnitXY(DeadUnit)
+			AnyHPEARandomBuild(x,y)
 
 		end
 		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево, , большой энт
@@ -4909,6 +4933,107 @@ function InitUnitDeath()
 			end
 		end
 
+	end)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 18.05.2020 21:36
+---
+
+function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
+	local effMain={}
+	local pid=GetPlayerId(GetOwningPlayer(hero))
+	local data=HERO[pid]
+	--local step=50
+	local size=step/100
+	--local k=10
+	local LastMouseX=0
+	local blockname="s_cube1"
+	local arrowname="s_arr1"
+
+	if GetLocalPlayer()~=Player(pid) then
+		blockname=""
+		arrowname=""
+	end
+
+	for i=1,long do
+		if i==long then
+			effMain[i]=AddSpecialEffect(arrowname,0,0)
+		else
+			effMain[i]=AddSpecialEffect(blockname,0,0)
+		end
+		--print(size)
+		--Does the BlzSetSpecialEffectMatrixScale function work?
+		--BlzResetSpecialEffectMatrix(effMain[i])
+		--BlzSetSpecialEffectMatrixScale(effMain[i],size,0,0) --does not work
+		BlzSetSpecialEffectScale(effMain[i],size) -- is work
+		BlzSetSpecialEffectAlpha(effMain[i],128)
+		BlzSetSpecialEffectColor(effMain[i],0,255,0)
+	end
+
+	local distance=0
+	local mouseMoving=false
+	local savedDistance=0
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		if LastMouseX == GetPlayerMouseX[pid] then
+			mouseMoving=false
+			--savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
+		else
+			mouseMoving=true
+			--print("движется")
+		end
+		LastMouseX = GetPlayerMouseX[pid]
+
+		local angle=GetUnitFacing(hero)
+		local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
+
+		if mouseMoving then
+			distance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
+			savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
+		else
+			distance=savedDistance
+		end
+		local block=0
+
+		for _=1,#effMain do
+			distance=distance-step
+			if distance>=0 then
+				block=block+1
+			end
+		end
+		if minlong~=nil then
+			block=minlong
+		end
+		--print(block)
+		for i=1,#effMain do
+			if i<block then
+				local nx,ny=MoveXY(xs,ys,(step)*i,angle)
+				BlzSetSpecialEffectPosition(effMain[i],nx,ny,160-100*size)
+				BlzSetSpecialEffectYaw(effMain[i], math.rad(angle))
+			else
+				if i==#effMain then
+					local nx,ny=MoveXY(xs,ys,(step)*block,angle)
+					BlzSetSpecialEffectPosition(effMain[i],nx,ny,160-100*size)
+					BlzSetSpecialEffectYaw(effMain[i], math.rad(angle))
+				else
+					BlzSetSpecialEffectPosition(effMain[i],6000,6000,160-100*size)
+				end
+
+			end
+		end
+
+		if flag==1 then
+			if not data.HaveAFire then
+				DestroyTimer(GetExpiredTimer())
+				data.FirePointer=false
+				--print("destroy")
+				for i=1,#effMain do
+					BlzSetSpecialEffectPosition(effMain[i],6000,6000,0)
+					DestroyEffect(effMain[i])
+				end
+			end
+		end
 	end)
 end
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -5355,6 +5480,7 @@ function FindUnitOfType(id,flag,x,y)
 	local e=nil
 	local k=0
 	--print("ищем")
+	local rg={}
 	if not flag then
 		GroupEnumUnitsInRect(perebor,bj_mapInitialPlayableArea,nil)
 		while true do
@@ -5375,6 +5501,7 @@ function FindUnitOfType(id,flag,x,y)
 			if e == nil then break end
 			if UnitAlive(e) and GetUnitTypeId(e)==id then
 				k=k+1
+				rg[k]=e
 				unit=e
 			end
 			GroupRemoveUnit(perebor,e)
@@ -5384,6 +5511,9 @@ function FindUnitOfType(id,flag,x,y)
 
 	if k>1 then
 	--	print("Ошибка получено "..k.." юнитов")
+	end
+	if k>2 then
+		unit=rg[GetRandomInt(1,#rg)]
 	end
 	if unit==nil then
 	--	print("Не найдено живых юнитов данного типа")
@@ -6407,6 +6537,42 @@ wGeometry = wGeometryInit()
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 18.05.2020 14:04
+
+function AddAxe(data)
+	local effmodel="Abilities\\Weapons\\Axe\\AxeMissile.mdl"
+	local angle=0
+	local eff=AddSpecialEffect(effmodel,0,0)
+	BlzSetSpecialEffectRoll(eff,math.rad(-90))
+	local lock=0
+	local tempUnit=nil
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		local x,y=GetUnitXY(data.UnitHero)
+		local CollisionUnit,IsDamage=nil,nil
+		angle=angle+9
+		--print(angle)
+
+		if lock<=0 then
+			local nx,ny=MoveXY(x,y,80,angle)
+			BlzSetSpecialEffectPosition(eff,nx,ny,GetUnitZ(data.UnitHero)+60)
+			IsDamage,CollisionUnit= UnitDamageArea(data.UnitHero,10,nx,ny,40,90,"Bullets\\Bullet1")
+			tempUnit=CollisionUnit
+		else
+			lock=lock-1
+			DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+		end
+		if CollisionUnit then
+			lock=4
+			DestroyEffect(AddSpecialEffect("Bullets\\Bullet1",GetUnitXY(tempUnit)))
+		end
+		if angle==360 then
+			angle=0
+		end
+	end)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 13.05.2020 2:16
 ---
 
@@ -6689,7 +6855,7 @@ function RegisterCollision(hero)
 					k=k+1
 				end
 				if data.IsWood then
-					if GetLosingHP(hero)<=5 then-- Техника безопасности
+					if GetLosingHP(hero)<=5 and not data.Perk10 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						FrameBigSize(data.SelfFrame[10],0.2,10)
@@ -6719,7 +6885,7 @@ function RegisterCollision(hero)
 					local wc=GetUnitUserData(data.CartUnit)
 					--k=wc*k
 
-					if GetLosingHP(hero)<=5 then-- Техника безопасности
+					if GetLosingHP(hero)<=5 and not data.Perk10 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						FrameBigSize(data.SelfFrame[10],0.2,10)
@@ -6951,7 +7117,7 @@ function AutoCollectLumber(period)
 				end
 				if data.IsWood then
 					--print("Автосбор древисины")
-					if GetLosingHP(hero)<=5 then-- Техника безопасности
+					if GetLosingHP(hero)<=5 and not data.Perk10 then-- Техника безопасности
 						--print("Полное хп")
 						data.TreeCountOnTB=k+data.TreeCountOnTB
 						if data.TreeCountOnTB>=10 and not data.Perk10 then
@@ -7245,10 +7411,41 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 17.05.2020 22:30
+---
+
+function AnyHPEARandomBuild(x, y)
+	AdjustPlayerStateBJ(1000, Player(10), PLAYER_STATE_RESOURCE_LUMBER)
+	AdjustPlayerStateBJ(1000, Player(10), PLAYER_STATE_RESOURCE_GOLD)
+	for i = 1, 5 do
+		local r = GetRandomInt(-800, 800)
+		local builder = FindUnitOfType(FourCC('hpea'), 2500, x, y)
+		if i == 1 then
+			r=0
+		end
+		if IssueBuildOrderById(builder, FourCC("hwtw"), x + r, y + r) then
+			--print("Иду строить")
+			IssueImmediateOrder(builder, "repairon")
+		else
+			IssueImmediateOrder(builder, "autoharvestlumber")
+			--print("Не могу построить")
+		end
+		TimerStart(CreateTimer(), 2, true, function()
+			--print(OrderId2String(GetUnitCurrentOrder(builder)))
+			if OrderId2String(GetUnitCurrentOrder(builder))=="harvest" then
+				IssueImmediateOrder(builder, "autoharvestlumber")
+				DestroyTimer(GetExpiredTimer())
+			end
+		end)
+	end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 21.02.2020 23:45
 ---
 
-SawDiskModel="Chakram_04"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
+SawDiskModel="Chakram_05"--"Abilities\\Weapons\\SentinelMissile\\SentinelMissile.mdl"
 SawChainModel="abilities\\weapons\\wyvernspear\\wyvernspearmissile.mdl"
 CollisionEffect="Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl"
 function CreateRoundSawZ(hero,ChainCount,angle,z)
@@ -7720,17 +7917,6 @@ function InitTrig_Gandicap()
     TriggerAddAction(gg_trg_Gandicap, Trig_Gandicap_Actions)
 end
 
-function Trig_Splat_Actions()
-    CreateImageBJ("circ.blp", 256, Location(0, 0), 0, 4)
-    DisplayTextToForce(GetPlayersAll(), "TRIGSTR_092")
-    SetImageRenderAlways(GetLastCreatedImage(), true)
-end
-
-function InitTrig_Splat()
-    gg_trg_Splat = CreateTrigger()
-    TriggerAddAction(gg_trg_Splat, Trig_Splat_Actions)
-end
-
 function Trig_GuiInit_Func003A()
     IssueTargetDestructableOrder(GetEnumUnit(), "harvest", gg_dest_LTlt_0364)
 end
@@ -7813,16 +7999,26 @@ function InitTrig_StartMiniGame()
     TriggerAddAction(gg_trg_StartMiniGame, Trig_StartMiniGame_Actions)
 end
 
+function Trig_Build_Actions()
+    IssueTrainOrderByIdBJ(GetTriggerUnit(), FourCC("hctw"))
+end
+
+function InitTrig_Build()
+    gg_trg_Build = CreateTrigger()
+    TriggerRegisterAnyUnitEventBJ(gg_trg_Build, EVENT_PLAYER_UNIT_CONSTRUCT_FINISH)
+    TriggerAddAction(gg_trg_Build, Trig_Build_Actions)
+end
+
 function InitCustomTriggers()
     InitTrig_In()
     InitTrig_Out()
     InitTrig_Gandicap()
-    InitTrig_Splat()
     InitTrig_GuiInit()
     InitTrig_Open()
     InitTrig_DeadHumanLumber()
     InitTrig_ZombiesDie()
     InitTrig_StartMiniGame()
+    InitTrig_Build()
 end
 
 function RunInitializationTriggers()
@@ -7903,7 +8099,7 @@ function InitAllyPriorities()
 end
 
 function main()
-    SetCameraBounds(-6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 12544.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 5632.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 5632.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 12544.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
+    SetCameraBounds(-6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 16640.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 5632.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -6400.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 5632.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 16640.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -5120.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
     SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
     NewSoundEnvironment("Default")
     SetAmbientDaySound("LordaeronSummerDay")

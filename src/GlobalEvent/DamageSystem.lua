@@ -233,10 +233,10 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 		if UnitAlive(e) and UnitAlive(u) and IsUnitEnemy(e,GetOwningPlayer(u))  and true then --and IsUnitZCollision(e,ZDamageSource)  -- момент урона
 			--print("вызов проблемной функции "..GetPlayerName(GetOwningPlayer(u)).." "..GetUnitName(u).." "..damage)
 			if EffectModel~=nil then
-				--print("эффеет")
-				--local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
-				--BlzSetSpecialEffectZ(DE,ZDamageSource)
-				--DestroyEffect(DE)
+				--print("эффект"..EffectModel)
+				local DE=AddSpecialEffect(EffectModel,GetUnitX(e),GetUnitY(e))
+				BlzSetSpecialEffectZ(DE,ZDamageSource)
+				DestroyEffect(DE)
 			end
 			if IsUnitType(u,UNIT_TYPE_HERO) then
 				local data=HERO[GetPlayerId(GetOwningPlayer(u))]
@@ -280,13 +280,15 @@ function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 					FrameBigSize(data.SelfFrame[9],0.2,9)
 						if data.FireCount>=5 then
 							data.Perk9=true
-							--print("разблокировка перка")
+							--print("разблокировка перка огонька")
 							PerkUnlocker(data,9)
 						end
 					end
-					if data.Perk9 then
+					if data.Perk9 and GetUnitAbilityLevel(u,FourCC('A006'))==0 then
 						UnitAddAbility(u,FourCC('A006'))
+						--print("добавлен огонёк")
 						data.HaveAFire=true
+
 					end
 				end
 				--print("лечим")
