@@ -208,6 +208,7 @@ function InitGameCore()
 			BlzPauseUnitEx(hero,true)
 			AddSpecialEffectTarget("GeneralHeroGlow", hero, "origin")
 			SetUnitColor(hero, ConvertPlayerColor(i))
+			PatchTest(hero)
 			--UnitAddAbility(hero,FourCC('A00O')) --Режим бАгов
 			--UnitAddItemById(hero,FourCC('I002'))
 			--UnitAddItemById(hero,FourCC('I002'))
@@ -1130,7 +1131,7 @@ function InitGameCore()
 
 			if data.HaveAFire and not data.FirePointer then
 				data.FirePointer=true
-				CreateVisualPointerForUnit(hero,1,14,80,14)
+				CreateVisualPointerForUnit(hero,1,7,80,7)
 			end
 
 			if UnitAlive(hero) then

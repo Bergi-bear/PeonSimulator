@@ -217,3 +217,22 @@ function AngleBetweenUnits(caster,target)
 	local yb,ya,xb,xa=GetUnitY(target),GetUnitY(caster),GetUnitX(target),GetUnitX(caster)
 	return Atan2BJ(yb - ya, xb - xa)
 end
+
+function math.clamp (inb, low, high) --
+	return math.min( math.max(inb, low ), high )
+end
+
+function math.lerp(a, b, t)
+	return a + (b - a) * t
+end
+
+function repeatN(t, m)
+	return math.clamp(t - math.floor(t / m) * m, 0, m)
+end
+
+
+function lerpTheta(a, b, t)
+	local dt = repeatN(b - a, 360)
+	if dt>180 then	dt=dt-360 end
+	return math.lerp(a, a + dt, t)
+end

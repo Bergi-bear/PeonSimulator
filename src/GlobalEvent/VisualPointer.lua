@@ -57,13 +57,14 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 			DestroyEffect(effMain[i])
 		end
 	end
-
+	local curAngle=0
+	local nd=CreateDestructable(FourCC('LTrc'), 0, 0, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		angle=GetUnitFacing(hero)
+		--angle=GetUnitFacing(hero)
 		--local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
 		local xs,ys=GetUnitXY(hero)
-		--angle=data.AngleMouse--AngleBetweenXY(xs, ys, GetPlayerMouseX[pid], GetPlayerMouseY[pid])/bj_DEGTORAD
-
+		angle=data.AngleMouse--AngleBetweenXY(xs, ys, GetPlayerMouseX[pid], GetPlayerMouseY[pid])/bj_DEGTORAD
+		curAngle=lerpTheta(curAngle,angle,TIMER_PERIOD*8)
 		if LastMouseX == GetPlayerMouseX[pid] then
 			mouseMoving=false
 			--savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
@@ -72,8 +73,8 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 			--print("движется")
 		end
 		LastMouseX = GetPlayerMouseX[pid]
-		delta=angle-lastAngle
-		lastAngle=angle
+		delta=curAngle-lastAngle
+		lastAngle=curAngle
 
 
 		--angle=data.LastTurn--/bj_DEGTORAD
@@ -100,16 +101,23 @@ function CreateVisualPointerForUnit(hero,flag,long,step,minlong)
 		--print(block)
 		for i=1,#effMain do
 			if i<block then
-				local nx,ny=MoveXY(xs,ys,(step)*i,angle)
-				BlzSetSpecialEffectPosition(effMain[i],nx,ny,160-100*size)
-				BlzSetSpecialEffectYaw(effMain[i], math.rad(angle))
+				local nx,ny=MoveXY(xs,ys,(step)*i,curAngle)
+				BlzSetSpecialEffectPosition(effMain[i],nx,ny,GetUnitZ(hero)-60*size) --100*size
+				BlzSetSpecialEffectYaw(effMain[i], math.rad(curAngle))
+				--SetFogStateRadius(GetOwningPlayer(hero), FOG_OF_WAR_VISIBLE, nx,ny, 500*size, true)
+			--print(GetUnitZ(hero))
 			else
 				if i==#effMain then
-					local nx,ny=MoveXY(xs,ys,(step)*block,angle)
-					BlzSetSpecialEffectPosition(effMain[i],nx,ny,160-100*size)
-					BlzSetSpecialEffectYaw(effMain[i], math.rad(angle))
+					local nx,ny=MoveXY(xs,ys,(step)*block,curAngle)
+					BlzSetSpecialEffectPosition(effMain[i],nx,ny,GetUnitZ(hero)-60*size)
+					BlzSetSpecialEffectYaw(effMain[i], math.rad(curAngle))
+
+					KillDestructable(nd)
+					ShowDestructable(nd,false)
+					nd=CreateDestructable(FourCC('LTrc'), nx,ny, 0, GetRandomInt(1, 1), GetRandomInt(1, 1))
+					SetFogStateRadius(GetOwningPlayer(hero), FOG_OF_WAR_VISIBLE, nx,ny, 200*size, true)
 				else
-					BlzSetSpecialEffectPosition(effMain[i],6000,6000,160-100*size)
+					BlzSetSpecialEffectPosition(effMain[i],6000,6000,0)
 				end
 
 			end

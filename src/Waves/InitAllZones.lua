@@ -19,5 +19,6 @@ function InitAllZones()
 	--Normadia()--Высадка пехотинцев в самом начале игры для тестов
 	StartWolfBossAI()
 	StartHealerCamp()
+	InitTurtleZone() -- зона босса черепахи
 	--StartZombies()
 end
