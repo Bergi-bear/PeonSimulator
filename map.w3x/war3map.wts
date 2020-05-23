@@ -475,3 +475,15 @@ STRING 99
 Bergi
 }
 
+STRING 100
+// Destructibles: B000 (Стрелочка), Name (Name)
+{
+Стрелочка
+}
+
+STRING 101
+// Destructibles: B001 (Куб), Name (Name)
+{
+Куб
+}
+

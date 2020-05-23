@@ -9,9 +9,9 @@ function CreateAndStartClock()
 
 	BlzFrameSetTexture(charges, "ChargesTexture.blp", 0, true)
 	BlzFrameSetSize(charges, 0.08, 0.02)
-	BlzFrameSetAbsPoint(charges, FRAMEPOINT_CENTER,0.4-0.02 , 0.6-0.02)
+	BlzFrameSetAbsPoint(charges, FRAMEPOINT_CENTER,0.4+0.02 , 0.6-0.02)
 	--BlzFrameSetPoint(charges, FRAMEPOINT_BOTTOM, wood, FRAMEPOINT_BOTTOM, 0,0)
-
+	BlzFrameSetText(new_FrameChargesText, Zero(0)..":"..Zero(0)..":"..Zero(0))
 	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
 	local sec=0
 	local min=0

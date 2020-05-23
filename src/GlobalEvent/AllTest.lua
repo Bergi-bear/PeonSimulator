@@ -6,6 +6,6 @@
 
 function PatchTest(hero)
 	local attr=BlzGetUnitIntegerField(hero, UNIT_IF_PRIMARY_ATTRIBUTE)
-	print("Основной атрибут героя= "..attr)
+	--print("Основной атрибут героя= "..attr)
 	BlzSetUnitIntegerField(hero,UNIT_IF_MOVE_TYPE,3)
 end

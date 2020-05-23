@@ -43,16 +43,19 @@ function HideEverything()
 			--// Show Hero Icons at the left top of the screen
 	 BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR,0), false)
 		--	//  //Quests, Menu, Allies, Log
-	 BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarFrame",0),false)
+	BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarFrame",0),true)
+	BlzFrameClearAllPoints(BlzGetFrameByName("UpperButtonBarFrame",0))
 	--// //Gold, Lumber, food and Upkeep; also enables /fps /ping /apm
 	 BlzFrameSetVisible(BlzGetFrameByName("ResourceBarFrame",0),true)
 
 
 	--Вернуть F10
-	local f10=BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0), true) --не не работает
+	local f10=BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0)--не не работает
+	BlzFrameSetVisible(f10, true)
 	BlzFrameClearAllPoints(f10)
-	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.4 ,0.4)
-
+	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.7 ,0.58)
+	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 1)) --отрыв других кнопок меню
+	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 2)) --
 
 	BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)-- черная рамка
 	BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUI",0), FRAMEPOINT_BOTTOMLEFT, 0.0 ,0.2) --для смещения бага некликабельности в нижнем правом углу
