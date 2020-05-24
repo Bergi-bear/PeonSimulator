@@ -1131,7 +1131,7 @@ function InitGameCore()
 
 			if data.HaveAFire and not data.FirePointer then
 				data.FirePointer=true
-				CreateVisualPointerForUnitBySplat(hero,1,1000//3,3)
+				CreateVisualPointerForUnitBySplat(hero,1,1000//10,10)
 			end
 
 			if UnitAlive(hero) then

@@ -67,7 +67,7 @@ function HideEverything()
 
 	local fps=BlzGetFrameByName("ResourceBarFrame",0)
 	BlzFrameClearAllPoints(fps)
-	BlzFrameSetAbsPoint(fps, FRAMEPOINT_CENTER, 0.9 ,0.61)
+	--BlzFrameSetAbsPoint(fps, FRAMEPOINT_CENTER, 0.9 ,0.61)
 
 	local infoPanel=BlzFrameGetParent(BlzGetFrameByName("SimpleInfoPanelUnitDetail",0)) -- панель стат героя
 	BlzFrameClearAllPoints(infoPanel)

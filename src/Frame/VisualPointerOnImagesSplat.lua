@@ -14,23 +14,41 @@
 function CreateVisualPointerForUnitBySplat(hero,flag,long,step,minlong)
 	--local effMain={}
 	local image={}
+	local image2={}
 	local pid=GetPlayerId(GetOwningPlayer(hero))
 	local data=HERO[pid]
-	--local step=50
-	--local size=step/100
-	--local k=10
+	local size=step/3
+
+
+	local r60=70//size
+	local r40=50//size
 	local LastMouseX=0
 
 
-	if GetLocalPlayer()~=Player(pid) then
-	end
+
 
 	for i=1,long do
-		image[i]=CreateImage("pointer.dds",16,16,16,4000,4000,0,0,0,150,4)
+		image[i]=CreateImage("pointerORIG",16,16,16,4000,4000,0,0,0,150,4)
 		SetImageColor(image[i],0,255,0,128)
 		SetImageRenderAlways(image[i], true)
-		ShowImage(image[i],true)
+		if GetLocalPlayer()~=Player(pid) then
+			ShowImage(image[i],false)
+		else
+			ShowImage(image[i],true)
+		end
+
+
+		image2[i]=CreateImage("pointerORIG",16,16,16,4000,4000,0,0,0,150,4)
+		SetImageColor(image2[i],0,255,0,128)
+		SetImageRenderAlways(image2[i], true)
+		if GetLocalPlayer()~=Player(pid) then
+			ShowImage(image2[i],false)
+		else
+			ShowImage(image2[i],true)
+		end
 	end
+
+
 
 	local distance=0
 	local mouseMoving=false
@@ -50,17 +68,27 @@ function CreateVisualPointerForUnitBySplat(hero,flag,long,step,minlong)
 		--print("destroy")
 		for i=1,#image do
 			DestroyImage(image[i])
+			DestroyImage(image2[i])
 		end
 	end
-	local curAngle=0
-
+	local curAngle=GetUnitFacing(hero)
+	local iter=0
+	local curBlock=0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		--angle=GetUnitFacing(hero)
 		--local xs,ys=MoveXY(GetUnitX(hero),GetUnitY(hero),10,angle-30)
-		local xs,ys=MoveXY(GetUnitX(hero)-16,GetUnitY(hero)-16,40,curAngle)--стартовое смещение
-		xs,ys=MoveXY(xs,ys,40,curAngle+90)
+		local xs,ys=MoveXY(GetUnitX(hero)-16,GetUnitY(hero)-16,40,curAngle)--стартовое смещение и это центр юнита
+		local xs2,ys2=0,0
+		iter=iter+1
+
+			xs,ys=MoveXY(xs,ys,40,curAngle+90)
+			xs2,ys2=MoveXY(xs,ys,80,curAngle-90)
+
+
 		angle=data.AngleMouse--AngleBetweenXY(xs, ys, GetPlayerMouseX[pid], GetPlayerMouseY[pid])/bj_DEGTORAD
+
 		curAngle=lerpTheta(curAngle,angle,TIMER_PERIOD*8)
+
 		if LastMouseX == GetPlayerMouseX[pid] then
 			mouseMoving=false
 			--savedDistance=DistanceBetweenXY(GetPlayerMouseX[pid],GetPlayerMouseY[pid],GetUnitXY(hero))
@@ -91,27 +119,66 @@ function CreateVisualPointerForUnitBySplat(hero,flag,long,step,minlong)
 				block=block+1
 			end
 		end
+
+		curBlock=R2I(lerpTheta(curBlock,block,TIMER_PERIOD*16))
+
 		if minlong~=nil then
-			block=minlong
+			--curBlock=minlong
 		end
 		--print(block)
 		local k=0
+		local k2=0
 		for i=1,#image do
-			if i<block then
+			if i<curBlock then
 				local nx,ny=0,0
+
 				--print("block="..block)
 
 
 
-				if i>=block-40 and i<=block-20 then
-					--print(i.."создаём стрелочку")
-					local axs,ays=MoveXY(xs,ys,(block-40)*step,curAngle)
+				if i>=curBlock-r60 and i<=curBlock-r40 then
+					--print(i.."поворот на 90")
 					k=k+1
+					local axs,ays=MoveXY(xs,ys,(curBlock-r60)*step,curAngle)
 					nx,ny=MoveXY(axs,ays,step*k,curAngle+90)
 					SetImagePosition(image[i],nx,ny,0)
+
+					local axs2,ays2=MoveXY(xs2,ys2,(curBlock-r60)*step,curAngle)
+					nx,ny=MoveXY(axs2,ays2,step*k,curAngle-90)
+					SetImagePosition(image2[i],nx,ny,0)
+
 				else
-					nx,ny=MoveXY(xs,ys,step*i,curAngle)--вот так вс отлично работает
-					SetImagePosition(image[i],nx,ny,0)
+					if i>=curBlock-r40 then
+						--print("Косая 45")
+
+						local axs,ays=MoveXY(xs,ys,(curBlock-r60)*step,curAngle)
+						local axs2,ays2=MoveXY(xs2,ys2,(curBlock-r60)*step,curAngle)
+						local px,py,px2,py2=0,0,0,0
+
+							px,py=MoveXY(axs,ays,step*k,curAngle+90)
+							px2,py2=MoveXY(axs2,ays2,step*k,curAngle-90)
+
+						k2=k2+1
+						if curBlock<=r60 then
+							--print("лишняяотрисовка")
+							--k2=block
+							SetImagePosition(image[i],6000,6000,0)
+							SetImagePosition(image2[i],6000,6000,0)
+						else
+
+							nx,ny=MoveXY(px,py,step*(k2),curAngle-45)
+							SetImagePosition(image[i],nx,ny,0)
+							nx,ny=MoveXY(px2,py2,step*(k2),curAngle+45)
+							SetImagePosition(image2[i],nx,ny,0)
+
+						end
+
+					else
+						nx,ny=MoveXY(xs,ys,step*i,curAngle)--вот так всё отлично работает
+						SetImagePosition(image[i],nx,ny,0)
+						nx,ny=MoveXY(xs2,ys2,step*i,curAngle)
+						SetImagePosition(image2[i],nx,ny,0)
+					end
 				end
 
 
@@ -121,6 +188,7 @@ function CreateVisualPointerForUnitBySplat(hero,flag,long,step,minlong)
 				--ShowImage(image[i],true)
 			else --меньшение
 				SetImagePosition(image[i],6000,6000,0)
+				SetImagePosition(image2[i],7000,7000,0)
 				--ShowImage(image[i],false)
 			end
 		end
@@ -131,4 +199,16 @@ function CreateVisualPointerForUnitBySplat(hero,flag,long,step,minlong)
 			end
 		end
 	end)
+end
+
+function Chet(cc)
+	local is=false
+	if math.fmod(cc,2)~=0 then
+		--	print("Нечетное")
+		is=false
+	else
+		--	print("Четное")
+		is=true
+	end
+	return is
 end
