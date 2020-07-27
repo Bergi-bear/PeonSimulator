@@ -4,20 +4,6 @@
 --- DateTime: 03.04.2020 2:31
 ---
 
-function HideOriginFrameCustom()
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0), false) --портрет
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, 0), false) -- командная панель?
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR, 0), false) --хз наверное иконка героя
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR , 0), false) --не работает
-	--BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL , 0), false)--КРАШ
-	BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarFrame", 0), false)
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0), false)  --// F10 (Menu)
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 1), false)  -- // F11 (Allies)
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 2), false)  --// F12 (Log)
-	BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 3), false)  --// F9  (Quests)
-
-end
-
 
 
 function HideEverything()

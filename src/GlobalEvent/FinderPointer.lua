@@ -11,6 +11,8 @@ function InitMouseMoveTrigger()
 		local player = Player(i)
 		--if GetPlayerSlotState(player) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(player) == MAP_CONTROL_USER then
 			TriggerRegisterPlayerEvent(MouseMoveTrigger, player, EVENT_PLAYER_MOUSE_MOVE)
+		GetPlayerMouseX[i] = 0
+		GetPlayerMouseY[i] = 0
 		--end
 	end
 		TriggerAddAction(MouseMoveTrigger, function()
@@ -28,5 +30,8 @@ function InitMouseMoveTrigger()
 
 		end)
 end
+
+
+
 
 

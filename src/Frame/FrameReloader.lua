@@ -4,7 +4,7 @@
 --- DateTime: 04.05.2020 2:22
 ---
 function InitCDSystem()
-	if not BlzLoadTOCFile("war3mapimported\\mybar.toc") then
+	if not BlzLoadTOCFile("war3mapimported\\myBar.toc") then
 			print("warning")
 	end
 end
@@ -23,7 +23,6 @@ function StartFrameCD(cd,data,index)
 
 	local full=0
 
-
 	TimerStart(CreateTimer(), 0.05, true, function()
 		full=full+amount
 		BlzFrameSetValue(fh, full)
@@ -32,5 +31,4 @@ function StartFrameCD(cd,data,index)
 			full=0
 		end
 	end)
-
 end

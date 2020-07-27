@@ -5,9 +5,86 @@
 ---
 
 function PlayerPlaying()
-	print("preloading")
-	Preload("".."\\\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")
-	PreloadGenEnd("\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")--НЕ РАБОТАЕТ
-	--PreloadGenEnd("save\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")-- РАБОТАЕТ
-	print("END".."\\192.168.1.100\\Minismb\\"..GetPlayerName(GetLocalPlayer())..GetRandomInt(1,100)..".txt")
+
+	local sprintf = string.format
+
+	local function writefln(fmt, ...)
+		print(sprintf(fmt, ...))
+	end
+
+	local intcc = FourCC
+
+	local function reload_script()
+		local script_file = "C:\\Users\\Bergi\\IdeaProjects\\PeonSimulator\\build.lua"
+		local preload_file=""
+		if PreloadNumber-1>0 then
+			 preload_file = "save\\PreExp"..(PreloadNumber-1)..".txt"
+		else
+			 preload_file = "save\\PreExp".."0"..".txt"
+		end
+		PreloadGenClear()
+		PreloadRefresh()
+		Preloader(preload_file)
+		print("чтения файла номер "..PreloadNumber)
+		local text = BlzGetAbilityTooltip(intcc('Agyv'), 0) --тут весь текст из прелоада
+		Test()
+		PreloadGenClear()
+		PreloadRefresh()
+		local fn
+		local err
+		local ok
+
+		fn, err = load(text, script_file, 't', _ENV)
+		if err ~= nil then
+			writefln('syntax error: %%s', err)
+		else
+			clear_all()
+			ok, err = pcall(fn)
+			if not ok then
+				writefln('error: %%s', err)
+			end
+		end
+
+	end
+
+
+	-- I use the Esc key to reload the script
+	local t = CreateTrigger()
+	TriggerRegisterPlayerEvent(t, Player(0), EVENT_PLAYER_END_CINEMATIC)
+	TriggerAddAction(t, reload_script)
+--------------------------------------------------------------------
+
+	print("Start preload tester")
+	PreloadGenClear()
+	local gg_trg_PreExp = CreateTrigger()
+	TriggerRegisterPlayerChatEvent(gg_trg_PreExp, Player(0), "", false)
+	TriggerAddAction(gg_trg_PreExp, function()
+		if (GetEventPlayerChatString()=="-save") then
+			 --PreloadGenEnd("save\\PreExp.txt")
+		elseif (GetEventPlayerChatString()=="-load") then
+			--print("загрузка чего-то из файла")
+			--Preloader("save\\PreExp.txt")
+			--print(" я вижу это сообщение?")
+			--Test()
+		else
+			-- Preload(GetEventPlayerChatString())
+			Preload("\")\ncall BlzSetAbilityTooltip ('Agyv',\""..GetEventPlayerChatString().."\",0)".."\n//")
+			PreloadGenEnd("save\\PreExp"..nextPreload()..".txt")
+			PreloadGenClear()
+			--BlzSetAbilityTooltip ('Agyv', "33333", 0)
+		end
+	end)
+end
+
+
+function Test()
+	print(BlzGetAbilityTooltip (FourCC('Agyv'),  0).. " код из файла успешно прочитан")
+end
+
+PreloadNumber=0
+function nextPreload()
+	local name=""
+	name=PreloadNumber
+	PreloadNumber=PreloadNumber+1
+	return name
 end

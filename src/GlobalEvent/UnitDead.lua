@@ -183,7 +183,6 @@ function InitUnitDeath()
 			--print("Погибла башня")
 			local x,y=GetUnitXY(DeadUnit)
 			AnyHPEARandomBuild(x,y)
-
 		end
 		if GetUnitTypeId(DeadUnit)==FourCC('e003') then--Злое дерево, , большой энт
 			local x,y=GetUnitXY(DeadUnit)

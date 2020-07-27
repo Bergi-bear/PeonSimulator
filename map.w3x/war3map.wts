@@ -452,38 +452,16 @@ STRING 94
 
 STRING 95
 {
- 
+PeonRPG
 }
 
 STRING 96
 {
-KillMyPeon
+18+
 }
 
 STRING 97
 {
-18+
-}
-
-STRING 98
-{
-Using WASD and mouse, to control your peon, cut wood for victory
-}
-
-STRING 99
-{
 Bergi
-}
-
-STRING 100
-// Destructibles: B000 (Стрелочка), Name (Name)
-{
-Стрелочка
-}
-
-STRING 101
-// Destructibles: B001 (Куб), Name (Name)
-{
-Куб
 }
 

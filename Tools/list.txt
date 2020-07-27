@@ -6,6 +6,7 @@ btngathergoldON.dds
 Bullets
 Cart.mdx
 Chakram_04.mdx
+Chakram_05.mdl
 Chakram_05.mdx
 ChargesTexture.blp
 circ.blp
@@ -35,12 +36,18 @@ peon.mdx
 peon_portrait.mdx
 pila2.blp
 Point Target.mdx
+pointer.blp
+pointer.png
+pointerORIG.dds
 RMB.dds
 RoyalCrown.mdx
 selecter1.mdx
 Snipe Target.mdx
+Spikes
 ss.blp
 stoneshild.mdx
+s_arr1.mdl
+s_cube1.mdl
 Textures
 TornadoMissile.mdx
 Torrent.mdx
