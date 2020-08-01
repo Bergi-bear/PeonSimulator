@@ -5,3 +5,6 @@ InfoPanelTextFont=FRIZQT.TTF
 MasterFont=FRIZQT.TTF
 TextTagFont=FRIZQT.TTF
 
+[FrameDef]
+SELECTTARGET=TRIGSTR_098
+

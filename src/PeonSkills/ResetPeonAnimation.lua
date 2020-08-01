@@ -4,6 +4,8 @@
 --- DateTime: 28.03.2020 0:41
 ---
 function ResetPeonAnimation (hero)
+	SetUnitAnimationByIndex(hero,0)
+	--[[
 	local ra=GetRandomInt(0,4)
 	if ra==0 then
 		SetUnitAnimationByIndex(hero,0)
@@ -15,5 +17,5 @@ function ResetPeonAnimation (hero)
 		SetUnitAnimationByIndex(hero,13)
 	elseif ra==4 then
 		SetUnitAnimationByIndex(hero,14)
-	end
+	end]]
 end

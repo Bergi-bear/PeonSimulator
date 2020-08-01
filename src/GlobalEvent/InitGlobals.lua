@@ -243,7 +243,7 @@ function InitGameCore()
 			if not data.OnCharge then
 				UnitAddVectorForce(data.UnitHero, 90, 10, 30)
 			end
-			SetUnitAnimationByIndex(data.legs, 16)
+			SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 		end
 	end)
 	local TrigDepressW = CreateTrigger()
@@ -270,7 +270,7 @@ function InitGameCore()
 			if not data.OnCharge then
 				UnitAddVectorForce(data.UnitHero, 270, 10, 30)
 			end
-			SetUnitAnimationByIndex(data.legs, 16)
+			SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 		end
 	end)
 	local TrigDepressS = CreateTrigger()
@@ -297,7 +297,7 @@ function InitGameCore()
 			if not data.OnCharge then
 				UnitAddVectorForce(data.UnitHero, 0, 10, 30)
 			end
-			SetUnitAnimationByIndex(data.legs, 16)
+			SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 		end
 	end)
 	local TrigDePressD = CreateTrigger()
@@ -324,7 +324,7 @@ function InitGameCore()
 				UnitAddVectorForce(data.UnitHero, 180, 10, 30)
 			end
 			data.ReleaseA = true
-			SetUnitAnimationByIndex(data.legs, 16)
+			SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 		end
 	end)
 	local TrigDePressA = CreateTrigger()
@@ -487,7 +487,7 @@ function InitGameCore()
 			if UnitAlive(hero) then
 
 				if data.IsWood then
-					SetUnitAnimationByIndex(hero, 11)
+					SetUnitAnimationByIndex(hero, PeonIndexStandLumber)
 				else
 					ResetPeonAnimation(hero)
 				end
@@ -511,10 +511,10 @@ function InitGameCore()
 	------------------------------ТЕСТ АНИМАЦИЙ
 	local ai = 0
 	TimerStart(CreateTimer(), 2, true, function()
-		--local data = HERO[0]
-		--local hero = data.legs
+		local data = HERO[0]
+		local hero = data.legs
 		--SetUnitAnimationByIndex(hero,ai)
-		--SetUnitAnimationByIndex(hero,8)
+		--SetUnitAnimationByIndex(hero,ai)
 		--print(ai)
 		ai = ai + 1
 	end)
@@ -548,6 +548,12 @@ function InitGameCore()
 			local startwalk = false
 			local standanim = false
 			local walkattack = false
+			PeonIndexWalk=1
+			PeonIndexAttack=3
+			PeonIndexAttackLumber=5
+			PeonIndexWalkLumber=13
+			PeonIndexStandLumber=8
+			PeonIndexStand= 0
 			--local WalkCart = false
 
 			local turn = 0
@@ -792,7 +798,7 @@ function InitGameCore()
 
 						if walk and walkattack and UnitAlive(hero) then
 							BlzSetUnitFacingEx(data.legs, angle)
-							SetUnitAnimationByIndex(data.legs, 16)
+							SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 							SetUnitTimeScale(data.legs, speed * .1)
 							walk = false
 
@@ -814,7 +820,7 @@ function InitGameCore()
 						SetUnitAnimationByIndex(data.CartUnit, 0)
 					end
 					if standanim then
-						SetUnitAnimationByIndex(data.legs, 11)
+						SetUnitAnimationByIndex(data.legs, PeonIndexStand)
 					end
 					startwalk = false
 					BlzSetUnitFacingEx(data.legs, turn)
@@ -905,9 +911,9 @@ function InitGameCore()
 					--SetUnitAnimationByIndex(hero,7) --проигрываем анимацию атаки
 					if UnitAlive(hero) then
 						if data.IsWood then
-							SetUnitAnimationByIndex(hero, 7)
+							SetUnitAnimationByIndex(hero, PeonIndexAttackLumber)
 						else
-							SetUnitAnimationByIndex(hero, 3)
+							SetUnitAnimationByIndex(hero, PeonIndexAttack)
 						end
 					end
 					--print("play attack")
@@ -919,7 +925,7 @@ function InitGameCore()
 							--print("Анимация Stand")
 							if UnitAlive(hero) then
 								if data.IsWood then
-									SetUnitAnimationByIndex(hero, 11)
+									SetUnitAnimationByIndex(hero, PeonIndexStandLumber)
 								else
 									ResetPeonAnimation(hero)
 								end
@@ -937,9 +943,9 @@ function InitGameCore()
 							--print("анимация движения без атаки")
 							if UnitAlive(hero) then
 								if data.IsWood then
-									SetUnitAnimationByIndex(hero, 16)
+									SetUnitAnimationByIndex(hero, PeonIndexWalkLumber)
 								else
-									SetUnitAnimationByIndex(hero, 1)
+									SetUnitAnimationByIndex(hero, PeonIndexWalk)
 								end
 							end
 						end

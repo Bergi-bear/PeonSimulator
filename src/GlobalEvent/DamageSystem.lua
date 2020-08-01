@@ -95,7 +95,10 @@ function OnPostDamage()
 				--print("boold")
 				if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
 					--DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
-					DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+					--DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+					local eff=AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))
+					BlzSetSpecialEffectScale(eff,0.1)
+					DestroyEffect(eff)
 				end
 			end
 			if data.Perk12 and dot>0 then--
@@ -125,7 +128,10 @@ function OnPostDamage()
 			--print("anydamage")
 			if GetUnitTypeId(caster)==DummyID or GetUnitTypeId(caster)==FourCC('e004') then
 			--	DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(target))),0.1)
-				DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+				--DestroyEffect(BlzSetSpecialEffectScale(AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))),0.1)
+				local eff=AddSpecialEffect("D9_blood_effect1",GetUnitXY(caster))
+				BlzSetSpecialEffectScale(eff,0.1)
+				DestroyEffect(eff)
 			end
 		end
 	end
