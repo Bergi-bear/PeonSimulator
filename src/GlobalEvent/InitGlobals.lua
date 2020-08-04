@@ -730,11 +730,25 @@ function InitGameCore()
 			end
 
 			local dif = 100
-			if angle + dif > turn and angle - dif < turn then
+			if angle + dif > turn and angle - dif < turn  then
 				SetUnitTimeScale(data.legs, speed * .1)
+				if GetOwningPlayer(hero)==Player(0) then
+				--	print("прямое движение ног "..turn)
+				end
+
 			else
-				SetUnitTimeScale(data.legs, -1 * (speed * .1))
+				if data.ReleaseD and turn>=270 then --костыль по исправлению бага OK!
+					SetUnitTimeScale(data.legs, speed * .1)
+				else
+					SetUnitTimeScale(data.legs, -1 * (speed * .1))
+				end
+
+				if GetOwningPlayer(hero)==Player(0) then
+				--	print("обратное движение ног "..turn)
+				end
 			end
+
+
 
 			--Любой тик движения
 			local k = data.ForcesCount
@@ -912,6 +926,7 @@ function InitGameCore()
 					if UnitAlive(hero) then
 						if data.IsWood then
 							SetUnitAnimationByIndex(hero, PeonIndexAttackLumber)
+
 						else
 							SetUnitAnimationByIndex(hero, PeonIndexAttack)
 						end
@@ -926,8 +941,10 @@ function InitGameCore()
 							if UnitAlive(hero) then
 								if data.IsWood then
 									SetUnitAnimationByIndex(hero, PeonIndexStandLumber)
+
 								else
 									ResetPeonAnimation(hero)
+
 								end
 							end
 						end
@@ -944,8 +961,10 @@ function InitGameCore()
 							if UnitAlive(hero) then
 								if data.IsWood then
 									SetUnitAnimationByIndex(hero, PeonIndexWalkLumber)
+
 								else
 									SetUnitAnimationByIndex(hero, PeonIndexWalk)
+
 								end
 							end
 						end
@@ -956,6 +975,12 @@ function InitGameCore()
 				end
 			end
 			--каждый тик
+			if data.IsWood then
+				UnitAddAbility(hero,FourCC('A00R'))
+			else
+				UnitRemoveAbility(hero,FourCC('A00R'))
+			end
+
 			if RectContainsCoords(gg_rct_Winter, GetUnitXY(hero)) then
 				--
 				newPos = newPos + Vector3:new(-5, 0, 0)
