@@ -75,7 +75,7 @@ function InitSounds()
     SetSoundVolume(gg_snd_Unlock, 127)
     gg_snd_SaveKodo = CreateSound("Sound/Dialogue/OrcCampaign/Orc02/O02Cairne11.flac", false, true, true, 1, 1, "DefaultEAXON")
     SetSoundParamsFromLabel(gg_snd_SaveKodo, "O02Cairne11")
-    SetSoundDuration(gg_snd_SaveKodo, 5213)
+    SetSoundDuration(gg_snd_SaveKodo, 4649)
     SetSoundVolume(gg_snd_SaveKodo, 120)
 end
 
@@ -914,7 +914,7 @@ function MarkAndFall(x,y,effModel,hero)
 				DestroyEffect(FallenEff)
 				local nd=CreateDestructable(FourCC('LTrc'), x, y, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
 				SetDestructableInvulnerable(nd,true)
-				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+				DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic",x,y))
 				UnitDamageArea(hero,100,x,y,150) --при падении камня
 				for i = 0, 3 do
 					local herod = HERO[i].UnitHero
@@ -1466,7 +1466,7 @@ function HideEverything()
 	local f10=BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0)--не не работает
 	BlzFrameSetVisible(f10, true)
 	BlzFrameClearAllPoints(f10)
-	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.7 ,0.58)
+	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.65 ,0.58)
 	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 1)) --отрыв других кнопок меню
 	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 2)) --
 
@@ -1584,13 +1584,13 @@ function CreateWoodFrame ()
 	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
 	BlzFrameSetSize(tooltip, 0.18, 0.20)
-	--if BlzGetLocale()=="ruRU" then
+	if BlzGetLocale()=="ruRU" then
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "|cffffff00".."Общая древесина".."|r")
 		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля и победы. Потеря лесопилки приведёт к поражению всех игроков")
-	--else
-	--	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
-	--	BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
-	--end
+	else
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
+		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
+	end
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -1603,7 +1603,7 @@ function CreateWoodFrame ()
 	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
 
 	TimerStart(CreateTimer(), 0.1, true, function()
-		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
+		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/"..LumberToWin)
 	end)
 
 end
@@ -1625,7 +1625,9 @@ function CreateShipFrame ()
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
 	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Хп корабля")
 	BlzFrameSetText(UpDest, "Корабль получился бракованным и нуждается в ремонте, отправляйтесь на запад и помогите своему Королю")
-
+	if BlzGetLocale()~="ruRU" then
+		BlzFrameSetText (UpDest, "The ship is defective and needs repair, go west and help your King")
+	end
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
 
@@ -1641,7 +1643,7 @@ function CreateShipFrame ()
 	end)
 
 end
-
+LumberToWin=250
 function MoveWoodAsFarm(hero,k)
 	AddHeroXP(hero,70*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
@@ -1684,7 +1686,7 @@ function MoveWoodAsFarm(hero,k)
 				--end
 			end
 			--print(GTotalWood)
-			if GTotalWood==100 or GTotalWood==101  then--or GTotalWood==1
+			if GTotalWood==LumberToWin or GTotalWood==LumberToWin+1  then--or GTotalWood==1
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				if BlzGetLocale()=="ruRU" then
@@ -1693,7 +1695,7 @@ function MoveWoodAsFarm(hero,k)
 					print("|cff8080ffPeon King: |r".."Wood is enough, go repair ship")
 				end
 				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, " ")
-				GTotalWood=GTotalWood-100
+				GTotalWood=GTotalWood-LumberToWin
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
 				AddQuest(true,HERO[0].UnitHero,-4935.0,809.5)
 				AddQuest(true,HERO[1].UnitHero,-4935.0,809.5)
@@ -1702,6 +1704,7 @@ function MoveWoodAsFarm(hero,k)
 				CreateShipFrame()
 				Normadia()
 				Ending=true
+
 				SetUnitLifePercentBJ(new,10)
 				TimerStart(CreateTimer(), 1, true, function()
 					--print("осталось хп"..GetLosingHP(new))
@@ -1719,6 +1722,9 @@ function MoveWoodAsFarm(hero,k)
 						end
 					end
 				end)
+				local hodor=FindUnitOfType(FourCC("O004"))
+				IssueTargetOrder(hodor,"repair",new)
+				IssueImmediateOrder(hodor,"repairon")
 			end
 		end
 	end)
@@ -2017,23 +2023,23 @@ description = {
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 descriptionENG = {
-	"Get wood. ",
-	"Idle . ",
-	"Die. ",
-	"Run. ",
-	"Kill enemy. ",
-	"Repair Buildings.  ",
-	"Heal. ",
-	"Finding Kodo. ",
-	"Use fire. ",
-	"Get wood whis full HP. ",
-	"Destroy human Lumbermill ",
-	"Be in the cold. ",
-	"Kill wolfs. ",
-	"Catch stones of golem ",
-	"Die from sheep or kill sheep ",
-	"Find the fire sphere. ",
-	"Team collected wood. ",
+	"Bring 25 trees to double its production. ",
+	"Do nothing to raise a riot. ",
+	"Die 15 times to get +200 health. ",
+	"Run a distance of 200000 meters to become 50% faster. ",
+	"Kill enemies to increase your damage by 2 times. ",
+	"Repair buildings for 1000 points to slow down enemies on impact. ",
+	"Heals a 1000 points charge to get +7 regeneration. ",
+	"Tame Kodo to get 10 points of armor. ",
+	"Heat the pickaxe to red to increase the damage by 5 times. ",
+	"Carry a tree with full health to learn how to parry. ",
+	"Break down people's sawmill to get the aura of building repairs. ",
+	"Stay out in the cold to freeze the shield. ",
+	"Kill wolves to get the wolf cap. ",
+	"Catch Golem stones with your shield (hold RMB) to improve your shield. ",
+	"Kill or die from sheep to get an explosive disease. ",
+	"Find a sphere to learn how to throw fireballs. ",
+	"Gather a team of more than 50 pieces of wood to learn the snatch. ",
 }
 
 function PerkButtonLineNonLocal(k, lang)
@@ -2042,7 +2048,7 @@ function PerkButtonLineNonLocal(k, lang)
 	else
 		lang = 0
 	end
-	lang = 0
+	--lang = 0 -- раскомментить чтобы активировать только русский
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -2149,8 +2155,15 @@ function PerkButtonLineNonLocal(k, lang)
 				if data.Perk1 then
 					if not data.Perk1A then
 						BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r" .. ". Принесите ещё древисины для автоматизации " .. "|cffffff00" .. data.SingleWoodCount .. "/50|r")
+						if lang == 1 then
+							--BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r" .. ". Принесите ещё древисины для автоматизации " .. "|cffffff00" .. data.SingleWoodCount .. "/50|r")
+							BlzFrameSetText (data.PekFrame [i], "Wood mining " .. "|cffffff00" .. "doubled" .. "|r" .. ". Bring more wood for automation " .. "|cffffff00" .. data. SingleWoodCount .. "/ 50 |r")
+						end
 					else
 						BlzFrameSetText(data.PekFrame[i], "Автодобыча, ".."|cffffff00" .. "1" .. "|r".." ед. дерева, каждые ".."|cffffff00" .. "60" .. "|r".." секунд")
+						if lang==1 then
+							BlzFrameSetText (data.PekFrame [i], "Auto-Extraction " .. "|cffffff00" .. "1" .. "|r" .. " tree points, every" .. "|cffffff00" .. " 60 " .. "|r" .. "seconds")
+						end
 					end
 					--StartFrameCD()
 					--BlzFrameSetValue(data.ReloadIco[1], 0)
@@ -2160,6 +2173,9 @@ function PerkButtonLineNonLocal(k, lang)
 			elseif i == 2 then
 				if data.Perk2 then
 					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти " .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r")
+					if lang==1 then
+						BlzFrameSetText (data.PekFrame [i], "Hostile mode activated until first death" .. "|cffffff00" .. R2I (data.RevoltSec) .. "/ 100 |r")
+					end
 				else
 					BlzFrameSetValue(data.ReloadIco[i], R2I(data.RevoltSec)) --Было 100-R2I
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r") --|cffffff00AAAA|r
@@ -2168,7 +2184,13 @@ function PerkButtonLineNonLocal(k, lang)
 			elseif i == 3 then
 				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.Dies .. "/15|r") --|cffffff00AAAA|r
 			elseif i == 4 then
-				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r") --|cffffff00AAAA|r
+				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r")
+				if data.Perk4 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r".." Скорость передвижения увеличена на 50%")
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r".." Move speed is increased 50%")
+					end
+				end
 			elseif i == 5 then
 				if data.Perk5 then
 					BlzFrameSetText(data.PekFrame[i], "Урон увеличен, текущий урон: " .. "|cffffff00" .. BlzGetUnitBaseDamage(data.UnitHero, 0) .. "|r")
@@ -2241,7 +2263,7 @@ function PerkButtonLineNonLocal(k, lang)
 					--print("0")
 					BlzFrameSetText(data.PekFrame[i], "Автоматически чинит союзные здания и технику в ридиусе 400. " .. "|cffffff00" .. "10 ед. в секунду|r") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], "Automatic repair building in 400 area  " .. "|cffffff00" .. "10 HP per sec|r")
+						BlzFrameSetText(data.PekFrame[i], "Automatic repair building in 400 area " .. "|cffffff00" .. "10 HP per sec|r")
 					end
 				else
 					--print("2")
@@ -2266,16 +2288,16 @@ function PerkButtonLineNonLocal(k, lang)
 				else
 					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. Текущий урона волка " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.WolfHelper, 0)) .. "|r") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], "Summon spirit wolf. " .. "|cffffff00" .. "Offline and invulnerable|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Summons a wolf to help you. Current wolf damage " .. "|cffffff00 ".. (BlzGetUnitBaseDamage(data. WolfHelper, 0)) .. " |r")
 					end
 				end
 			elseif i == 14 then
 				if not data.Perk14A then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона Ломается, если урон больше 500. Перезарядка: " .. "|cffffff00" .. "5|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100% |r" .. " урона. Ломается, если урон больше 500. Перезарядка: " .. "|cffffff00" .. "5|r") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100% |r" .. " damage ") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100%|r" .. " damage. It breaks if the damage is more than 500. Cooldown:".." |cffffff00 ".." 5 |r ") --|cffffff00AAAA|r
 					end
 				end
 			elseif i == 15 then
@@ -2296,7 +2318,7 @@ function PerkButtonLineNonLocal(k, lang)
 				else
 					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой и оглушает на |cffffff00 0,5 сек. |r" .. "Перезарядка:|cffffff00" .. "5 |r" .. "секунд") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], " 1000 Range Attack damage multiplier" .. "|cffffff00" .. "x 5 |r" .. " and stun|cffffff00 0,5 sec |r")
+						BlzFrameSetText (data.PekFrame [i], "Grants ranged and stuns for|cffffff00 0.5 sec. |r" .. "Cooldown: |cffffff00" .. "5 |r" .. "seconds")
 					end
 				end
 			elseif i == 17 then
@@ -3438,7 +3460,7 @@ function OnPostDamage()
 	local casterOwner     = GetOwningPlayer(caster)
 
 	--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
-	if IsUnitType(target,UNIT_TYPE_HERO) then
+	if IsUnitType(target,UNIT_TYPE_HERO) and GetUnitTypeId(target)==FourCC("H000") then
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 
@@ -4089,7 +4111,7 @@ function InitGameCore()
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
-			Perk17 = true, --Рывок
+			Perk17 = false, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -4683,7 +4705,6 @@ function InitGameCore()
 				for i2 = 1, k do
 					if data.ForceRemain[i2] > 0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
-
 						f = f + 1
 						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i2], data.ForceAngle[i2] * (math.pi / 180), 0.0)
 						--newPos=newPos+Vector3:new(-5, 0, 0)
@@ -4700,7 +4721,6 @@ function InitGameCore()
 					data.ForcesCount = 0
 					data.IsDisabled = false
 					SetUnitPathing(hero, true)
-
 				end
 			end
 
@@ -4731,7 +4751,7 @@ function InitGameCore()
 							end
 						end
 
-						if walk and walkattack and UnitAlive(hero) then
+						if walk and walkattack and UnitAlive(hero) and not data.Wagon then
 							BlzSetUnitFacingEx(data.legs, angle)
 							SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 							SetUnitTimeScale(data.legs, speed * .1)
@@ -5014,7 +5034,6 @@ function InitGameCore()
 			end
 
 			if data.Wagon then -- вагонетка с турелью
-
 				local rangeCart = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon))
 				--print(rangeCart)
 				local range=110
@@ -5022,7 +5041,6 @@ function InitGameCore()
 					--print("пеон выходит из тележки тележки")
 
 				else --толкаем
-
 
 					if  GetUnitX(hero)>=11600 and data.ReleaseA and not data.EnterInTurret then-- МОМЕНТ ВХОДА В ТЕЛЕЖКУ
 						data.EnterInTurret=true
@@ -5062,7 +5080,10 @@ function InitGameCore()
 					--print("отрыв вагонетки")
 					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
 					data.Wagon = nil
+					SetUnitAnimation(data.Turret,"stand")
+					SetUnitTimeScale(data.Turret,1)
 					--SetUnitAnimationByIndex(data.CartUnit, 0)
+
 					data.Turret = nil
 				end
 			end--конец блока вагонетка
@@ -5130,7 +5151,7 @@ function UnitCheckPathingInRound(hero,range)
 				if current<=min then min=current end
 				--print("a="..a*i)
 				if UnitAlive(hero)  and k>=10 then
-					DestroyEffect(AddSpecialEffect("Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl",nx,ny))
+					DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\AncestralGuardianMissile\\AncestralGuardianMissile.mdl",nx,ny))
 				end
 			end
 		end
@@ -5263,7 +5284,7 @@ function InitUnitDeath()
 
 		end
 
-		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
+		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) and GetUnitTypeId(DeadUnit)==FourCC("H000") then --герой умер
 			local x,y=GetUnitXY(DeadUnit)
 			local PD=GetOwningPlayer(DeadUnit)
 			local pid=GetPlayerId(PD)
@@ -5318,7 +5339,7 @@ function InitUnitDeath()
 			end)
 		end
 
-		if IsUnitType(Killer,UNIT_TYPE_HERO)  and true then --герои убил кого-то
+		if IsUnitType(Killer,UNIT_TYPE_HERO)  and GetUnitTypeId(Killer)==FourCC("H000") then --герои убил кого-то
 			--print("герой убил")
 			local PD=GetOwningPlayer(Killer)
 			local pid=GetPlayerId(PD)
@@ -5453,10 +5474,9 @@ function InitUnitDeath()
 				DestroyTimer(GetExpiredTimer())
 			end)
 		end
-		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--лесопилка орков
-			local x,y=GetUnitX(DeadUnit)
+		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--колонная с пилой вроде
+			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",GetUnitXY(DeadUnit)))
 			ShowUnit(DeadUnit,false)
-			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 		end
 
 		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людей
@@ -7238,7 +7258,7 @@ function AfterAttack(hero, delay)
 				end)
 				--CastArea(hero,FourCC('A00Q'),x,y)
 				UnitAddItemById(hero,FourCC('I001'))
-				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+				DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic",x,y))
 			end
 			--print("ПОСТ удар тора")
 		end
@@ -7363,7 +7383,7 @@ function RegisterCollision(hero)
 					if BlzGetLocale()=="ruRU" then
 						print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
 					else
-						print("|cff8080ffTinyc: |r".."Destroy stones for battle")
+						print("|cff8080ffTinyc: |r".."Destroy stones for battle "..TotalStones.."/30")
 					end
 				end
 			end
@@ -7371,7 +7391,7 @@ function RegisterCollision(hero)
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('oshy')  then --ферфь
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
-				if GTotalWood>=100 then
+				if GTotalWood>=LumberToWin then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					if BlzGetLocale()=="ruRU" then
 						print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")
@@ -7654,6 +7674,7 @@ function ResetPeonAnimation (hero)
 		SetUnitAnimationByIndex(hero,14)
 	end]]
 end
+
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -8409,7 +8430,7 @@ function StartTurretMoving(data)
 	--UnitCollisionOFF(data.UnitHero)
 	BlzSetSpecialEffectYaw(data.TurretArrow,math.rad(0))
 	BlzPauseUnitEx(data.UnitHero,true)
-
+	ResetPeonAnimation(data.UnitHero)
 	local isAttack=false
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local hero=data.UnitHero
@@ -8425,7 +8446,7 @@ function StartTurretMoving(data)
 		--Стрельба
 		local angle=data.LastTurn
 		SetUnitFacing(data.Turret,angle)
-		if data.ReleaseRMB then
+		if data.ReleaseRMB and UnitAlive(data.UnitHero) then
 			isAttack=true
 			SingleCannon(hero,GetUnitFacing(data.Turret),"Bullets/Konstrukt_SubmachinegunMissile",1)
 		else
@@ -8471,10 +8492,20 @@ function StartZombies()
 	AllZombiesCount=CreateGroup()
 	TimerStart(CreateTimer(), 1, true, function()
 		local rPoz=GetRandomInt(3,#sPozX)
-		local new=CreateUnit(Player(14),id[GetRandomInt(1,3)],sPozX[rPoz],sPozY[rPoz],0)
-		GroupAddUnit(AllZombiesCount,new)
-		SetUnitMoveSpeed(new,100)
-		IssuePointOrder(new,"attack",xEnd,sPozY[rPoz])
+		local inCave=false
+		for i=0,3 do
+			if IsUnitInRangeXY(HERO[i].UnitHero,sPozX[rPoz],sPozY[rPoz],1800) then
+				inCave=true
+			end
+		end
+		if inCave then
+			local new=CreateUnit(Player(14),id[GetRandomInt(1,3)],sPozX[rPoz],sPozY[rPoz],0)
+			GroupAddUnit(AllZombiesCount,new)
+			SetUnitMoveSpeed(new,100)
+			IssuePointOrder(new,"attack",xEnd,sPozY[rPoz])
+		else
+			--print("в пещерее никого нет")
+		end
 	end)
 end
 --CUSTOM_CODE

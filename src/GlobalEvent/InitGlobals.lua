@@ -168,7 +168,7 @@ function InitGameCore()
 			Perk14A = false, -- щит 100
 			Perk15 = false, -- овечья болезнь
 			Perk16 = false, -- Фаерболы
-			Perk17 = true, --Рывок
+			Perk17 = false, --Рывок
 			----
 			MHoldSec = 0, -- удержания мыши для подсказки
 			Reflection = false, --время на отражение снаряда
@@ -762,7 +762,6 @@ function InitGameCore()
 				for i2 = 1, k do
 					if data.ForceRemain[i2] > 0 then
 						--print("Внешняя сила="..data.ForceRemain[i])
-
 						f = f + 1
 						newPos = newPos + WASDMoving:yawPitchOffset(data.ForceSpeed[i2], data.ForceAngle[i2] * (math.pi / 180), 0.0)
 						--newPos=newPos+Vector3:new(-5, 0, 0)
@@ -779,7 +778,6 @@ function InitGameCore()
 					data.ForcesCount = 0
 					data.IsDisabled = false
 					SetUnitPathing(hero, true)
-
 				end
 			end
 
@@ -810,7 +808,7 @@ function InitGameCore()
 							end
 						end
 
-						if walk and walkattack and UnitAlive(hero) then
+						if walk and walkattack and UnitAlive(hero) and not data.Wagon then
 							BlzSetUnitFacingEx(data.legs, angle)
 							SetUnitAnimationByIndex(data.legs, PeonIndexWalk)
 							SetUnitTimeScale(data.legs, speed * .1)
@@ -1093,7 +1091,6 @@ function InitGameCore()
 			end
 
 			if data.Wagon then -- вагонетка с турелью
-
 				local rangeCart = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetUnitX(data.Wagon), GetUnitY(data.Wagon))
 				--print(rangeCart)
 				local range=110
@@ -1101,7 +1098,6 @@ function InitGameCore()
 					--print("пеон выходит из тележки тележки")
 
 				else --толкаем
-
 
 					if  GetUnitX(hero)>=11600 and data.ReleaseA and not data.EnterInTurret then-- МОМЕНТ ВХОДА В ТЕЛЕЖКУ
 						data.EnterInTurret=true
@@ -1141,7 +1137,10 @@ function InitGameCore()
 					--print("отрыв вагонетки")
 					SetUnitOwner(data.Wagon, Player(PLAYER_NEUTRAL_PASSIVE), true)
 					data.Wagon = nil
+					SetUnitAnimation(data.Turret,"stand")
+					SetUnitTimeScale(data.Turret,1)
 					--SetUnitAnimationByIndex(data.CartUnit, 0)
+
 					data.Turret = nil
 				end
 			end--конец блока вагонетка

@@ -237,7 +237,7 @@ function MarkAndFall(x,y,effModel,hero)
 				DestroyEffect(FallenEff)
 				local nd=CreateDestructable(FourCC('LTrc'), x, y, 0, GetRandomInt(1, 1), GetRandomInt(1, 5))
 				SetDestructableInvulnerable(nd,true)
-				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+				DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic",x,y))
 				UnitDamageArea(hero,100,x,y,150) --при падении камня
 				for i = 0, 3 do
 					local herod = HERO[i].UnitHero

@@ -39,7 +39,7 @@ function HideEverything()
 	local f10=BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 0)--не не работает
 	BlzFrameSetVisible(f10, true)
 	BlzFrameClearAllPoints(f10)
-	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.7 ,0.58)
+	BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.65 ,0.58)
 	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 1)) --отрыв других кнопок меню
 	BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, 2)) --
 
@@ -157,13 +157,13 @@ function CreateWoodFrame ()
 	BlzFrameSetTooltip(faceHover, tooltip) --when faceHover is hovered with the mouse frame tooltip becomes visible.
 	BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER,0.8-0.13, 0.6)
 	BlzFrameSetSize(tooltip, 0.18, 0.20)
-	--if BlzGetLocale()=="ruRU" then
+	if BlzGetLocale()=="ruRU" then
 		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "|cffffff00".."Общая древесина".."|r")
 		BlzFrameSetText(UpDest, "Количество древесины, необходимое для постройки корабля и победы. Потеря лесопилки приведёт к поражению всех игроков")
-	--else
-	--	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
-	--	BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
-	--end
+	else
+		BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Total Wood")
+		BlzFrameSetText(UpDest, "The amount of wood required to build a ship. Losing a sawmill will defeat all players")
+	end
 
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
@@ -176,7 +176,7 @@ function CreateWoodFrame ()
 	BlzFrameSetPoint(new_FrameChargesText, FRAMEPOINT_CENTER, charges, FRAMEPOINT_CENTER, 0.,0.)
 
 	TimerStart(CreateTimer(), 0.1, true, function()
-		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/100")
+		BlzFrameSetText(new_FrameChargesText, ""..GTotalWood.."/"..LumberToWin)
 	end)
 
 end
@@ -198,7 +198,9 @@ function CreateShipFrame ()
 	BlzFrameSetSize(tooltip, 0.18, 0.18)
 	BlzFrameSetText(BlzGetFrameByName("BoxedTextTitle", 0), "Хп корабля")
 	BlzFrameSetText(UpDest, "Корабль получился бракованным и нуждается в ремонте, отправляйтесь на запад и помогите своему Королю")
-
+	if BlzGetLocale()~="ruRU" then
+		BlzFrameSetText (UpDest, "The ship is defective and needs repair, go west and help your King")
+	end
 	local charges= BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
 	local new_FrameChargesText = BlzCreateFrameByType("TEXT", "ButtonChargesText", charges, "", 0)
 
@@ -214,7 +216,7 @@ function CreateShipFrame ()
 	end)
 
 end
-
+LumberToWin=250
 function MoveWoodAsFarm(hero,k)
 	AddHeroXP(hero,70*k,true)
 	local wood=BlzCreateFrameByType("BACKDROP", "Face", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
@@ -257,7 +259,7 @@ function MoveWoodAsFarm(hero,k)
 				--end
 			end
 			--print(GTotalWood)
-			if GTotalWood==100 or GTotalWood==101  then--or GTotalWood==1
+			if GTotalWood==LumberToWin or GTotalWood==LumberToWin+1  then--or GTotalWood==1
 				--print("Победа, дерево собрано!")
 				--print("Система: Древисины достаточно, отправляйтесь строить корабль")
 				if BlzGetLocale()=="ruRU" then
@@ -266,7 +268,7 @@ function MoveWoodAsFarm(hero,k)
 					print("|cff8080ffPeon King: |r".."Wood is enough, go repair ship")
 				end
 				QuestMessageBJ(GetPlayersAll(), bj_QUESTMESSAGE_COMPLETED, " ")
-				GTotalWood=GTotalWood-100
+				GTotalWood=GTotalWood-LumberToWin
 				local new=BlzCreateUnitWithSkin(Player(5), FourCC("o007"), -4935.0, 809.5, 176.590, FourCC("o007"))
 				AddQuest(true,HERO[0].UnitHero,-4935.0,809.5)
 				AddQuest(true,HERO[1].UnitHero,-4935.0,809.5)
@@ -275,6 +277,7 @@ function MoveWoodAsFarm(hero,k)
 				CreateShipFrame()
 				Normadia()
 				Ending=true
+
 				SetUnitLifePercentBJ(new,10)
 				TimerStart(CreateTimer(), 1, true, function()
 					--print("осталось хп"..GetLosingHP(new))
@@ -292,6 +295,9 @@ function MoveWoodAsFarm(hero,k)
 						end
 					end
 				end)
+				local hodor=FindUnitOfType(FourCC("O004"))
+				IssueTargetOrder(hodor,"repair",new)
+				IssueImmediateOrder(hodor,"repairon")
 			end
 		end
 	end)

@@ -16,7 +16,7 @@ function OnPostDamage()
 	local casterOwner     = GetOwningPlayer(caster)
 
 	--print(GetUnitName(caster).." нанёс урон - "..GetUnitName(target))
-	if IsUnitType(target,UNIT_TYPE_HERO) then
+	if IsUnitType(target,UNIT_TYPE_HERO) and GetUnitTypeId(target)==FourCC("H000") then
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 

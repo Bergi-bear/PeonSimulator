@@ -10,7 +10,7 @@ function StartTurretMoving(data)
 	--UnitCollisionOFF(data.UnitHero)
 	BlzSetSpecialEffectYaw(data.TurretArrow,math.rad(0))
 	BlzPauseUnitEx(data.UnitHero,true)
-
+	ResetPeonAnimation(data.UnitHero)
 	local isAttack=false
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		local hero=data.UnitHero
@@ -26,7 +26,7 @@ function StartTurretMoving(data)
 		--Стрельба
 		local angle=data.LastTurn
 		SetUnitFacing(data.Turret,angle)
-		if data.ReleaseRMB then
+		if data.ReleaseRMB and UnitAlive(data.UnitHero) then
 			isAttack=true
 			SingleCannon(hero,GetUnitFacing(data.Turret),"Bullets/Konstrukt_SubmachinegunMissile",1)
 		else

@@ -33,7 +33,7 @@ function UnitCheckPathingInRound(hero,range)
 				if current<=min then min=current end
 				--print("a="..a*i)
 				if UnitAlive(hero)  and k>=10 then
-					DestroyEffect(AddSpecialEffect("Abilities/Weapons/AncestralGuardianMissile/AncestralGuardianMissile.mdl",nx,ny))
+					DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\AncestralGuardianMissile\\AncestralGuardianMissile.mdl",nx,ny))
 				end
 			end
 		end

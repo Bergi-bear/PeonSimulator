@@ -24,6 +24,7 @@ GeneralHeroGlow.mdx
 ice cube.mdx
 Konus.blp
 legs.mdx
+LegsHD.mdx
 Main.fdf
 Main.toc
 myBar.fdf
@@ -32,7 +33,10 @@ MyFakeBar.fdf
 MySimpleButton.fdf
 MySimpleButton.toc
 OrbFireX.mdx
+orc_felorcpeon_main_diffuse.blp
+orc_felorcpeon_weapon_diffuse.blp
 peon.mdx
+PeonHD.mdl
 peon_portrait.mdx
 pila2.blp
 Point Target.mdx
@@ -84,6 +88,7 @@ WASD.dds
 Wolf Cap by Sunchips.mdx
 WoodBig.mdx
 WoodBigAnimated.mdx
+WoodBigOnPeon.mdx
 woodshield.mdx
 woodStext.blp
 worgen_minecar01.blp

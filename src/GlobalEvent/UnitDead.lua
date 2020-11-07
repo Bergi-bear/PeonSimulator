@@ -18,7 +18,7 @@ function InitUnitDeath()
 
 		end
 
-		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) then --герой умер
+		if IsUnitType(DeadUnit,UNIT_TYPE_HERO) and GetUnitTypeId(DeadUnit)==FourCC("H000") then --герой умер
 			local x,y=GetUnitXY(DeadUnit)
 			local PD=GetOwningPlayer(DeadUnit)
 			local pid=GetPlayerId(PD)
@@ -73,7 +73,7 @@ function InitUnitDeath()
 			end)
 		end
 
-		if IsUnitType(Killer,UNIT_TYPE_HERO)  and true then --герои убил кого-то
+		if IsUnitType(Killer,UNIT_TYPE_HERO)  and GetUnitTypeId(Killer)==FourCC("H000") then --герои убил кого-то
 			--print("герой убил")
 			local PD=GetOwningPlayer(Killer)
 			local pid=GetPlayerId(PD)
@@ -208,10 +208,9 @@ function InitUnitDeath()
 				DestroyTimer(GetExpiredTimer())
 			end)
 		end
-		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--лесопилка орков
-			local x,y=GetUnitX(DeadUnit)
+		if GetUnitTypeId(DeadUnit)==FourCC('h001') then--колонная с пилой вроде
+			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",GetUnitXY(DeadUnit)))
 			ShowUnit(DeadUnit,false)
-			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\Mortar\\MortarMissile",x,y))
 		end
 
 		if GetUnitTypeId(DeadUnit)==FourCC('hlum') then -- лесопилка людей

@@ -79,7 +79,7 @@ function RegisterCollision(hero)
 					if BlzGetLocale()=="ruRU" then
 						print("|cff8080ffТиник: |r".."Уничтожьте камни для нашей битвы "..TotalStones.."/30")
 					else
-						print("|cff8080ffTinyc: |r".."Destroy stones for battle")
+						print("|cff8080ffTinyc: |r".."Destroy stones for battle "..TotalStones.."/30")
 					end
 				end
 			end
@@ -87,7 +87,7 @@ function RegisterCollision(hero)
 
 			if GetUnitTypeId(CollisionUnit)==FourCC('oshy')  then --ферфь
 				if GetUnitAbilityLevel(CollisionUnit,FourCC('A00L'))>0 then
-				if GTotalWood>=100 then
+				if GTotalWood>=LumberToWin then
 					UnitRemoveAbility(CollisionUnit,FourCC('A00L'))
 					if BlzGetLocale()=="ruRU" then
 						print("|cff8080ffСистема: |r".."Приступайте к строительсву корабля")

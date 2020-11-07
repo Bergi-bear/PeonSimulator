@@ -60,7 +60,7 @@ function AfterAttack(hero, delay)
 				end)
 				--CastArea(hero,FourCC('A00Q'),x,y)
 				UnitAddItemById(hero,FourCC('I001'))
-				DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Thunderclap\\ThunderClapCaster",x,y))
+				DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic",x,y))
 			end
 			--print("ПОСТ удар тора")
 		end

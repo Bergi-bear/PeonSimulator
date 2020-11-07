@@ -12,9 +12,19 @@ function StartZombies()
 	AllZombiesCount=CreateGroup()
 	TimerStart(CreateTimer(), 1, true, function()
 		local rPoz=GetRandomInt(3,#sPozX)
-		local new=CreateUnit(Player(14),id[GetRandomInt(1,3)],sPozX[rPoz],sPozY[rPoz],0)
-		GroupAddUnit(AllZombiesCount,new)
-		SetUnitMoveSpeed(new,100)
-		IssuePointOrder(new,"attack",xEnd,sPozY[rPoz])
+		local inCave=false
+		for i=0,3 do
+			if IsUnitInRangeXY(HERO[i].UnitHero,sPozX[rPoz],sPozY[rPoz],1800) then
+				inCave=true
+			end
+		end
+		if inCave then
+			local new=CreateUnit(Player(14),id[GetRandomInt(1,3)],sPozX[rPoz],sPozY[rPoz],0)
+			GroupAddUnit(AllZombiesCount,new)
+			SetUnitMoveSpeed(new,100)
+			IssuePointOrder(new,"attack",xEnd,sPozY[rPoz])
+		else
+			--print("в пещерее никого нет")
+		end
 	end)
 end

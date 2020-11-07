@@ -101,23 +101,23 @@ description = {
 	"Соберите командой более 50 древесины, чтобы изучить рывок. ",
 }
 descriptionENG = {
-	"Get wood. ",
-	"Idle . ",
-	"Die. ",
-	"Run. ",
-	"Kill enemy. ",
-	"Repair Buildings.  ",
-	"Heal. ",
-	"Finding Kodo. ",
-	"Use fire. ",
-	"Get wood whis full HP. ",
-	"Destroy human Lumbermill ",
-	"Be in the cold. ",
-	"Kill wolfs. ",
-	"Catch stones of golem ",
-	"Die from sheep or kill sheep ",
-	"Find the fire sphere. ",
-	"Team collected wood. ",
+	"Bring 25 trees to double its production. ",
+	"Do nothing to raise a riot. ",
+	"Die 15 times to get +200 health. ",
+	"Run a distance of 200000 meters to become 50%% faster. ",
+	"Kill enemies to increase your damage by 2 times. ",
+	"Repair buildings for 1000 points to slow down enemies on impact. ",
+	"Heals a 1000 points charge to get +7 regeneration. ",
+	"Tame Kodo to get 10 points of armor. ",
+	"Heat the pickaxe to red to increase the damage by 5 times. ",
+	"Carry a tree with full health to learn how to parry. ",
+	"Break down people's sawmill to get the aura of building repairs. ",
+	"Stay out in the cold to freeze the shield. ",
+	"Kill wolves to get the wolf cap. ",
+	"Catch Golem stones with your shield (hold RMB) to improve your shield. ",
+	"Kill or die from sheep to get an explosive disease. ",
+	"Find a sphere to learn how to throw fireballs. ",
+	"Gather a team of more than 50 pieces of wood to learn the snatch. ",
 }
 
 function PerkButtonLineNonLocal(k, lang)
@@ -126,7 +126,7 @@ function PerkButtonLineNonLocal(k, lang)
 	else
 		lang = 0
 	end
-	lang = 0
+	--lang = 0 -- раскомментить чтобы активировать только русский
 	BlzLoadTOCFile("war3mapimported\\BoxedText.toc")
 	local next = 0.039
 	--print("start")
@@ -233,8 +233,15 @@ function PerkButtonLineNonLocal(k, lang)
 				if data.Perk1 then
 					if not data.Perk1A then
 						BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r" .. ". Принесите ещё древисины для автоматизации " .. "|cffffff00" .. data.SingleWoodCount .. "/50|r")
+						if lang == 1 then
+							--BlzFrameSetText(data.PekFrame[i], "Добыча дерева " .. "|cffffff00" .. "удвоена" .. "|r" .. ". Принесите ещё древисины для автоматизации " .. "|cffffff00" .. data.SingleWoodCount .. "/50|r")
+							BlzFrameSetText (data.PekFrame [i], "Wood mining " .. "|cffffff00" .. "doubled" .. "|r" .. ". Bring more wood for automation " .. "|cffffff00" .. data. SingleWoodCount .. "/ 50 |r")
+						end
 					else
 						BlzFrameSetText(data.PekFrame[i], "Автодобыча, ".."|cffffff00" .. "1" .. "|r".." ед. дерева, каждые ".."|cffffff00" .. "60" .. "|r".." секунд")
+						if lang==1 then
+							BlzFrameSetText (data.PekFrame [i], "Auto-Extraction " .. "|cffffff00" .. "1" .. "|r" .. " tree points, every" .. "|cffffff00" .. " 60 " .. "|r" .. "seconds")
+						end
 					end
 					--StartFrameCD()
 					--BlzFrameSetValue(data.ReloadIco[1], 0)
@@ -244,6 +251,9 @@ function PerkButtonLineNonLocal(k, lang)
 			elseif i == 2 then
 				if data.Perk2 then
 					BlzFrameSetText(data.PekFrame[i], "Враждебный режим активирован до первой смерти " .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r")
+					if lang==1 then
+						BlzFrameSetText (data.PekFrame [i], "Hostile mode activated until first death" .. "|cffffff00" .. R2I (data.RevoltSec) .. "/ 100 |r")
+					end
 				else
 					BlzFrameSetValue(data.ReloadIco[i], R2I(data.RevoltSec)) --Было 100-R2I
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.RevoltSec) .. "/100|r") --|cffffff00AAAA|r
@@ -252,7 +262,13 @@ function PerkButtonLineNonLocal(k, lang)
 			elseif i == 3 then
 				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.Dies .. "/15|r") --|cffffff00AAAA|r
 			elseif i == 4 then
-				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r") --|cffffff00AAAA|r
+				BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r")
+				if data.Perk4 then
+					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r".." Скорость передвижения увеличена на 50%%")
+					if lang == 1 then
+						BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. R2I(data.TotalWay) .. "/200000|r".." Move speed is increased 50%%")
+					end
+				end
 			elseif i == 5 then
 				if data.Perk5 then
 					BlzFrameSetText(data.PekFrame[i], "Урон увеличен, текущий урон: " .. "|cffffff00" .. BlzGetUnitBaseDamage(data.UnitHero, 0) .. "|r")
@@ -325,7 +341,7 @@ function PerkButtonLineNonLocal(k, lang)
 					--print("0")
 					BlzFrameSetText(data.PekFrame[i], "Автоматически чинит союзные здания и технику в ридиусе 400. " .. "|cffffff00" .. "10 ед. в секунду|r") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], "Automatic repair building in 400 area  " .. "|cffffff00" .. "10 HP per sec|r")
+						BlzFrameSetText(data.PekFrame[i], "Automatic repair building in 400 area " .. "|cffffff00" .. "10 HP per sec|r")
 					end
 				else
 					--print("2")
@@ -350,16 +366,16 @@ function PerkButtonLineNonLocal(k, lang)
 				else
 					BlzFrameSetText(data.PekFrame[i], "Призывает волка, который будет вам помогать. Текущий урона волка " .. "|cffffff00" .. (BlzGetUnitBaseDamage(data.WolfHelper, 0)) .. "|r") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], "Summon spirit wolf. " .. "|cffffff00" .. "Offline and invulnerable|r") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Summons a wolf to help you. Current wolf damage " .. "|cffffff00 ".. (BlzGetUnitBaseDamage(data. WolfHelper, 0)) .. " |r")
 					end
 				end
 			elseif i == 14 then
 				if not data.Perk14A then
 					BlzFrameSetText(data.PekFrame[i], GetLangDescription(i, lang) .. "|cffffff00" .. data.StoneCount .. "/5|r") --|cffffff00AAAA|r
 				else
-					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100%% |r" .. " урона Ломается, если урон больше 500. Перезарядка: " .. "|cffffff00" .. "5|r") --|cffffff00AAAA|r
+					BlzFrameSetText(data.PekFrame[i], "Поглощает " .. "|cffffff00" .. "100%% |r" .. " урона. Ломается, если урон больше 500. Перезарядка: " .. "|cffffff00" .. "5|r") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100%% |r" .. " damage ") --|cffffff00AAAA|r
+						BlzFrameSetText(data.PekFrame[i], "Absorb " .. "|cffffff00" .. "100%%|r" .. " damage. It breaks if the damage is more than 500. Cooldown:".." |cffffff00 ".." 5 |r ") --|cffffff00AAAA|r
 					end
 				end
 			elseif i == 15 then
@@ -380,7 +396,7 @@ function PerkButtonLineNonLocal(k, lang)
 				else
 					BlzFrameSetText(data.PekFrame[i], "Даёт дальний бой и оглушает на |cffffff00 0,5 сек. |r" .. "Перезарядка:|cffffff00" .. "5 |r" .. "секунд") --|cffffff00AAAA|r
 					if lang == 1 then
-						BlzFrameSetText(data.PekFrame[i], " 1000 Range Attack damage multiplier" .. "|cffffff00" .. "x 5 |r" .. " and stun|cffffff00 0,5 sec |r")
+						BlzFrameSetText (data.PekFrame [i], "Grants ranged and stuns for|cffffff00 0.5 sec. |r" .. "Cooldown: |cffffff00" .. "5 |r" .. "seconds")
 					end
 				end
 			elseif i == 17 then
